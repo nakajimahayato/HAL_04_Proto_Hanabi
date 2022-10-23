@@ -1,2 +1,13 @@
-﻿  game.cpp
-  sample.vcxproj -> C:\Users\出浦　大基\OneDrive\ドキュメント\GitHub\HAL_04_Proto_Hanabi\hanabiproto\x64\Debug\sample.exe
+﻿  bg.cpp
+  camera.cpp
+  collision.cpp
+c:\users\maqqi\onedrive\デスクトップ\hal_04_proto_hanabi\hanabiproto\collision.cpp(15): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+  game.cpp
+  input.cpp
+  main.cpp
+  player.cpp
+  renderer.cpp
+  sprite.cpp
+  コードを生成中...
+  texture.cpp
+  sample.vcxproj -> C:\Users\maqqi\OneDrive\デスクトップ\HAL_04_Proto_Hanabi\hanabiproto\x64\Debug\sample.exe
