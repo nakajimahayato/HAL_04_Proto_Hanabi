@@ -215,6 +215,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	InitSprite();
 
+	SetScene(SCENE_GAME);
+
 	return S_OK;
 }
 
