@@ -14,6 +14,7 @@
 #include "collision.h"
 #include "camera.h"
 #include "input.h"
+#include "object.h"
 
 
 //*****************************************************************************
@@ -42,6 +43,8 @@ HRESULT InitGame(void)
 
 	InitCamera();
 
+	InitAkariObject();
+
 	return S_OK;
 }
 
@@ -58,6 +61,8 @@ void UninitGame(void)
 
 	// ’¸“_ŠÇ—‚ÌI—¹ˆ—
 	UninitPlayer();
+
+	UninitAkariObject();
 }
 
 //=============================================================================
@@ -74,6 +79,8 @@ void UpdateGame(void)
 
 	UpdateCamera();
 
+	UpdateAkariObject();
+
 }
 
 //=============================================================================
@@ -86,6 +93,8 @@ void DrawGame(void)
 
 	// ’¸“_ŠÇ—‚Ì•`‰æˆ—
 	DrawPlayer();
+
+	DrawAkariObject();
 
 	DrawCamera();
 
