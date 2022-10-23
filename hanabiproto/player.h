@@ -18,11 +18,7 @@
 struct PLAYER
 {
 	D3DXVECTOR2		pos;	//位置ベクトル
-	D3DXVECTOR2     uv;
-	int				muki;
 
-	int		animeIndex;
-	int		animeWait;
 };
 
 
