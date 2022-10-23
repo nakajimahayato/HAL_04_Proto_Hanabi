@@ -11,24 +11,34 @@
 
 #include "main.h"
 #include "renderer.h"
+#include "BENRIclass.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-struct PLAYER
+class GameObject
 {
-	D3DXVECTOR2		pos;	//位置ベクトル
-	D3DXVECTOR2     uv;
-	int				muki;
+public:
+	Float2			pos;//座標
+	Float2			vec;//移動
+	bool			use;//useフラグ
 };
 
+class HanabiObject:public GameObject
+{
+	Float2			ShotPlayerpos;
+	Float2			ShotCursorpos;
+};
+
+class HanabiAkariObject:public GameObject
+{
+
+};
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitGameObject(void);
-void UninitGameObject(void);
-void UpdateGameObject(void);
-void DrawGameObject(void);
-
-PLAYER* GetGameObject(void);
+HRESULT InitAkariObject(void);
+void UninitAkariObject(void);
+void UpdateAkariObject(void);
+void DrawAkariObject(void);
