@@ -1,2 +1,33 @@
-﻿  main.cpp
-c:\users\renon\source\repos\hew_hanabihana_20221021\hew_hanabihana_20221021\main.h(17): fatal error C1083: include ファイルを開けません。'd3dx11.h':No such file or directory
+﻿  enemy.cpp
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\enemy.cpp(11): fatal error C1083: include ファイルを開けません。'sprite.h':No such file or directory
+  main.cpp
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(204): error C3861: 'InitRenderer': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(206): error C3861: 'InitCamera': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(209): error C3861: 'InitInput': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(212): error C3861: 'InitPolygon': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(215): error C3861: 'SetLightEnable': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(218): error C2065: 'MATERIAL': 定義されていない識別子です。
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(218): error C2146: 構文エラー: ';' が、識別子 'material' の前に必要です。
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(218): error C2065: 'material': 定義されていない識別子です。
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(219): error C2065: 'material': 定義されていない識別子です。
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(220): error C2065: 'material': 定義されていない識別子です。
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(221): error C2065: 'material': 定義されていない識別子です。
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(221): error C3861: 'SetMaterial': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(224): error C2065: 'CULL_MODE_BACK': 定義されていない識別子です。
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(224): error C3861: 'SetCullingMode': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(235): error C3861: 'UninitPolygon': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(238): error C3861: 'UninitCamera': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(241): error C3861: 'UninitTexture': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(244): error C3861: 'UninitInput': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(246): error C3861: 'UninitRenderer': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(255): error C3861: 'UpdateInput': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(258): error C3861: 'UpdateCamera': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(261): error C3861: 'UpdatePolygon': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(270): error C3861: 'Clear': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(272): error C3861: 'SetCamera': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(275): error C3861: 'DrawPolygon': 識別子が見つかりませんでした
+c:\hal_04_proto_hanabi\hew_hanabihana_prototype\hew_hanabihana_20221021\main.cpp(278): error C3861: 'Present': 識別子が見つかりませんでした
+  player.cpp
+  renderer.cpp
+  texture.cpp
+  コードを生成中...
