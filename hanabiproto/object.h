@@ -21,6 +21,7 @@ class GameObject
 public:
 	Float2			pos;//座標
 	Float2			vec;//移動
+	Float2			siz;//大きさ
 	bool			use;//useフラグ
 };
 
@@ -35,6 +36,11 @@ class HanabiAkariObject:public GameObject
 
 };
 
+class EnemyObject :public GameObject
+{
+	
+};
+
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -42,3 +48,8 @@ HRESULT InitAkariObject(void);
 void UninitAkariObject(void);
 void UpdateAkariObject(void);
 void DrawAkariObject(void);
+
+HRESULT InitAtHanabi(void);
+void UninitAtHanabi(void);
+void UpdateAtHanabi(void);
+void DrawAtHanabi(void);
