@@ -23,7 +23,7 @@ struct PLAYER
 	Float2		spjp;	//プレイヤーの移動とジャンプ速度
 
 	Float2		cspos;	//カーソルの現在位置
-	Float2		csTr;	//カーソルの軌跡点
+	Float2		csTr[256];	//カーソルの軌跡点
 
 	bool		csInp;	//カーソル入力判別用
 };
@@ -39,4 +39,4 @@ void DrawPlayer(void);
 
 
 
-PLAYER* GetPlayer(void);
+//PLAYER* GetPlayer(void);
