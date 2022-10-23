@@ -1,3 +1,0 @@
-﻿  player.cpp
-c:\hal_04_proto_hanabi\hanabiproto\player.cpp(160): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-  sample.vcxproj -> C:\HAL_04_Proto_Hanabi\hanabiproto\x64\Debug\sample.exe
