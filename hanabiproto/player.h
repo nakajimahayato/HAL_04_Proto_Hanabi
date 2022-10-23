@@ -11,14 +11,21 @@
 
 #include "main.h"
 #include "renderer.h"
+#include "BENRIclass.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 struct PLAYER
 {
-	D3DXVECTOR2		pos;	//位置ベクトル
+	Float2		pos;	//プレイヤーの現在位置
+	Float2		vec;	//プレイヤーのベクトル
+	Float2		spjp;	//プレイヤーの移動とジャンプ速度
 
+	Float2		cspos;	//カーソルの現在位置
+	Float2		csTr;	//カーソルの軌跡点
+
+	bool		csInp;	//カーソル入力判別用
 };
 
 
@@ -29,5 +36,7 @@ HRESULT InitPlayer(void);
 void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);
+
+
 
 PLAYER* GetPlayer(void);

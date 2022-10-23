@@ -97,26 +97,20 @@ void UpdatePlayer(void)
 	if (GetKeyboardPress(DIK_A))
 	{
 		g_Player.pos.x -= 2.0f;
-		g_Player.muki = 3;
 	}
 	if (GetKeyboardPress(DIK_D))
 	{
 		g_Player.pos.x += 2.0f;
-		g_Player.muki = 1;
 	}
 	if (GetKeyboardPress(DIK_W))
 	{
 		g_Player.pos.y -= 2.0f;
-		g_Player.muki = 0;
 	}
 	if (GetKeyboardPress(DIK_S))
 	{
 		g_Player.pos.y += 2.0f;
-		g_Player.muki = 2;
 	}
 
-	//向きに合わせてプレイヤーUV値を更新する
-	g_Player.uv.y = g_MukiTable[g_Player.muki];
 
 
 
@@ -149,28 +143,8 @@ void DrawPlayer(void)
 	D3DXVECTOR2 basePos = GetBase();
 
 	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y, 32.0f, 32.0f,
-		g_Player.uv.x, g_Player.uv.y, 0.33333f, 0.25f);
+		0.0, 1.0, 0.33333f, 0.25f);
 
-	g_Player.animeWait++;
-
-	//アニメーションのウエイトが一定の値を超えたら
-	if (g_Player.animeWait > 20)
-	{
-		//アニメーションパターンを切り替える
-		g_Player.animeIndex++;
-		//アニメーションパターンの限界を超えたら
-		if (g_Player.animeIndex >= 4)
-		{
-			//アニメーションパターンを0に戻す
-			g_Player.animeIndex = 0;
-		}
-
-		//UV値の更新
-		g_Player.uv.x = g_AnimeTable[g_Player.animeIndex];
-
-		//ウエイトをリセットする
-		g_Player.animeWait = 0;
-	}
 }
 
 
