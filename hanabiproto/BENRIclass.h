@@ -10,6 +10,30 @@ class Float2
 public:
 	float x;
 	float y;
+
+	Float2() :x(0), y(0) {}
+	Float2(float ix, float iy)
+		:x(x)
+		, y(y) {
+	}
+
+	//＋の場合は自分自身が左辺、引数が右辺、自分と同じクラスのメンバにはアクセスできる。ほどほどに。
+	Float2 operator+(const Float2& v)const {
+		return Float2(x + v.x, y + v.y);
+	}
+	//一項演算子
+	Float2 operator-(void)const {
+		return Float2(-x, -y);
+		//一個だけ演算子が逆などは、よくやってしまう間違え
+	}
+	Float2 operator-(const Float2& v)const {
+		return *this + -v;
+		//一項演算子があればこれもできる
+	}
+	//スカラー倍
+	Float2 operator*(float s)const {
+		return Float2(x * s, y * s);
+	}
 };
 //――――――――――――――――――――――――――――――――――――――
 
