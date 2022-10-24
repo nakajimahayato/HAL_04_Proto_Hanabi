@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "input.h"
 #include "object.h"
+#include "stage.h"
 
 
 //*****************************************************************************
@@ -40,6 +41,7 @@ HRESULT InitGame(void)
 
 	// ”wŒi‚Ì‰Šú‰»
 	InitBG();
+	InitStage();
 
 	InitCamera();
 
@@ -58,7 +60,7 @@ void UninitGame(void)
 
 	//”wŒi‚ÌI—¹ˆ—
 	UninitBG();
-
+	UninitStage();
 	// ’¸“_ŠÇ—‚ÌI—¹ˆ—
 	UninitPlayer();
 
@@ -76,7 +78,7 @@ void UpdateGame(void)
 
 	//”wŒi‚ÌXVˆ—
 	UpdateBG();
-
+	UpdateStage();
 	UpdateCamera();
 
 	UpdateAkariObject();
@@ -90,7 +92,7 @@ void DrawGame(void)
 {
 	//”wŒi‚Ì•`‰æˆ—
 	DrawBG();
-
+	DrawStage();
 	// ’¸“_ŠÇ—‚Ì•`‰æˆ—
 	DrawPlayer();
 
