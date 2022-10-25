@@ -22,12 +22,14 @@ bool HitHanabi(int isHit);
 //*****************************************************************************
 static GameObject g_Hanabi0bj;
 static EnemyObject g_Enemy0bj;
+static GameObject g_Objects[256];
 
 //=============================================================================
 // ‰Šú‰»ˆ—
 //=============================================================================
 HRESULT InitAtHanabi(void)
 {
+
 
 	return S_OK;
 }

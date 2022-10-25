@@ -22,6 +22,7 @@ public:
 	Float2			pos;//座標
 	Float2			vec;//移動
 	Float2			siz;//大きさ
+	Float2			dir;//移動方向
 	bool			use;//useフラグ
 	bool			gather;//集まるあかり
 };
