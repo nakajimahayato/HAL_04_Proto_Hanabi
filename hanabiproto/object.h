@@ -22,6 +22,7 @@ public:
 	Float2			pos;//座標
 	Float2			vec;//移動
 	bool			use;//useフラグ
+	bool			gather;//集まるあかり
 };
 
 class HanabiObject:public GameObject
