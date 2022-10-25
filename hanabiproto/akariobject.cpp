@@ -11,6 +11,7 @@
 #include "collision.h"
 #include "sprite.h"
 #include "camera.h"
+#include "input.h"
 
 //*****************************************************************************							
 // マクロ定義							
@@ -28,6 +29,8 @@ static int g_TextureNo;
 static HanabiAkariObject g_AkariObject[AKARI_NUM];
 
 static float g_U, g_V;
+
+Float2 MovePos[AKARI_NUM];
 //=============================================================================							
 // 初期化処理							
 //=============================================================================							
@@ -40,18 +43,29 @@ HRESULT InitAkariObject(void)
 	{
 		g_AkariObject[i].use = false;
 		g_AkariObject[i].gather = false;
+		g_AkariObject[i].dir.x = 0.0f;
+		g_AkariObject[i].dir.y = 0.0f;
 		g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
 		g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
+		MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
+		MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
+		//何フレームかけて集まるか
+		MovePos[i].x /= 60;
+		MovePos[i].y /= 60;
 	}
 
 	//お試し
-	/*for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++)
 	{
+		g_AkariObject[i].gather = true;
 		g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
 		g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
 		g_AkariObject[i].use = true;
-	}*/
-	
+		MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
+		MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
+		MovePos[i].x /= 60;
+		MovePos[i].y /= 60;
+	}
 
 	g_U = 0.0f;
 	g_V = 0.0f;
@@ -77,8 +91,12 @@ void UpdateAkariObject(void)
 	{
 		if (g_AkariObject[i].gather&&g_AkariObject[i].use)
 		{
-			g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
-			g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
+			if (g_AkariObject[i].pos.x > (SCREEN_WIDTH / 2) + 5 || g_AkariObject[i].pos.x <(SCREEN_WIDTH / 2) - 5
+				&& g_AkariObject[i].pos.y >(SCREEN_HEIGHT / 2) + 5 || g_AkariObject[i].pos.y < (SCREEN_HEIGHT / 2) - 5)
+			{
+					g_AkariObject[i].pos.x += MovePos[i].x;
+					g_AkariObject[i].pos.y += MovePos[i].y;
+			}
 		}
 	}
 }
@@ -98,17 +116,13 @@ void DrawAkariObject(void)
 				1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
-	
-	
 }
 
-//花火の「AKARI」状態：集まり状態
-void AKARIGather(int index)
+Float2 GetAkariObject(void)
 {
-	//現在の「AKARI」と集まる位置との位置関係から移動方向を更新
-	g_AkariObject[index].dir = /*花火の爆発位置*/->pos - g_AkariObject[index].pos;
-	D3DXVec2Normalize(&g_AkariObject[index].dir, &g_AkariObject[index].dir);
-
-	//敵の座標更新
-	g_AkariObject[index].pos += g_AkariObject[index].dir * 0.8f;
+	//座標取得
+	Float2 AkariObject;
+	AkariObject.x = g_AkariObject->pos.x;
+	AkariObject.y = g_AkariObject->pos.y;
+	return Float2(AkariObject);
 }
