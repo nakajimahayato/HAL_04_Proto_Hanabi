@@ -22,6 +22,7 @@ public:
 	Float2			pos;//À•W
 	Float2			vec;//ˆÚ“®
 	Float2			siz;//‘å‚«‚³
+	Float2			dir;//ˆÚ“®•ûŒü
 	bool			use;//useƒtƒ‰ƒO
 };
 
