@@ -39,17 +39,18 @@ HRESULT InitAkariObject(void)
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
 		g_AkariObject[i].use = false;
+		g_AkariObject[i].gather = false;
 		g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
 		g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
 	}
 
 	//お試し
-	for (int i = 0; i < 5; i++)
+	/*for (int i = 0; i < 5; i++)
 	{
 		g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
 		g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
 		g_AkariObject[i].use = true;
-	}
+	}*/
 	
 
 	g_U = 0.0f;
@@ -72,6 +73,14 @@ void UninitAkariObject(void)
 void UpdateAkariObject(void)
 {
 	//囲った範囲内の「AKARI」が集まるように
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].gather&&g_AkariObject[i].use)
+		{
+			g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
+			g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
+		}
+	}
 }
 
 //=============================================================================							
@@ -91,4 +100,15 @@ void DrawAkariObject(void)
 	}
 	
 	
+}
+
+//花火の「AKARI」状態：集まり状態
+void AKARIGather(int index)
+{
+	//現在の「AKARI」と集まる位置との位置関係から移動方向を更新
+	g_AkariObject[index].dir = /*花火の爆発位置*/->pos - g_AkariObject[index].pos;
+	D3DXVec2Normalize(&g_AkariObject[index].dir, &g_AkariObject[index].dir);
+
+	//敵の座標更新
+	g_AkariObject[index].pos += g_AkariObject[index].dir * 0.8f;
 }
