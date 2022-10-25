@@ -23,6 +23,7 @@ public:
 	Float2			vec;//ˆÚ“®
 	Float2			siz;//‘å‚«‚³
 	bool			use;//useƒtƒ‰ƒO
+	bool			gather;//W‚Ü‚é‚ ‚©‚è
 };
 
 class HanabiObject:public GameObject

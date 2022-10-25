@@ -39,17 +39,18 @@ HRESULT InitAkariObject(void)
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
 		g_AkariObject[i].use = false;
+		g_AkariObject[i].gather = false;
 		g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
 		g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
 	}
 
 	//‚¨ŽŽ‚µ
-	for (int i = 0; i < 5; i++)
+	/*for (int i = 0; i < 5; i++)
 	{
 		g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
 		g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
 		g_AkariObject[i].use = true;
-	}
+	}*/
 	
 
 	g_U = 0.0f;
@@ -72,6 +73,14 @@ void UninitAkariObject(void)
 void UpdateAkariObject(void)
 {
 	//ˆÍ‚Á‚½”ÍˆÍ“à‚ÌuAKARIv‚ªW‚Ü‚é‚æ‚¤‚É
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].gather&&g_AkariObject[i].use)
+		{
+			g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
+			g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
+		}
+	}
 }
 
 //=============================================================================							
