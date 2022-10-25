@@ -1,8 +1,8 @@
 /*==============================================================================
 
-				   ƒIƒuƒWƒFƒNƒgˆ— [akariobject.cpp]
-				Author : ‚¢‚Å‚¤‚ç
-				Date    : 2022/10/23(ÅI•ÒW“ú)
+				   ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‡¦ç† [akariobject.cpp]
+				Author : ã„ã§ã†ã‚‰
+				Date    : 2022/10/23(æœ€çµ‚ç·¨é›†æ—¥)
 ------------------------------------------------------------------------------------------------------------------------------------------
 
 ==============================================================================*/
@@ -11,47 +11,61 @@
 #include "collision.h"
 #include "sprite.h"
 #include "camera.h"
+#include "input.h"
 
 //*****************************************************************************							
-// ƒ}ƒNƒ’è‹`							
+// ãƒã‚¯ãƒ­å®šç¾©							
 //*****************************************************************************							
 #define AKARI_NUM	100
 //*****************************************************************************							
-// ƒvƒƒgƒ^ƒCƒvéŒ¾							
+// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€							
 //*****************************************************************************							
 
 //*****************************************************************************							
-// ƒOƒ[ƒoƒ‹•Ï”							
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°							
 //*****************************************************************************							
 static int g_TextureNo;
 
 static HanabiAkariObject g_AkariObject[AKARI_NUM];
 
 static float g_U, g_V;
+
+Float2 MovePos[AKARI_NUM];
 //=============================================================================							
-// ‰Šú‰»ˆ—							
+// åˆæœŸåŒ–å‡¦ç†							
 //=============================================================================							
 HRESULT InitAkariObject(void)
 {
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_effect_explosion.png");
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
 		g_AkariObject[i].use = false;
 		g_AkariObject[i].gather = false;
+		g_AkariObject[i].dir.x = 0.0f;
+		g_AkariObject[i].dir.y = 0.0f;
 		g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
 		g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
+		MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
+		MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
+		//ä½•ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‘ã¦é›†ã¾ã‚‹ã‹
+		MovePos[i].x /= 60;
+		MovePos[i].y /= 60;
 	}
 
-	//‚¨‚µ
-	/*for (int i = 0; i < 5; i++)
+	//ãŠè©¦ã—
+	for (int i = 0; i < 5; i++)
 	{
+		g_AkariObject[i].gather = true;
 		g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
 		g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
 		g_AkariObject[i].use = true;
-	}*/
-	
+		MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
+		MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
+		MovePos[i].x /= 60;
+		MovePos[i].y /= 60;
+	}
 
 	g_U = 0.0f;
 	g_V = 0.0f;
@@ -60,7 +74,7 @@ HRESULT InitAkariObject(void)
 }
 
 //=============================================================================							
-// I—¹ˆ—							
+// çµ‚äº†å‡¦ç†							
 //=============================================================================							
 void UninitAkariObject(void)
 {
@@ -68,27 +82,31 @@ void UninitAkariObject(void)
 }
 
 //=============================================================================							
-// XVˆ—							
+// æ›´æ–°å‡¦ç†							
 //=============================================================================							
 void UpdateAkariObject(void)
 {
-	//ˆÍ‚Á‚½”ÍˆÍ“à‚ÌuAKARIv‚ªW‚Ü‚é‚æ‚¤‚É
+	//å›²ã£ãŸç¯„å›²å†…ã®ã€ŒAKARIã€ãŒé›†ã¾ã‚‹ã‚ˆã†ã«
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
 		if (g_AkariObject[i].gather&&g_AkariObject[i].use)
 		{
-			g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
-			g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
+			if (g_AkariObject[i].pos.x > (SCREEN_WIDTH / 2) + 5 || g_AkariObject[i].pos.x <(SCREEN_WIDTH / 2) - 5
+				&& g_AkariObject[i].pos.y >(SCREEN_HEIGHT / 2) + 5 || g_AkariObject[i].pos.y < (SCREEN_HEIGHT / 2) - 5)
+			{
+					g_AkariObject[i].pos.x += MovePos[i].x;
+					g_AkariObject[i].pos.y += MovePos[i].y;
+			}
 		}
 	}
 }
 
 //=============================================================================							
-// •`‰æˆ—							
+// æç”»å‡¦ç†							
 //=============================================================================							
 void DrawAkariObject(void)
 {
-	//ƒx[ƒXÀ•W‚ğæ“¾‚·‚é
+	//ãƒ™ãƒ¼ã‚¹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
 	D3DXVECTOR2 basePos = GetBase();
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
@@ -98,17 +116,14 @@ void DrawAkariObject(void)
 				1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
-	
-	
+
 }
 
-//‰Ô‰Î‚ÌuAKARIvó‘ÔFW‚Ü‚èó‘Ô
-void AKARIGather(int index)
+Float2 GetAkariObject(void)
 {
-	//Œ»İ‚ÌuAKARIv‚ÆW‚Ü‚éˆÊ’u‚Æ‚ÌˆÊ’uŠÖŒW‚©‚çˆÚ“®•ûŒü‚ğXV
-	g_AkariObject[index].dir = /*‰Ô‰Î‚Ì”š”­ˆÊ’u*/->pos - g_AkariObject[index].pos;
-	D3DXVec2Normalize(&g_AkariObject[index].dir, &g_AkariObject[index].dir);
-
-	//“G‚ÌÀ•WXV
-	g_AkariObject[index].pos += g_AkariObject[index].dir * 0.8f;
+	//åº§æ¨™å–å¾—
+	Float2 AkariObject;
+	AkariObject.x = g_AkariObject->pos.x;
+	AkariObject.y = g_AkariObject->pos.y;
+	return Float2(AkariObject);
 }
