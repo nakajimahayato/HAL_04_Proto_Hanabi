@@ -101,3 +101,14 @@ void DrawAkariObject(void)
 	
 	
 }
+
+//花火の「AKARI」状態：集まり状態
+void AKARIGather(int index)
+{
+	//現在の「AKARI」と集まる位置との位置関係から移動方向を更新
+	g_AkariObject[index].dir = /*花火の爆発位置*/->pos - g_AkariObject[index].pos;
+	D3DXVec2Normalize(&g_AkariObject[index].dir, &g_AkariObject[index].dir);
+
+	//敵の座標更新
+	g_AkariObject[index].pos += g_AkariObject[index].dir * 0.8f;
+}
