@@ -22,12 +22,14 @@ bool HitHanabi(int isHit);
 //*****************************************************************************
 static GameObject g_Hanabi0bj;
 static EnemyObject g_Enemy0bj;
+static GameObject g_Objects[256];
 
 //=============================================================================
 // èâä˙âªèàóù
 //=============================================================================
 HRESULT InitAtHanabi(void)
 {
+
 
 	return S_OK;
 }
@@ -62,6 +64,7 @@ void DrawAtHanabi(void)
 //=============================================================================
 void MoveHanabi(void)
 {
+	//à⁄ìÆä÷êî
 	g_Hanabi0bj.pos.x, g_Hanabi0bj.pos.y;
 	g_Hanabi0bj.vec;
 
@@ -76,13 +79,9 @@ void MoveHanabiAI(void)
 //=============================================================================
 void HitHanabi(bool isHit)
 {
-	if (g_Hanabi0bj.pos.x == g_Enemy0bj.pos.x || g_Hanabi0bj.pos.y == g_Enemy0bj.pos.y)
-	{
-		isHit = true;
-	}
-}
-
-void ExprosionHanabi(void)
-{
-
+	//if (g_Hanabi0bj.pos.x == g_Enemy0bj.pos.x || g_Hanabi0bj.pos.y == g_Enemy0bj.pos.y)
+	//{
+	//	isHit = true;
+	//}
+	
 }
