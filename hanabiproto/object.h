@@ -52,7 +52,7 @@ void UpdateAkariObject(void);
 void DrawAkariObject(void);
 Float2 GetAkariObject(void);
 
-HRESULT InitAtHanabi(void);
-void UninitAtHanabi(void);
-void UpdateAtHanabi(void);
-void DrawAtHanabi(void);
+//HRESULT InitAtHanabi(void);
+//void UninitAtHanabi(void);
+//void UpdateAtHanabi(void);
+//void DrawAtHanabi(void);
