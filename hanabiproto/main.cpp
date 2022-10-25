@@ -36,6 +36,7 @@ void Update(void);
 void Draw(void);
 
 
+
 //*****************************************************************************
 // グローバル変数:
 //*****************************************************************************
@@ -43,7 +44,7 @@ void Draw(void);
 #ifdef _DEBUG
 int		g_CountFPS;							// FPSカウンタ
 char	g_DebugStr[2048] = WINDOW_CAPTION;	// デバッグ文字表示用
-
+HWND		hWnd;
 #endif
 
 
@@ -81,7 +82,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		CLASS_NAME,
 		NULL
 	};
-	HWND		hWnd;
+
 	MSG			msg;
 	
 	// ウィンドウクラスの登録
@@ -321,4 +322,9 @@ void SetScene(SCENE nextScene)
 float frand(void)
 {
 	return (float)rand() / RAND_MAX;
+}
+
+HWND GethWnd()
+{
+	return hWnd;
 }

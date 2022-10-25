@@ -12,13 +12,14 @@
 #include "sprite.h"
 #include "collision.h"
 #include "camera.h"
+#include "BENRIclass.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define PLAYER_DISP_X (SCREEN_WIDTH/2)
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)
-
+#define PLAYER_CURSOR_NUM
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -32,6 +33,11 @@ static int g_TextureNo;
 static PLAYER g_Player;
 
 static float g_U, g_V;
+
+CURSOR		g_cursor[256];	//カーソルの軌跡点
+int			g_nownum = -1;//カーソルの現在個数
+Float2 cursorposf;
+POINT cursorPos;
 
 //static int g_AnimeIndex;
 //static int g_AnimeWait;
@@ -87,6 +93,12 @@ HRESULT InitPlayer(void)
 	//ゲーム開始時の時刻を取得する
 	g_StartTime = timeGetTime();
 
+	//カーソル初期化
+	for (int i = 0; i < 256; i++)
+	{
+		g_cursor[i].use = false;
+	}
+
 	return S_OK;
 }
 
@@ -103,6 +115,44 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	if (GetKeyState(VK_LBUTTON) & 0x80)
+	{
+		bool flag = false;
+		if (g_nownum != -1)
+		{
+			flag = true;
+		}
+
+		g_nownum++;
+		GetCursorPos(&cursorPos);
+		ScreenToClient(GethWnd(), &cursorPos);
+		cursorposf.x = (float)cursorPos.x;
+		cursorposf.y = (float)cursorPos.y;
+		g_cursor[g_nownum].pos.x = (cursorposf.x);
+		g_cursor[g_nownum].pos.y = (cursorposf.y);
+		g_cursor[g_nownum].prev_pos = g_cursor[g_nownum].pos;
+		if (flag)
+		{
+			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + 255) % 256].pos;
+		}
+		g_cursor[g_nownum].use = true;
+		g_cursor[(g_nownum + 257) % 256].use = false;
+
+		if (g_nownum >= 256)
+			g_nownum = 0;
+	}
+	else
+	{
+		for (int i = 0; i < 256; i++)
+		{
+			g_cursor[i].use = false;
+		}
+		g_nownum = 0;
+	}
+
+
+
+
 	//キーボードのAキーが押されたら左に移動する
 	if (GetKeyboardPress(DIK_A))
 	{
@@ -159,7 +209,22 @@ void DrawPlayer(void)
 		0.33333, 0.0, 
 		0.33333f, 1.0f);
 
-	//0.33333f, 0.25f);
+	for (int i = 0; i < 256; i++)
+	{
+		if (g_cursor[i].use == true)
+		{
+			DrawSprite(g_TextureNo,g_cursor[i].pos.x,g_cursor[i].pos.y,
+				120.0f, 120.0f,
+				0.33333, 0.0,
+				0.33333f, 1.0f);
+
+			//DrawSprite(g_TextureNo, basePos.x + g_cursor[i].pos.x, basePos.y + g_cursor[i].pos.y,
+			//	120.0f, 120.0f,
+			//	0.33333, 0.0,
+			//	0.33333f, 1.0f);
+		}
+	}
+
 }
 
 
