@@ -62,6 +62,7 @@ void DrawAtHanabi(void)
 //=============================================================================
 void MoveHanabi(void)
 {
+	//à⁄ìÆä÷êî
 	g_Hanabi0bj.pos.x, g_Hanabi0bj.pos.y;
 	g_Hanabi0bj.vec;
 
@@ -76,13 +77,9 @@ void MoveHanabiAI(void)
 //=============================================================================
 void HitHanabi(bool isHit)
 {
-	if (g_Hanabi0bj.pos.x == g_Enemy0bj.pos.x || g_Hanabi0bj.pos.y == g_Enemy0bj.pos.y)
-	{
-		isHit = true;
-	}
-}
-
-void ExprosionHanabi(void)
-{
-
+	//if (g_Hanabi0bj.pos.x == g_Enemy0bj.pos.x || g_Hanabi0bj.pos.y == g_Enemy0bj.pos.y)
+	//{
+	//	isHit = true;
+	//}
+	
 }
