@@ -1,8 +1,8 @@
 /*==============================================================================
 
    攻撃花火の処理 [attackhanabi.cpp]
-														 Author :
-														 Date   :
+														 Author : 横田郁弥
+														 Date   : 2022/10/26
 --------------------------------------------------------------------------------
 
 ==============================================================================*/
@@ -11,6 +11,7 @@
 #include "texture.h"
 #include "sprite.h"
 #include "camera.h"
+#include "input.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -44,6 +45,7 @@ static PLAYER g_Player;	//プレイヤー用
 
 static int g_AtHanabi;	//攻撃花火用のテクスチャの識別子
 static AtHANABI g_HANABI[NUM_HANABI];	//弾バッファ
+Float2 MovePosHanabi[NUM_HANABI];
 //=============================================================================
 // 初期化処理
 //=============================================================================
@@ -52,7 +54,7 @@ HRESULT InitAtHanabi(void)
 	//------------仮--------------------
 
 	//テクスチャを読み込んで識別子を受け取る
-	g_AtHanabi = LoadTexture((char*)"data/TEXTURE/bullet00.png");
+	g_AtHanabi = LoadTexture((char*)"data/TEXTURE/proto_effect_attack.png");
 
 
 	//花火バッファの初期化
@@ -82,26 +84,39 @@ void UninitAtHanabi(void)
 void UpdateAtHanabi(void)
 {
 	//------------仮--------------------
-
-	//花火バッファ全体を走査する
-	for (int i = 0; i < NUM_HANABI; i++)
+	if (GetKeyboardPress(DIK_C))
 	{
-		//可視フラグがオンの花火だけ座標を更新する
-		if (g_HANABI[i].use == true)
+		//弾バッファ全体を走査する
+		for (int i = 0; i < NUM_HANABI; i++)
 		{
-			//花火の座標更新
-			g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
-
-			g_HANABI[i].frame += 1.0f;
-
-			//180フレーム経過したら
-			if (g_HANABI[i].frame > 180.0f)
+			//可視フラグがオンの弾だけ座標を更新する
+			if (g_HANABI[i].use == true)
 			{
-				//花火を画面から削除する
-				g_HANABI[i].use = false;
+				//弾の座標更新
+				g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
 			}
 		}
 	}
+
+	//花火バッファ全体を走査する
+	//for (int i = 0; i < NUM_HANABI; i++)
+	//{
+	//	//可視フラグがオンの花火だけ座標を更新する
+	//	if (g_HANABI[i].use == true)
+	//	{
+	//		//花火の座標更新
+	//		g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
+
+	//		g_HANABI[i].frame += 1.0f;
+
+	//		//180フレーム経過したら
+	//		if (g_HANABI[i].frame > 180.0f)
+	//		{
+	//			//花火を画面から削除する
+	//			g_HANABI[i].use = false;
+	//		}
+	//	}
+	//}
 }
 
 //=============================================================================
@@ -142,7 +157,11 @@ void DrawAtHanabi(void)
 //=============================================================================
 void MoveHanabi(void)
 {
-
+	MovePosHanabi[0].x = SCREEN_WIDTH / 2 - g_Player.pos.x;
+	MovePosHanabi[0].y = SCREEN_HEIGHT / 2 - g_Player.pos.y;
+	//何フレームかけて集まるか
+	MovePosHanabi[0].x /= 60;
+	MovePosHanabi[0].y /= 60;
 
 }
 void MoveHanabiAI(void)
@@ -163,46 +182,45 @@ void HitHanabi(bool isHit)
 }
 void CreateHanabi(Float2 plpos, Float2 cspos)
 {
-	g_Player.pos = plpos;
-	g_Player.cspos = cspos;
+	plpos - cspos;
 
 
 	//------------仮--------------------
 
 	//花火バッファ全体を走査する
-	for (int i = 0; i < NUM_HANABI; i++)
-	{
+	//for (int i = 0; i < NUM_HANABI; i++)
+	//{
 		//可視フラグがオフの花火を探す
-		if (g_HANABI[i].use == false)
-		{
-			g_HANABI[i].pos = plpos;
+	//	if (g_HANABI[i].use == false)
+	//	{
+	//		g_HANABI[i].pos = plpos;
 
-			switch ()
-			{
-			case 0://上向き
-				g_HANABI[i].dir = D3DXVECTOR2(0.0f, -1.0f);
-				break;
-			case 1://右向き
-				g_HANABI[i].dir = D3DXVECTOR2(1.0f, 0.0f);
-				break;
-			case 2://下向き
-				g_HANABI[i].dir = D3DXVECTOR2(0.0f, 1.0f);
-				break;
-			case 3://左向き
-				g_HANABI[i].dir = D3DXVECTOR2(-1.0f, 0.0f);
-				break;
-			}
+	//		switch ()
+	//		{
+	//		case 0://上向き
+	//			g_HANABI[i].dir = D3DXVECTOR2(0.0f, -1.0f);
+	//			break;
+	//		case 1://右向き
+	//			g_HANABI[i].dir = D3DXVECTOR2(1.0f, 0.0f);
+	//			break;
+	//		case 2://下向き
+	//			g_HANABI[i].dir = D3DXVECTOR2(0.0f, 1.0f);
+	//			break;
+	//		case 3://左向き
+	//			g_HANABI[i].dir = D3DXVECTOR2(-1.0f, 0.0f);
+	//			break;
+	//		}
 
-			g_HANABI[i].speed = 6.0f;
+	//		g_HANABI[i].speed = 6.0f;
 
-			//可視フラグをオンにする
-			g_HANABI[i].use = true;
+	//		//可視フラグをオンにする
+	//		g_HANABI[i].use = true;
 
-			//持続時間をリセットする
-			g_HANABI[i].frame = 0.0f;
+	//		//持続時間をリセットする
+	//		g_HANABI[i].frame = 0.0f;
 
-			//花火を一つセットしたら終了させる
-			break;
-		}
-	}
+	//		//花火を一つセットしたら終了させる
+	//		break;
+	//	}
+	//}
 }
