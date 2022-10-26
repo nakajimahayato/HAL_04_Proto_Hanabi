@@ -25,6 +25,7 @@ public:
 	Float2			dir;//ˆÚ“®•ûŒü
 	bool			use;//useƒtƒ‰ƒO
 	bool			gather;//W‚Ü‚é‚ ‚©‚è
+	bool			setvec;
 };
 
 class HanabiObject:public GameObject
