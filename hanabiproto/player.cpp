@@ -254,7 +254,7 @@ void CompositionAkari(Float2 akaripos)
 
 }
 
-//PLAYER* GetPlayer(void)
-//{
-//	return &g_Player;
-//}
+PLAYER* GetPlayer(void)
+{
+	return &g_Player;
+}
