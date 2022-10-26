@@ -43,15 +43,11 @@ HRESULT InitAkariObject(void)
 	{
 		g_AkariObject[i].use = false;
 		g_AkariObject[i].gather = false;
+		g_AkariObject[i].setvec = false;
 		g_AkariObject[i].dir.x = 0.0f;
 		g_AkariObject[i].dir.y = 0.0f;
-		g_AkariObject[i].pos.x = SCREEN_WIDTH / 2;
-		g_AkariObject[i].pos.y = SCREEN_HEIGHT / 2;
-		MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
-		MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
-		//何フレームかけて集まるか
-		MovePos[i].x /= 60;
-		MovePos[i].y /= 60;
+		g_AkariObject[i].pos.x = SCREEN_WIDTH;
+		g_AkariObject[i].pos.y = SCREEN_HEIGHT;
 	}
 
 	//お試し
@@ -61,10 +57,6 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
 		g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
 		g_AkariObject[i].use = true;
-		MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
-		MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
-		MovePos[i].x /= 60;
-		MovePos[i].y /= 60;
 	}
 
 	g_U = 0.0f;
@@ -86,16 +78,52 @@ void UninitAkariObject(void)
 //=============================================================================							
 void UpdateAkariObject(void)
 {
+	//テスト
+	if (GetKeyboardTrigger(DIK_SPACE))
+	{
+		for (int i = 0; i < AKARI_NUM; i++)
+		{
+			if (g_AkariObject[i].use == false)
+			{
+				g_AkariObject[i].use = true;
+				g_AkariObject[i].gather = true;
+				g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
+				g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
+				break;
+			}
+		}
+	}//テスト終わり
+
+	
+		
+
 	//囲った範囲内の「AKARI」が集まるように
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
+		if (g_AkariObject[i].use && g_AkariObject[i].setvec == false)
+		{
+				//地点Aから地点Bの移動距離
+				//MovePos=地点B - 地点A;
+				MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
+				MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
+				//何フレームかけて集まるか
+				MovePos[i].x /= 60;
+				MovePos[i].y /= 60;
+
+				g_AkariObject[i].setvec = true;
+		}
+
+
 		if (g_AkariObject[i].gather&&g_AkariObject[i].use)
 		{
-			if (g_AkariObject[i].pos.x > (SCREEN_WIDTH / 2) + 5 || g_AkariObject[i].pos.x <(SCREEN_WIDTH / 2) - 5
-				&& g_AkariObject[i].pos.y >(SCREEN_HEIGHT / 2) + 5 || g_AkariObject[i].pos.y < (SCREEN_HEIGHT / 2) - 5)
+			g_AkariObject[i].pos.x += MovePos[i].x;
+			g_AkariObject[i].pos.y += MovePos[i].y;
+
+			if (g_AkariObject[i].pos.x < (SCREEN_WIDTH / 2) + 1 && g_AkariObject[i].pos.x >(SCREEN_WIDTH / 2) - 1
+				&& g_AkariObject[i].pos.y <(SCREEN_HEIGHT / 2) + 1 && g_AkariObject[i].pos.y > (SCREEN_HEIGHT / 2) - 1)
 			{
-					g_AkariObject[i].pos.x += MovePos[i].x;
-					g_AkariObject[i].pos.y += MovePos[i].y;
+				MovePos[i].x = 0.0f;
+				MovePos[i].y = 0.0f;
 			}
 		}
 	}
