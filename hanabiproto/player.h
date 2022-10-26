@@ -22,10 +22,16 @@ struct PLAYER
 	Float2		vec;	//プレイヤーのベクトル
 	Float2		spjp;	//プレイヤーの移動とジャンプ速度
 
-	Float2		cspos;	//カーソルの現在位置
-	Float2		csTr[256];	//カーソルの軌跡点
+};
 
-	bool		csInp;	//カーソル入力判別用
+struct CURSOR
+{
+
+	Float2		pos;
+	Float2		prev_pos;
+
+	//bool		csInp;	//カーソル入力判別用
+	bool		use;
 };
 
 

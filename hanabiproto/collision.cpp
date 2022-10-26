@@ -1,5 +1,6 @@
 
 #include "collision.h"
+#include "main.h"
 
 
 //‰~‚Æ‰~‚Ì“–‚½‚è”»’è
@@ -64,5 +65,46 @@ bool HitCheckBox(Float2 box1pos, Float2 box1siz
 		return true;
 	}
 
+	return false;
+}
+
+bool HitCheckCross(Float2 start1pos, Float2 end1pos
+				 , Float2 start2pos, Float2 end2pos)
+{
+	if (start2pos.x - start1pos.x == 0)
+	{
+		start2pos.x++;
+	}
+	if (end2pos.x - start1pos.x == 0)
+	{
+		end2pos.x++;
+	}
+	if (end1pos.x - start1pos.x == 0)
+	{
+		end1pos.x++;
+	}
+
+	Float2 s1s2vec(1,(start2pos.y - start1pos.y) / (start2pos.x - start1pos.x));
+	Float2 s1e2vec(1,(end2pos.y - start1pos.y) / (end2pos.x - start1pos.x));
+	Float2 s1e1vec(1,(end1pos.y - start1pos.y) / (end1pos.x - start1pos.x));
+
+
+
+	if (s1e1vec.y < s1s2vec.y && s1e1vec.y > s1e2vec.y)
+	{
+		if (fabsf(start2pos.y - start1pos.y) + fabsf(start2pos.x - start1pos.x) < fabsf(end1pos.y - start1pos.y) + fabsf(end1pos.x - start1pos.x) && 
+			fabsf(end2pos.y - start1pos.y) + fabsf(end2pos.x - start1pos.x) < fabsf(end1pos.y - start1pos.y) + fabsf(end1pos.x - start1pos.x))
+		{
+			return true;
+		}
+	}
+	if (s1e1vec.y > s1s2vec.y && s1e1vec.y < s1e2vec.y)
+	{
+		if (fabsf(start2pos.y - start1pos.y) + fabsf(start2pos.x - start1pos.x) < fabsf(end1pos.y - start1pos.y) + fabsf(end1pos.x - start1pos.x) &&
+			fabsf(end2pos.y - start1pos.y) + fabsf(end2pos.x - start1pos.x) < fabsf(end1pos.y - start1pos.y) + fabsf(end1pos.x - start1pos.x))
+		{
+			return true;
+		}
+	}
 	return false;
 }
