@@ -29,6 +29,7 @@
 // ƒOƒ[ƒoƒ‹•Ï”
 //*****************************************************************************
 static int g_TextureNo;
+static int g_TextureNo2;
 
 static PLAYER g_Player;
 
@@ -76,6 +77,7 @@ static float g_AnimeTable[4] =
 HRESULT InitPlayer(void)
 {
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_Hanabi_character.png");
+	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_explosion.png");
 
 	//‰Šú‰»
 	g_Player.pos.x = PLAYER_DISP_X;
@@ -115,6 +117,7 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	//cursorˆ—
 	if (GetKeyState(VK_LBUTTON) & 0x80)
 	{
 		bool flag = false;
@@ -130,7 +133,8 @@ void UpdatePlayer(void)
 		cursorposf.y = (float)cursorPos.y;
 		g_cursor[g_nownum].pos.x = (cursorposf.x);
 		g_cursor[g_nownum].pos.y = (cursorposf.y);
-		g_cursor[g_nownum].prev_pos = g_cursor[g_nownum].pos;
+		g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
+		g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
 		if (flag)
 		{
 			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + 255) % 256].pos;
@@ -140,15 +144,33 @@ void UpdatePlayer(void)
 
 		if (g_nownum >= 256)
 			g_nownum = 0;
+
+		for (int i = 1; i < 256; i++)
+		{
+			int j = (i + g_nownum) % 256;
+			if (g_cursor[j].use == true)
+			{
+				if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
+					, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
+				{
+					for (int i = 0; i < 256; i++)
+					{
+						g_cursor[i].use = false;
+					}
+					g_nownum = -1;
+				}
+			}
+		}
 	}
-	else
+	else if(g_nownum != -1)
 	{
 		for (int i = 0; i < 256; i++)
 		{
 			g_cursor[i].use = false;
 		}
-		g_nownum = 0;
+		g_nownum = -1;
 	}
+	//==========================================
 
 
 
@@ -213,10 +235,10 @@ void DrawPlayer(void)
 	{
 		if (g_cursor[i].use == true)
 		{
-			DrawSprite(g_TextureNo,g_cursor[i].pos.x,g_cursor[i].pos.y,
+			DrawSprite(g_TextureNo2,g_cursor[i].pos.x,g_cursor[i].pos.y,
 				120.0f, 120.0f,
-				0.33333, 0.0,
-				0.33333f, 1.0f);
+				1.0f, 0.0,
+				1.0f, 1.0f);
 
 			//DrawSprite(g_TextureNo, basePos.x + g_cursor[i].pos.x, basePos.y + g_cursor[i].pos.y,
 			//	120.0f, 120.0f,
@@ -227,8 +249,12 @@ void DrawPlayer(void)
 
 }
 
+void CompositionAkari(Float2 akaripos)
+{
 
-//PLAYER* GetPlayer(void)
-//{
-//	return &g_Player;
-//}
+}
+
+PLAYER* GetPlayer(void)
+{
+	return &g_Player;
+}

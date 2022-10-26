@@ -57,16 +57,17 @@ bool HitCheckBox(Float2 box1pos, Float2 box1siz
 	//î†ÇÃëÂÇ´Ç≥ÇÃçáåv
 	Float2 boxsiz(box1siz + box2siz);
 	//î†ÇÃëÂÇ´Ç≥ÇÃçáåvÇÃîºï™
-	Float2 boxsiz_half(boxsiz.x / 2, boxsiz.y / 2);
+	Float2 boxsiz_half = boxsiz / 2;
 
-	if (-boxsiz_half.x < boxdis.x < boxdis.x &&
-		-boxsiz_half.y < boxdis.y < boxdis.y)
+	if (boxsiz_half.x > fabsf(boxdis.x) &&
+		boxsiz_half.y > fabsf(boxdis.y))
 	{
 		return true;
 	}
 
 	return false;
 }
+
 
 bool HitCheckCross(Float2 start1pos, Float2 end1pos
 				 , Float2 start2pos, Float2 end2pos)
@@ -107,4 +108,23 @@ bool HitCheckCross(Float2 start1pos, Float2 end1pos
 		}
 	}
 	return false;
+}
+
+bool HitCheckCross2nd(Float2 start1pos, Float2 end1pos
+	, Float2 start2pos, Float2 end2pos)
+{
+	//Float2 minus(-10, -10);
+	Float2 box1pos = (start1pos + end1pos);
+	box1pos = box1pos / 2;
+	Float2 box2pos = (start2pos + end2pos);
+	box2pos = box2pos / 2;
+	Float2 box1size(fabsf(start1pos.x - end1pos.x), fabsf(start1pos.y - end1pos.y));
+	Float2 box2size(fabsf(start2pos.x - end2pos.x), fabsf(start2pos.y - end2pos.y));
+
+	//box1size + minus;
+	//box2size + minus;
+
+	return HitCheckBox(box1pos,box1size,box2pos,box2size);
+	//return true;
+
 }

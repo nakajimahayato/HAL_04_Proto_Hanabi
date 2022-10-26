@@ -13,8 +13,8 @@ public:
 
 	Float2() :x(0), y(0) {}
 	Float2(float ix, float iy)
-		:x(x)
-		, y(y) {
+		:x(ix)
+		, y(iy) {
 	}
 
 	//＋の場合は自分自身が左辺、引数が右辺、自分と同じクラスのメンバにはアクセスできる。ほどほどに。
@@ -33,6 +33,10 @@ public:
 	//スカラー倍
 	Float2 operator*(float s)const {
 		return Float2(x * s, y * s);
+	}
+	//分数
+	Float2 operator/(float w)const {
+		return Float2(x / w, y / w);
 	}
 };
 //――――――――――――――――――――――――――――――――――――――
