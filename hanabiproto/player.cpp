@@ -249,9 +249,14 @@ void DrawPlayer(void)
 
 }
 
-void CompositionAkari(Float2 akaripos)
+bool CompositionAkari(Float2 akaripos)
 {
+	for (int i = 0; i < 256; i++)
+	{
+		if(0 < g_cursor[i].pos.x - g_cursor[i].prev_pos.x)
+	}
 
+	return true;
 }
 
 PLAYER* GetPlayer(void)
