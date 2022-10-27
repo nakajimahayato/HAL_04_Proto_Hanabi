@@ -46,6 +46,7 @@ static PLAYER g_Player;	//プレイヤー用
 static int g_AtHanabi;	//攻撃花火用のテクスチャの識別子
 static AtHANABI g_HANABI[NUM_HANABI];	//弾バッファ
 Float2 MovePosHanabi[NUM_HANABI];
+D3DXVECTOR2 g_Test;
 //=============================================================================
 // 初期化処理
 //=============================================================================
@@ -55,16 +56,16 @@ HRESULT InitAtHanabi(void)
 
 	//テクスチャを読み込んで識別子を受け取る
 	g_AtHanabi = LoadTexture((char*)"data/TEXTURE/proto_effect_attack.png");
-
+	g_Test = { 3.0f,3.0f };
 
 	//花火バッファの初期化
 	for (int i = 0; i < NUM_HANABI; i++)
 	{
 		g_HANABI[i].pos = D3DXVECTOR2(0.0f, 0.0f);	//表示座標
 		g_HANABI[i].dir = D3DXVECTOR2(0.0f, 0.0f);	//移動方向
-		g_HANABI[i].speed = 0.0f;					//移動速度
+		g_HANABI[i].speed = 3.0f;					//移動速度
 
-		g_HANABI[i].use = false;
+		g_HANABI[i].use = true;
 	}
 
 	return S_OK;
@@ -93,7 +94,8 @@ void UpdateAtHanabi(void)
 			if (g_HANABI[i].use == true)
 			{
 				//弾の座標更新
-				g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
+				//g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
+				g_HANABI[i].pos += g_Test;
 			}
 		}
 	}
@@ -142,7 +144,7 @@ void DrawAtHanabi(void)
 			//移動方向から回転角度を求める
 			rot = atan2f(g_HANABI[i].dir.y, g_HANABI[i].dir.x) + (D3DX_PI / 2);
 
-			DrawSpriteColorRotate(g_AtHanabi, basePos.x + g_HANABI[i].pos.x, basePos.y + g_HANABI[i].pos.y,
+			DrawSpriteColorRotate(g_AtHanabi,  g_HANABI[i].pos.x, g_HANABI[i].pos.y,
 				32.0f, 32.0f,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
