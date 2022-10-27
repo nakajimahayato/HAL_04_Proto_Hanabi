@@ -144,7 +144,7 @@ void DrawAtHanabi(void)
 			//ˆÚ“®•ûŒü‚©‚ç‰ñ“]Šp“x‚ğ‹‚ß‚é
 			rot = atan2f(g_HANABI[i].dir.y, g_HANABI[i].dir.x) + (D3DX_PI / 2);
 
-			DrawSpriteColorRotate(g_AtHanabi,  g_HANABI[i].pos.x, g_HANABI[i].pos.y,
+			DrawSpriteColorRotate(g_AtHanabi, basePos.x + g_HANABI[i].pos.x, basePos.y + g_HANABI[i].pos.y,
 				32.0f, 32.0f,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
