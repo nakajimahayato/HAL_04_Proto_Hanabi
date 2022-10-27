@@ -147,11 +147,11 @@ void DrawAkariObject(void)
 
 }
 
-Float2 GetAkariObject(void)
+Float2 GetAkariObject(int index)
 {
 	//座標取得
 	Float2 AkariObject;
-	AkariObject.x = g_AkariObject->pos.x;
-	AkariObject.y = g_AkariObject->pos.y;
+	AkariObject.x = g_AkariObject[index].pos.x;
+	AkariObject.y = g_AkariObject[index].pos.y;
 	return Float2(AkariObject);
 }
