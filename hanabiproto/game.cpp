@@ -37,7 +37,9 @@
 HRESULT InitGame(void)
 {
 	// 頂点管理の初期化処理
+	InitAkariObject();
 	InitPlayer();
+	InitAtHanabi();
 
 	// 背景の初期化
 	InitBG();
@@ -45,7 +47,7 @@ HRESULT InitGame(void)
 
 	InitCamera();
 
-	InitAkariObject();
+	
 
 	return S_OK;
 }
@@ -65,6 +67,8 @@ void UninitGame(void)
 	UninitPlayer();
 
 	UninitAkariObject();
+
+	UninitAtHanabi();
 }
 
 //=============================================================================
@@ -74,14 +78,15 @@ void UpdateGame(void)
 {
 
 	// 頂点管理の更新処理
+	UpdateAkariObject();
 	UpdatePlayer();
-
+	UpdateAtHanabi();
 	//背景の更新処理
 	UpdateBG();
 	UpdateStage();
 	UpdateCamera();
 
-	UpdateAkariObject();
+	
 
 }
 
@@ -94,9 +99,10 @@ void DrawGame(void)
 	DrawBG();
 	DrawStage();
 	// 頂点管理の描画処理
+	DrawAkariObject();
 	DrawPlayer();
 
-	DrawAkariObject();
+	DrawAtHanabi();
 
 	DrawCamera();
 
