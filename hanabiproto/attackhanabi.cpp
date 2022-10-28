@@ -226,3 +226,25 @@ void CreateHanabi(Float2 plpos, Float2 cspos)
 	//	}
 	//}
 }
+
+Float2 GetAtHanabiPos(Float2 PosA, Float2 PosB)
+{
+	//座標取得
+	Float2 HanabiVec;
+
+	//地点Aから地点Bの移動距離
+		//MovePos=地点B - 地点A;
+	HanabiVec.x = PosB.x - PosA.x;
+	HanabiVec.y = PosB.y - PosA.y;
+	
+	//条件　下の一定数によって変えなきゃ動かない
+	if (PosB.x < PosB.x + /*条件→*/1 && PosB.x >PosB.x - /*条件→*/1 && PosB.y <PosB.y + /*条件→*/1 && PosB.y >PosB.y - /*条件→*/1){}
+	else
+	{
+		//何(float型の一定数)ずつ進むか
+		HanabiVec.x -= 1;
+		HanabiVec.y -= 1;
+	}
+
+	return Float2(HanabiVec);
+}
