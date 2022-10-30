@@ -19,7 +19,7 @@
 //*****************************************************************************
 #define PLAYER_DISP_X (SCREEN_WIDTH/2)
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)
-#define PLAYER_CURSOR_NUM
+#define PLAYER_CURSOR_NUM (56)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -35,8 +35,9 @@ static PLAYER g_Player;
 
 static float g_U, g_V;
 
-CURSOR		g_cursor[256];	//カーソルの軌跡点
+CURSOR		g_cursor[PLAYER_CURSOR_NUM];	//カーソルの軌跡点
 int			g_nownum = -1;//カーソルの現在個数
+int			g_curmax = 0;
 Float2 cursorposf;
 POINT cursorPos;
 
@@ -96,7 +97,7 @@ HRESULT InitPlayer(void)
 	g_StartTime = timeGetTime();
 
 	//カーソル初期化
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
 		g_cursor[i].use = false;
 	}
@@ -126,7 +127,14 @@ void UpdatePlayer(void)
 			flag = true;
 		}
 
+		g_curmax++;
 		g_nownum++;
+		if (g_nownum >= PLAYER_CURSOR_NUM)
+		{
+			g_nownum = 0;
+			g_curmax = 256;
+		}
+
 		GetCursorPos(&cursorPos);
 		ScreenToClient(GethWnd(), &cursorPos);
 		cursorposf.x = (float)cursorPos.x;
@@ -137,39 +145,39 @@ void UpdatePlayer(void)
 		g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
 		if (flag)
 		{
-			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + 255) % 256].pos;
+			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
 		}
 		g_cursor[g_nownum].use = true;
-		g_cursor[(g_nownum + 257) % 256].use = false;
+		g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
 
-		if (g_nownum >= 256)
-			g_nownum = 0;
 
-		for (int i = 1; i < 256; i++)
+		for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
 		{
-			int j = (i + g_nownum) % 256;
+			int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
 			if (g_cursor[j].use == true)
 			{
 				if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
 					, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
 				{
-					for (int i = 0; i < 256; i++)
+					for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 					{
 						g_cursor[i].use = false;
 					}
 					g_nownum = -1;
+					g_curmax = 0;
 				}
 			}
 		}
 	}
 	else if(g_nownum != -1)
 	{
-		for (int i = 0; i < 256; i++)
+		for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 		{
 			g_cursor[i].use = false;
 		}
 		g_nownum = -1;
 	}
+
 	//==========================================
 
 
@@ -231,7 +239,7 @@ void DrawPlayer(void)
 		0.33333, 0.0, 
 		0.33333f, 1.0f);
 
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
 		if (g_cursor[i].use == true)
 		{
@@ -249,11 +257,59 @@ void DrawPlayer(void)
 
 }
 
-bool CompositionAkari(Float2 akaripos)
+bool CompositionAkari(Float2 akaripos, int clossStart)
 {
-	for (int i = 0; i < 256; i++)
+	for (int i = clossStart; i < clossStart + g_curmax - 1; i++)
 	{
-		if(0 < g_cursor[i].pos.x - g_cursor[i].prev_pos.x)
+		int j = i % PLAYER_CURSOR_NUM;
+		Float2 dis1 = g_cursor[j].pos - g_cursor[j].prev_pos;
+		Float2 dis2 = g_cursor[(j + 1) % PLAYER_CURSOR_NUM].prev_pos - g_cursor[(j + 1) % PLAYER_CURSOR_NUM].pos;
+
+		D3DXVec2Normalize(&dis1, &dis1);
+		D3DXVec2Normalize(&dis2, &dis2);
+		Float2 dis3 = (dis1 + dis2);
+		D3DXVec2Normalize(&dis3, &dis3);
+
+		float biggestnow = 0;
+		float biggestnow2 = 0;
+		Float2 biggest1 = {0,0};
+		Float2 biggest2 = {0,0};
+
+
+		if (0 != dis3.x)
+		{
+			for (int k = clossStart + 1; k < clossStart + g_curmax; k++)
+			{
+				int l = k % PLAYER_CURSOR_NUM;
+				Float2 ldir = g_cursor[l].pos - g_cursor[j].pos;
+				D3DXVec2Normalize(&ldir, &ldir);
+
+				if (k < (clossStart + g_curmax / 2))
+				{
+					//自分（敵）の向きとプレイヤーとの位置関係のベクトルとで内積を計算する
+					float sikai = D3DXVec2Dot(&dis3, &ldir);
+
+					//内積の値が一定の値より大きい場合視界に入ったと判定しCHASE状態へ移行する
+					if (sikai > biggestnow)
+					{
+						biggest1 = ldir;
+						biggestnow = sikai;
+					}
+				}
+				else
+				{
+					//自分（敵）の向きとプレイヤーとの位置関係のベクトルとで内積を計算する
+					float sikai = D3DXVec2Dot(&dis3, &ldir);
+
+					//内積の値が一定の値より大きい場合視界に入ったと判定しCHASE状態へ移行する
+					if (sikai > biggestnow2)
+					{
+						biggest2 = ldir;
+						biggestnow2 = sikai;
+					}
+				}
+			}
+		}
 	}
 
 	return true;
