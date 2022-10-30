@@ -5,11 +5,9 @@
 // マクロ定義
 //*****************************************************************************
 //GMのと同じように使える、XYのfloat型二つ――――――――――――――――――-
-class Float2
+class Float2:public D3DXVECTOR2
 {
 public:
-	float x;
-	float y;
 
 	Float2() :x(0), y(0) {}
 	Float2(float ix, float iy)
