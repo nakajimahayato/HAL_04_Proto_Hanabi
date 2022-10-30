@@ -32,6 +32,8 @@ class HanabiObject:public GameObject
 {
 	Float2			ShotPlayerpos;
 	Float2			ShotCursorpos;
+	float			speed;	//à⁄ìÆë¨ìx
+	float			frame;	//éùë±éûä‘
 };
 
 class HanabiAkariObject:public GameObject
@@ -53,7 +55,7 @@ void UpdateAkariObject(void);
 void DrawAkariObject(void);
 Float2 GetAkariObject(void);
 
-//HRESULT InitAtHanabi(void);
-//void UninitAtHanabi(void);
-//void UpdateAtHanabi(void);
-//void DrawAtHanabi(void);
+HRESULT InitAtHanabi(void);
+void UninitAtHanabi(void);
+void UpdateAtHanabi(void);
+void DrawAtHanabi(void);
