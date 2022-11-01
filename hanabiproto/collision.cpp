@@ -3,6 +3,7 @@
 #include "main.h"
 
 
+
 //‰~‚Æ‰~‚Ì“–‚½‚è”»’è
 bool HitCheckCircle(Float2 cir1pos, float cir1r,
 	                Float2 cir2pos, float cir2r)
@@ -127,4 +128,48 @@ bool HitCheckCross2nd(Float2 start1pos, Float2 end1pos
 	return HitCheckBox(box1pos,box1size,box2pos,box2size);
 	//return true;
 
+}
+
+
+bool HitCheckConcavePolygon(CURSOR positions[], Float2 target,int start,int cursor_length)
+{
+	float result = 0;
+
+	for (int i = start; i < start + cursor_length - 1; i++)
+	{
+		Float2 l1 = positions[i% PLAYER_CURSOR_NUM].pos - target;
+		Float2 l2 = positions[(i + 1) % PLAYER_CURSOR_NUM].pos - target;
+		float l1y = l1.y;
+		float l2y = l2.y;
+		float l1x = l1.x;
+		float l2x = l2.x;
+		D3DXVECTOR2 l1v2 = { l1x,l1y };
+		D3DXVECTOR2 l2v2 = { l2x,l2y };
+
+		float angle = AngleOf2Vector(l1v2, l2v2);
+
+		//Float2 cross = D3DXVec2Cross(l1, l2);
+		//if (Vector3.Dot(cross, normal) < 0)
+		//{
+		//	angle *= -1;
+		//}
+
+		if (D3DXVec2CCW(&l1v2, &l2v2) > 0)
+		{
+			angle *= -1;
+		}
+
+		result += angle;
+	}
+
+	float unit  = 1.0f / 360.0f;
+	result *= unit;
+
+	// ŽžŒv‰ñ‚èE”½ŽžŒv‰ñ‚è‚Ç‚¿‚ç‚à‚ ‚è‚¦‚é‚½‚ßâ‘Î’l‚Å”»’è‚·‚é
+	if (fabs(result) >= 0.01f)
+	{
+		return true;
+	}
+	return false;
+	//return Mathf.Abs(result) >= 0.01f;
 }

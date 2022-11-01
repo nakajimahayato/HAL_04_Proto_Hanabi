@@ -16,6 +16,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+#define PLAYER_CURSOR_NUM (56)
+
+
 struct PLAYER
 {
 	Float2		pos;	//プレイヤーの現在位置
@@ -42,6 +45,7 @@ HRESULT InitPlayer(void);
 void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);
+bool CompositionAkari(int clossStart, int clossGoal);
 
 
 

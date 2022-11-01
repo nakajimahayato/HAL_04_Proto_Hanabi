@@ -16,7 +16,6 @@
 //*****************************************************************************							
 // マクロ定義							
 //*****************************************************************************							
-#define AKARI_NUM	100
 //*****************************************************************************							
 // プロトタイプ宣言							
 //*****************************************************************************							
@@ -31,6 +30,8 @@ static HanabiAkariObject g_AkariObject[AKARI_NUM];
 static float g_U, g_V;
 
 Float2 MovePos[AKARI_NUM];
+
+bool g_composition;
 //=============================================================================							
 // 初期化処理							
 //=============================================================================							
@@ -62,6 +63,8 @@ HRESULT InitAkariObject(void)
 	g_U = 0.0f;
 	g_V = 0.0f;
 
+	g_composition = true;
+
 	return S_OK;
 }
 
@@ -86,7 +89,7 @@ void UpdateAkariObject(void)
 			if (g_AkariObject[i].use == false)
 			{
 				g_AkariObject[i].use = true;
-				g_AkariObject[i].gather = true;
+				g_AkariObject[i].gather = false;
 				g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
 				g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
 				break;
@@ -140,18 +143,20 @@ void DrawAkariObject(void)
 	{
 		if (g_AkariObject[i].use == true)
 		{
-			DrawSprite(g_TextureNo, basePos.x + g_AkariObject[i].pos.x, basePos.y + g_AkariObject[i].pos.y, 120.0f, 120.0f,
+			DrawSprite(g_TextureNo,g_AkariObject[i].pos.x,g_AkariObject[i].pos.y, 120.0f, 120.0f,
 				1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
 
 }
 
-Float2 GetAkariObject(int index)
+
+HanabiAkariObject GetAkariObject(int index)
 {
-	//座標取得
-	Float2 AkariObject;
-	AkariObject.x = g_AkariObject[index].pos.x;
-	AkariObject.y = g_AkariObject[index].pos.y;
-	return Float2(AkariObject);
+	return g_AkariObject[index];
+}
+
+void Akarigather(int index)
+{
+	g_AkariObject[index].gather = true;
 }
