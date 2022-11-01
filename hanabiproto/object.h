@@ -30,14 +30,6 @@ public:
 	bool			setvec;
 };
 
-class HanabiObject:public GameObject
-{
-	Float2			ShotPlayerpos;
-	Float2			ShotCursorpos;
-	float			speed;	//ˆÚ“®‘¬“x
-	float			frame;	//‘±ŠÔ
-};
-
 class HanabiAkariObject:public GameObject
 {
 public:
