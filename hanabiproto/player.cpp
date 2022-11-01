@@ -13,13 +13,13 @@
 #include "collision.h"
 #include "camera.h"
 #include "BENRIclass.h"
+#include "object.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define PLAYER_DISP_X (SCREEN_WIDTH/2)
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)
-#define PLAYER_CURSOR_NUM (56)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -95,6 +95,7 @@ HRESULT InitPlayer(void)
 
 	//ゲーム開始時の時刻を取得する
 	g_StartTime = timeGetTime();
+	g_nownum = -1;
 
 	//カーソル初期化
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
@@ -132,7 +133,10 @@ void UpdatePlayer(void)
 		if (g_nownum >= PLAYER_CURSOR_NUM)
 		{
 			g_nownum = 0;
-			g_curmax = 256;
+		}
+		if (g_curmax >= PLAYER_CURSOR_NUM)
+		{
+			g_curmax = PLAYER_CURSOR_NUM;
 		}
 
 		GetCursorPos(&cursorPos);
@@ -150,21 +154,35 @@ void UpdatePlayer(void)
 		g_cursor[g_nownum].use = true;
 		g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
 
+		Float2 maxvec = {0,0};
+		float maxvecf;
+		for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+		{
+			if (g_cursor[i].use == true)
+			{
+				maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
+				maxvecf = maxvec.x + maxvec.y;
+			}
+		}
 
 		for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
 		{
 			int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
 			if (g_cursor[j].use == true)
 			{
-				if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
-					, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
+				if (maxvecf > 700)
 				{
-					for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+					if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
+						, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
 					{
-						g_cursor[i].use = false;
+						//ここにcross時の処理
+						CompositionAkari(j, g_nownum);
+						for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+						{
+							g_cursor[i].use = false;
+						}
+						g_nownum = -1;
 					}
-					g_nownum = -1;
-					g_curmax = 0;
 				}
 			}
 		}
@@ -243,7 +261,7 @@ void DrawPlayer(void)
 	{
 		if (g_cursor[i].use == true)
 		{
-			DrawSprite(g_TextureNo2,g_cursor[i].pos.x,g_cursor[i].pos.y,
+			DrawSprite(g_TextureNo2, basePos.x + g_cursor[i].pos.x,basePos.y +g_cursor[i].pos.y,
 				120.0f, 120.0f,
 				1.0f, 0.0,
 				1.0f, 1.0f);
@@ -257,60 +275,24 @@ void DrawPlayer(void)
 
 }
 
-bool CompositionAkari(Float2 akaripos, int clossStart)
+bool CompositionAkari(int clossStart,int clossGoal)
 {
-	for (int i = clossStart; i < clossStart + g_curmax - 1; i++)
+	bool useflag = false;
+	int length = Float2_length_gather(clossStart, clossGoal);
+
+	for (int h = 0; h < AKARI_NUM; h++)
 	{
-		int j = i % PLAYER_CURSOR_NUM;
-		Float2 dis1 = g_cursor[j].pos - g_cursor[j].prev_pos;
-		Float2 dis2 = g_cursor[(j + 1) % PLAYER_CURSOR_NUM].prev_pos - g_cursor[(j + 1) % PLAYER_CURSOR_NUM].pos;
+		useflag = false;
+		if (GetAkariObject(h).use == true)
+			useflag = true;
+		
 
-		D3DXVec2Normalize(&dis1, &dis1);
-		D3DXVec2Normalize(&dis2, &dis2);
-		Float2 dis3 = (dis1 + dis2);
-		D3DXVec2Normalize(&dis3, &dis3);
-
-		float biggestnow = 0;
-		float biggestnow2 = 0;
-		Float2 biggest1 = {0,0};
-		Float2 biggest2 = {0,0};
-
-
-		if (0 != dis3.x)
+		if(HitCheckConcavePolygon(g_cursor, GetAkariObject(h).pos, clossStart, length))
 		{
-			for (int k = clossStart + 1; k < clossStart + g_curmax; k++)
-			{
-				int l = k % PLAYER_CURSOR_NUM;
-				Float2 ldir = g_cursor[l].pos - g_cursor[j].pos;
-				D3DXVec2Normalize(&ldir, &ldir);
-
-				if (k < (clossStart + g_curmax / 2))
-				{
-					//自分（敵）の向きとプレイヤーとの位置関係のベクトルとで内積を計算する
-					float sikai = D3DXVec2Dot(&dis3, &ldir);
-
-					//内積の値が一定の値より大きい場合視界に入ったと判定しCHASE状態へ移行する
-					if (sikai > biggestnow)
-					{
-						biggest1 = ldir;
-						biggestnow = sikai;
-					}
-				}
-				else
-				{
-					//自分（敵）の向きとプレイヤーとの位置関係のベクトルとで内積を計算する
-					float sikai = D3DXVec2Dot(&dis3, &ldir);
-
-					//内積の値が一定の値より大きい場合視界に入ったと判定しCHASE状態へ移行する
-					if (sikai > biggestnow2)
-					{
-						biggest2 = ldir;
-						biggestnow2 = sikai;
-					}
-				}
-			}
+			Akarigather(h);
 		}
 	}
+	
 
 	return true;
 }
@@ -319,3 +301,204 @@ PLAYER* GetPlayer(void)
 {
 	return &g_Player;
 }
+
+
+
+
+
+//bool CompositionAkari(int clossStart)
+//{
+//	bool flag = true;
+//	bool useflag = false;
+//
+//
+//	for (int h = 0; h < AKARI_NUM; h++)
+//	{
+//		useflag = false;
+//		if (GetAkariObject(h).use == true)
+//			useflag = true;
+//
+//		for (int i = clossStart; i < clossStart + g_curmax - 1 && useflag == true; i++)
+//		{
+//			int j = i % PLAYER_CURSOR_NUM;
+//			//Float2 dis1 = g_cursor[j].pos - g_cursor[j].prev_pos;
+//			//Float2 dis2 = g_cursor[(j + 1) % PLAYER_CURSOR_NUM].prev_pos - g_cursor[(j + 1) % PLAYER_CURSOR_NUM].pos;
+//
+//			//D3DXVec2Normalize(&dis1, &dis1);
+//			//D3DXVec2Normalize(&dis2, &dis2);
+//			//Float2 dis3 = (dis1 + dis2);
+//			//D3DXVec2Normalize(&dis3, &dis3);
+//
+//
+//
+//			Float2 top(0, 0);
+//			Float2 under(0, 0);
+//			Float2 mid(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+//			under = g_cursor[clossStart].pos;
+//			for (int f = clossStart + 1; f < clossStart + g_curmax - 1; f++)
+//			{
+//				int g = f % PLAYER_CURSOR_NUM;
+//				if (top.y < g_cursor[f].pos.y)
+//				{
+//					top.y = g_cursor[f].pos.y;
+//				}
+//				if (top.x < g_cursor[f].pos.x)
+//				{
+//					top.x = g_cursor[f].pos.x;
+//				}
+//				if (under.y > g_cursor[f].pos.y)
+//				{
+//					under.y = g_cursor[f].pos.y;
+//				}
+//				if (under.x > g_cursor[f].pos.x)
+//				{
+//					under.x = g_cursor[f].pos.x;
+//				}
+//
+//			}
+//			mid = (top + under) / 2;
+//			Float2 dis3 = mid - g_cursor[j].pos;
+//			//D3DXVec2Normalize(&dis3, &dis3);
+//
+//			float biggestnow = 0;
+//			float biggestnow2 = 0;
+//			Float2 biggest1 = { 0,0 };
+//			Float2 biggest2 = { 0,0 };
+//
+//			float sikai = 0;
+//			for (int k = clossStart + 1; k < clossStart + g_curmax; k++)
+//			{
+//				int l = k % PLAYER_CURSOR_NUM;
+//				Float2 ldir = g_cursor[l].pos - g_cursor[j].pos;
+//
+//				//if (k < clossStart + (g_curmax / 2))
+//				//{
+//				//	//自分（敵）の向きとプレイヤーとの位置関係のベクトルとで内積を計算する
+//				//	sikai = D3DXVec2Dot(&dis3, &ldir);
+//
+//				//	if (sikai > biggestnow)
+//				//	{
+//				//		biggest1 = ldir;
+//				//		biggestnow = sikai;
+//				//	}
+//				//}
+//				//else
+//				//{
+//					//自分（敵）の向きとプレイヤーとの位置関係のベクトルとで内積を計算する
+//				sikai = D3DXVec2Dot(&dis3, &ldir);
+//
+//				//内積の値が一定の値より大きい場合視界に入ったと判定しCHASE状態へ移行する
+//				if (sikai > biggestnow2)
+//				{
+//					biggest2 = ldir;
+//					biggestnow2 = sikai;
+//				}
+//				//}
+//
+//				//Float2 dis4 = (biggest1 + biggest2);
+//				//D3DXVec2Normalize(&dis4, &dis4);
+//				//float biggestend = (biggestnow + biggestnow2) / 2;
+//
+//				Float2 disAkari = GetAkariObject(h).pos - g_cursor[l].pos;
+//
+//				float kakudohantei = D3DXVec2Dot(&mid, &disAkari);
+//
+//				if (kakudohantei < biggestnow2)
+//				{
+//					Akarigather(h);
+//				}
+//			}
+//
+//		}
+//	}
+//
+//	return true;
+//}
+
+//bool CompositionAkari(int clossStart)
+//{
+//	bool flag = true;
+//	bool useflag = false;
+//
+//
+//	for (int h = 0; h < AKARI_NUM; h++)
+//	{
+//		useflag = false;
+//		if (GetAkariObject(h).use == true)
+//			useflag = true;
+//
+//		for (int i = clossStart; i < clossStart + g_curmax - 1 && useflag == true; i++)
+//		{
+//			int j = i % PLAYER_CURSOR_NUM;
+//
+//			Float2 top(0, 0);
+//			Float2 under(0, 0);
+//			Float2 mid(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+//			under = g_cursor[clossStart].pos;
+//			for (int f = clossStart + 1; f < clossStart + g_curmax - 1; f++)
+//			{
+//				int g = f % PLAYER_CURSOR_NUM;
+//				if (top.y < g_cursor[f].pos.y)
+//				{
+//					top.y = g_cursor[f].pos.y;
+//				}
+//				if (top.x < g_cursor[f].pos.x)
+//				{
+//					top.x = g_cursor[f].pos.x;
+//				}
+//				if (under.y > g_cursor[f].pos.y)
+//				{
+//					under.y = g_cursor[f].pos.y;
+//				}
+//				if (under.x > g_cursor[f].pos.x)
+//				{
+//					under.x = g_cursor[f].pos.x;
+//				}
+//
+//			}
+//			mid = (top + under) / 2;
+//			Float2 dis3 = mid - g_cursor[j].pos;
+//			//D3DXVec2Normalize(&dis3, &dis3);
+//
+//			float biggestnow = 0;
+//			float biggestnow2 = 0;
+//			Float2 biggest1 = { 0,0 };
+//			Float2 biggest2 = { 0,0 };
+//
+//			float sikai = 0;
+//			for (int k = clossStart + 1; k < clossStart + g_curmax; k++)
+//			{
+//				int l = k % PLAYER_CURSOR_NUM;
+//				Float2 ldir = g_cursor[l].pos - g_cursor[j].pos;
+//
+//
+//				//自分（敵）の向きとプレイヤーとの位置関係のベクトルとで内積を計算する
+//				sikai = D3DXVec2Dot(&dis3, &ldir);
+//
+//				//内積の値が一定の値より大きい場合視界に入ったと判定しCHASE状態へ移行する
+//				if (sikai > biggestnow2)
+//				{
+//					biggest2 = ldir;
+//					biggestnow2 = sikai;
+//				}
+//
+//				Float2 disAkari = GetAkariObject(h).pos - g_cursor[l].pos;
+//
+//				float kakudohantei = D3DXVec2Dot(&dis3, &disAkari);
+//
+//
+//				if (kakudohantei < 10000.0)
+//				{
+//					Akarigather(h);
+//				}
+//				//if (kakudohantei < biggestnow2)
+//				//{
+//				//	Akarigather(h);
+//				//}
+//			}
+//
+//		}
+//	}
+//
+//	return true;
+//}
