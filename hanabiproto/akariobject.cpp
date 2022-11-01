@@ -32,6 +32,8 @@ static float g_U, g_V;
 
 Float2 MovePos[AKARI_NUM];
 
+Float2 Ppos;
+
 bool g_composition;
 //=============================================================================							
 // 初期化処理							
@@ -104,17 +106,17 @@ void UpdateAkariObject(void)
 	//囲った範囲内の「AKARI」が集まるように
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
-		if (g_AkariObject[i].use && g_AkariObject[i].setvec == false)
+		if (g_AkariObject[i].use && g_AkariObject[i].setvec == false &&Ppos.x!=GetPlayer()->pos.x&&Ppos.y!=GetPlayer()->pos.y)
 		{
 				//地点Aから地点Bの移動距離
 				//MovePos=地点B - 地点A;
-				MovePos[i].x = /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - g_AkariObject[i].pos.x;
-				MovePos[i].y = /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - g_AkariObject[i].pos.y;
+				MovePos[i].x = GetPlayer()->pos.x - g_AkariObject[i].pos.x;
+				MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
 				//何フレームかけて集まるか
 				MovePos[i].x /= 60;
 				MovePos[i].y /= 60;
 
-				g_AkariObject[i].setvec = true;
+				//g_AkariObject[i].setvec = true;
 		}
 
 
@@ -128,6 +130,7 @@ void UpdateAkariObject(void)
 			{
 				MovePos[i].x = 0.0f;
 				MovePos[i].y = 0.0f;
+				g_AkariObject[i].setvec = true;
 			}
 		}
 	}
