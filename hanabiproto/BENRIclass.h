@@ -1,4 +1,5 @@
 #pragma once
+#include "main.h"
 
 
 //*****************************************************************************
@@ -8,6 +9,8 @@
 class Float2:public D3DXVECTOR2
 {
 public:
+	float x;
+	float y;
 
 	Float2() :x(0), y(0) {}
 	Float2(float ix, float iy)
@@ -42,4 +45,5 @@ public:
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-//adssaf
+float AngleOf2Vector(D3DXVECTOR2 A, D3DXVECTOR2 B);
+int Float2_length_gather(int start, int goal);
