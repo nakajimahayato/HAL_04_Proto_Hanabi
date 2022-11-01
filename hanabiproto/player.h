@@ -46,6 +46,7 @@ void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);
 bool CompositionAkari(int clossStart, int clossGoal);
+PLAYER* GetPlayer(void);
 
 
 
