@@ -12,6 +12,7 @@
 #include "sprite.h"
 #include "camera.h"
 #include "input.h"
+#include "player.h"
 
 //*****************************************************************************							
 // マクロ定義							
@@ -107,8 +108,8 @@ void UpdateAkariObject(void)
 		{
 				//地点Aから地点Bの移動距離
 				//MovePos=地点B - 地点A;
-				MovePos[i].x = (SCREEN_WIDTH / 2) - g_AkariObject[i].pos.x;
-				MovePos[i].y = (SCREEN_HEIGHT / 2) - g_AkariObject[i].pos.y;
+				MovePos[i].x = /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - g_AkariObject[i].pos.x;
+				MovePos[i].y = /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - g_AkariObject[i].pos.y;
 				//何フレームかけて集まるか
 				MovePos[i].x /= 60;
 				MovePos[i].y /= 60;
@@ -122,8 +123,8 @@ void UpdateAkariObject(void)
 			g_AkariObject[i].pos.x += MovePos[i].x;
 			g_AkariObject[i].pos.y += MovePos[i].y;
 
-			if (g_AkariObject[i].pos.x < (SCREEN_WIDTH / 2) + 1 && g_AkariObject[i].pos.x >(SCREEN_WIDTH / 2) - 1
-				&& g_AkariObject[i].pos.y <(SCREEN_HEIGHT / 2) + 1 && g_AkariObject[i].pos.y > (SCREEN_HEIGHT / 2) - 1)
+			if (g_AkariObject[i].pos.x < /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x + 9 && g_AkariObject[i].pos.x >/*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - 9
+				&& g_AkariObject[i].pos.y </*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y + 9 && g_AkariObject[i].pos.y > /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - 9)
 			{
 				MovePos[i].x = 0.0f;
 				MovePos[i].y = 0.0f;
@@ -143,7 +144,7 @@ void DrawAkariObject(void)
 	{
 		if (g_AkariObject[i].use == true)
 		{
-			DrawSprite(g_TextureNo,g_AkariObject[i].pos.x,g_AkariObject[i].pos.y, 120.0f, 120.0f,
+			DrawSprite(g_TextureNo, basePos.x + g_AkariObject[i].pos.x, basePos.y + g_AkariObject[i].pos.y, 120.0f, 120.0f,
 				1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
