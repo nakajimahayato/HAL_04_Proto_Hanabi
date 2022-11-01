@@ -123,8 +123,8 @@ void UpdateAkariObject(void)
 			g_AkariObject[i].pos.x += MovePos[i].x;
 			g_AkariObject[i].pos.y += MovePos[i].y;
 
-			if (g_AkariObject[i].pos.x < /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x + 10 && g_AkariObject[i].pos.x >/*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - 10
-				&& g_AkariObject[i].pos.y </*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y + 10 && g_AkariObject[i].pos.y > /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - 10)
+			if (g_AkariObject[i].pos.x < /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x + 9 && g_AkariObject[i].pos.x >/*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - 9
+				&& g_AkariObject[i].pos.y </*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y + 9 && g_AkariObject[i].pos.y > /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - 9)
 			{
 				MovePos[i].x = 0.0f;
 				MovePos[i].y = 0.0f;
@@ -139,12 +139,12 @@ void UpdateAkariObject(void)
 void DrawAkariObject(void)
 {
 	//ベース座標を取得する
-	//D3DXVECTOR2 basePos = GetBase();
+	D3DXVECTOR2 basePos = GetBase();
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
 		if (g_AkariObject[i].use == true)
 		{
-			DrawSprite(g_TextureNo,g_AkariObject[i].pos.x,g_AkariObject[i].pos.y, 120.0f, 120.0f,
+			DrawSprite(g_TextureNo, basePos.x + g_AkariObject[i].pos.x, basePos.y + g_AkariObject[i].pos.y, 120.0f, 120.0f,
 				1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
