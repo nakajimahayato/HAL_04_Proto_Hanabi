@@ -1,6 +1,7 @@
 #pragma once
 
 #include "main.h"
+#include "player.h"
 #include"BENRIclass.h"
 
 bool HitCheckCircle(Float2 cir1pos, float cir1r,
@@ -17,3 +18,5 @@ bool HitCheckCross(Float2 start1pos, Float2 end1pos
 
 bool HitCheckCross2nd(Float2 start1pos, Float2 end1pos
 	, Float2 start2pos, Float2 end2pos);
+
+bool HitCheckConcavePolygon(CURSOR positions[], Float2 target, int start, int cursor_length);
