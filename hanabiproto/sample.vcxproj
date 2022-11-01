@@ -135,6 +135,7 @@
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="inputx.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="akariobject.cpp" />
     <ClCompile Include="player.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="collision.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="inputx.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="player.h" />
