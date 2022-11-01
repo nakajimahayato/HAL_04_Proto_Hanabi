@@ -25,8 +25,9 @@ struct AtHANABI
 	D3DXVECTOR2 dir;	//移動方向
 	float       speed;	//移動速度
 	float		frame;	//持続時間
+	Float2		vec;
 
-	int			use;	//可視フラグ
+	bool			use;	//可視フラグ
 };
 
 //*****************************************************************************
@@ -40,8 +41,8 @@ void CreateHanabi(Float2 plpos, Float2 cspos);
 static GameObject g_Hanabi0bj;
 static EnemyObject g_Enemy0bj;
 
-static GameObject g_Objects[256];
-static PLAYER g_Player;	//プレイヤー用
+//static GameObject g_Objects[256];
+//static PLAYER g_Player;	//プレイヤー用
 
 static int g_AtHanabi;	//攻撃花火用のテクスチャの識別子
 static AtHANABI g_HANABI[NUM_HANABI];	//弾バッファ
@@ -157,15 +158,16 @@ void DrawAtHanabi(void)
 //=============================================================================
 // 攻撃花火の移動処理
 //=============================================================================
-void MoveHanabi(void)
-{
-	MovePosHanabi[0].x = SCREEN_WIDTH / 2 - g_Player.pos.x;
-	MovePosHanabi[0].y = SCREEN_HEIGHT / 2 - g_Player.pos.y;
-	//何フレームかけて集まるか
-	MovePosHanabi[0].x /= 60;
-	MovePosHanabi[0].y /= 60;
+//void MoveHanabi(void)
+//{
+//	MovePosHanabi[0].x = SCREEN_WIDTH / 2 - GetPlayer()->pos.x;
+//	MovePosHanabi[0].y = SCREEN_HEIGHT / 2 - GetPlayer()->pos.y;
+//	//何フレームかけて集まるか
+//	MovePosHanabi[0].x /= 60;
+//	MovePosHanabi[0].y /= 60;
+//
+//}
 
-}
 void MoveHanabiAI(void)
 {
 
@@ -247,4 +249,22 @@ Float2 GetAtHanabiPos(Float2 PosA, Float2 PosB)
 	}
 
 	return Float2(HanabiVec);
+}
+
+void Normalizer(Float2 Player, Float2 Cursor)
+{
+	Float2 Vec;
+
+	Vec = Cursor - Player;
+
+	D3DXVec2Normalize(&Vec, &Vec);
+	for (int i = 0; i < NUM_HANABI; i++)
+	{
+		if (g_HANABI[i].use == false)
+		{
+			g_HANABI[i].use = true;
+			g_HANABI[i].vec = Vec;
+			break;
+		}
+	}
 }
