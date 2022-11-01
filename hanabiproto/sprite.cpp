@@ -310,3 +310,5 @@ void DrawSpriteColorRotate(int texNo, float X, float Y, float Width, float Heigh
 	// ƒ|ƒŠƒSƒ“•`‰æ
 	GetDeviceContext()->Draw(NUM_VERTEX, 0);
 }
+
+
