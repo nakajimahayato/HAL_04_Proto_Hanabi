@@ -126,7 +126,7 @@ HRESULT InitBG(void)
 {
 	ID3D11Device *pDevice = GetDevice();
 
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/mapchip.png");
+	g_TextureNo = LoadTexture((char*)"data/TEXTURE/bgtest.png");
 
 	return S_OK;
 }
@@ -155,30 +155,35 @@ void DrawBG(void)
 	//ベース座標を取得する
 	D3DXVECTOR2 basePos = GetBase();
 
-	//ベースレイヤーの描画
-	for (int y = 0; y < MAP_SIZE_Y; y++)
-	{
-		for (int x = 0; x < MAP_SIZE_X; x++)
-		{
-			float u, v;
-			u = g_MapChipType[ g_MapBase[y][x] ];
-			v = 0.0f;
-			DrawSpriteLeftTop(g_TextureNo, basePos.x + 32.0f*x, basePos.y + 32.0f*y, 32.0f, 32.0f, u, v, 0.125f, 0.125f);
-		}
-	}
+	DrawSprite(g_TextureNo, SCREEN_WIDTH / 2 + (basePos.x * 0.15), SCREEN_HEIGHT / 2 + (basePos.y * 0.15),
+		SCREEN_WIDTH, SCREEN_HEIGHT,
+		0, 0.0,
+		1.0f, 1.0f);
 
-	//装飾レイヤーの描画
-	for (int y = 0; y < MAP_SIZE_Y; y++)
-	{
-		for (int x = 0; x < MAP_SIZE_X; x++)
-		{
-			if (g_MapObject[y][x] != 0)
-			{
-				float u, v;
-				u = g_MapChipObject[g_MapObject[y][x]].x;
-				v = g_MapChipObject[g_MapObject[y][x]].y;
-				DrawSpriteLeftTop(g_TextureNo, basePos.x + 32.0f*x, basePos.y + 32.0f*y, 32.0f, 32.0f, u, v, 0.125f, 0.125f);
-			}
-		}
-	}
+	////ベースレイヤーの描画
+	//for (int y = 0; y < MAP_SIZE_Y; y++)
+	//{
+	//	for (int x = 0; x < MAP_SIZE_X; x++)
+	//	{
+	//		float u, v;
+	//		u = g_MapChipType[ g_MapBase[y][x] ];
+	//		v = 0.0f;
+	//		DrawSpriteLeftTop(g_TextureNo, basePos.x + 32.0f*x, basePos.y + 32.0f*y, 32.0f, 32.0f, u, v, 0.125f, 0.125f);
+	//	}
+	//}
+
+	////装飾レイヤーの描画
+	//for (int y = 0; y < MAP_SIZE_Y; y++)
+	//{
+	//	for (int x = 0; x < MAP_SIZE_X; x++)
+	//	{
+	//		if (g_MapObject[y][x] != 0)
+	//		{
+	//			float u, v;
+	//			u = g_MapChipObject[g_MapObject[y][x]].x;
+	//			v = g_MapChipObject[g_MapObject[y][x]].y;
+	//			DrawSpriteLeftTop(g_TextureNo, basePos.x + 32.0f*x, basePos.y + 32.0f*y, 32.0f, 32.0f, u, v, 0.125f, 0.125f);
+	//		}
+	//	}
+	//}
 }
