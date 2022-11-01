@@ -1,6 +1,7 @@
 
 #include "collision.h"
 #include "main.h"
+#include "sprite.h"
 
 
 
@@ -135,31 +136,54 @@ bool HitCheckConcavePolygon(CURSOR positions[], Float2 target,int start,int curs
 {
 	float result = 0;
 
-	for (int i = start; i < start + cursor_length - 1; i++)
+	for (int i = start; i < start + cursor_length; i++)
 	{
-		Float2 l1 = positions[i% PLAYER_CURSOR_NUM].pos - target;
-		Float2 l2 = positions[(i + 1) % PLAYER_CURSOR_NUM].pos - target;
-		float l1y = l1.y;
-		float l2y = l2.y;
-		float l1x = l1.x;
-		float l2x = l2.x;
-		D3DXVECTOR2 l1v2 = { l1x,l1y };
-		D3DXVECTOR2 l2v2 = { l2x,l2y };
-
-		float angle = AngleOf2Vector(l1v2, l2v2);
-
-		//Float2 cross = D3DXVec2Cross(l1, l2);
-		//if (Vector3.Dot(cross, normal) < 0)
-		//{
-		//	angle *= -1;
-		//}
-
-		if (D3DXVec2CCW(&l1v2, &l2v2) > 0)
+		if (i == start + cursor_length - 1)
 		{
-			angle *= -1;
-		}
+			Float2 l1 = positions[i% PLAYER_CURSOR_NUM].pos - target;
+			Float2 l2 = positions[start].pos - target;
 
-		result += angle;
+			D3DXVECTOR2 l1v2 = { l1.x,l1.y };
+			D3DXVECTOR2 l2v2 = { l2.x,l2.y };
+
+			float angle = AngleOf2Vector(l1v2, l2v2);
+
+			//Float2 cross = D3DXVec2Cross(l1, l2);
+			//if (Vector3.Dot(cross, normal) < 0)
+			//{
+			//	angle *= -1;
+			//}
+
+			if (D3DXVec2CCW(&l1v2, &l2v2) > 0)
+			{
+				angle *= -1;
+			}
+
+			result += angle;
+		}
+		else
+		{
+			Float2 l1 = positions[i% PLAYER_CURSOR_NUM].pos - target;
+			Float2 l2 = positions[(i + 1) % PLAYER_CURSOR_NUM].pos - target;
+
+			D3DXVECTOR2 l1v2 = { l1.x,l1.y };
+			D3DXVECTOR2 l2v2 = { l2.x,l2.y };
+
+			float angle = AngleOf2Vector(l1v2, l2v2);
+
+			//Float2 cross = D3DXVec2Cross(l1, l2);
+			//if (Vector3.Dot(cross, normal) < 0)
+			//{
+			//	angle *= -1;
+			//}
+
+			if (D3DXVec2CCW(&l1v2, &l2v2) > 0)
+			{
+				angle *= -1;
+			}
+
+			result += angle;
+		}
 	}
 
 	float unit  = 1.0f / 360.0f;
