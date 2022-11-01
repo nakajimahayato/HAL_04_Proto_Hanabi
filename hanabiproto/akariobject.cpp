@@ -106,7 +106,7 @@ void UpdateAkariObject(void)
 	//囲った範囲内の「AKARI」が集まるように
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
-		if (g_AkariObject[i].use && g_AkariObject[i].setvec == false &&Ppos.x!=GetPlayer()->pos.x&&Ppos.y!=GetPlayer()->pos.y)
+		if (g_AkariObject[i].use && g_AkariObject[i].setvec == false && Ppos.x != GetPlayer()->pos.x && Ppos.y != GetPlayer()->pos.y)
 		{
 				//地点Aから地点Bの移動距離
 				//MovePos=地点B - 地点A;
@@ -130,7 +130,6 @@ void UpdateAkariObject(void)
 			{
 				MovePos[i].x = 0.0f;
 				MovePos[i].y = 0.0f;
-				g_AkariObject[i].setvec = true;
 			}
 		}
 	}
@@ -163,4 +162,16 @@ HanabiAkariObject GetAkariObject(int index)
 void Akarigather(int index)
 {
 	g_AkariObject[index].gather = true;
+}
+
+void SetAkari(Float2 pos)
+{
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+		}
+	}
 }

@@ -50,6 +50,7 @@ void UpdateAkariObject(void);
 void DrawAkariObject(void);
 void Akarigather(int index);
 HanabiAkariObject GetAkariObject(int index);
+void SetAkari(Float2 pos);
 
 
 
