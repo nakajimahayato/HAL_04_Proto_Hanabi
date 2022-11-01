@@ -21,8 +21,8 @@
 //弾のデータを管理する構造体
 struct AtHANABI
 {
-	D3DXVECTOR2 pos;	//表示座標
-	D3DXVECTOR2 dir;	//移動方向
+	Float2 pos;	//表示座標
+	Float2 dir;	//移動方向
 	float       speed;	//移動速度
 	float		frame;	//持続時間
 	Float2		vec;
@@ -48,6 +48,7 @@ static int g_AtHanabi;	//攻撃花火用のテクスチャの識別子
 static AtHANABI g_HANABI[NUM_HANABI];	//弾バッファ
 Float2 MovePosHanabi[NUM_HANABI];
 D3DXVECTOR2 g_Test;
+Float2 AtHanabiDeadPos[NUM_HANABI];
 //=============================================================================
 // 初期化処理
 //=============================================================================
@@ -62,9 +63,10 @@ HRESULT InitAtHanabi(void)
 	//花火バッファの初期化
 	for (int i = 0; i < NUM_HANABI; i++)
 	{
-		g_HANABI[i].pos = D3DXVECTOR2(0.0f, 0.0f);	//表示座標
-		g_HANABI[i].dir = D3DXVECTOR2(0.0f, 0.0f);	//移動方向
+		g_HANABI[i].pos = Float2(0.0f, 0.0f);	//表示座標
+		g_HANABI[i].dir = Float2(0.0f, 0.0f);	//移動方向
 		g_HANABI[i].speed = 3.0f;					//移動速度
+		g_HANABI[i].frame = 0.0f;
 
 		g_HANABI[i].use = true;
 	}
@@ -97,9 +99,25 @@ void UpdateAtHanabi(void)
 				//弾の座標更新
 				//g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
 				g_HANABI[i].pos += g_Test;
+
+
+				g_HANABI[i].frame += 1.0f;
+
+				if (g_HANABI[i].frame > 50.0f)
+				{
+					g_HANABI[i].frame = 0.0f;
+					AtHanabiDeadPos[i] = g_HANABI[i].pos;
+					g_HANABI[i].use = false;
+
+					SetAkari(g_HANABI[i].pos);
+				}
 			}
 		}
 	}
+
+
+
+	
 
 	//花火バッファ全体を走査する
 	//for (int i = 0; i < NUM_HANABI; i++)
@@ -267,4 +285,9 @@ void Normalizer(Float2 Player, Float2 Cursor)
 			break;
 		}
 	}
+}
+
+Float2 GetAtHanabiDeadPos(int index)
+{
+	return AtHanabiDeadPos[index];
 }

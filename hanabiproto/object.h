@@ -16,7 +16,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define AKARI_NUM	100
+#define AKARI_NUM	200
 
 
 class GameObject
@@ -34,6 +34,7 @@ class HanabiAkariObject:public GameObject
 {
 public:
 	bool			gather;//集まるあかり
+	float			frame;
 };
 
 class EnemyObject :public GameObject
@@ -50,6 +51,7 @@ void UpdateAkariObject(void);
 void DrawAkariObject(void);
 void Akarigather(int index);
 HanabiAkariObject GetAkariObject(int index);
+void SetAkari(Float2 pos);
 
 
 
@@ -57,3 +59,4 @@ HRESULT InitAtHanabi(void);
 void UninitAtHanabi(void);
 void UpdateAtHanabi(void);
 void DrawAtHanabi(void);
+Float2 GetAtHanabiDeadPos(int index);
