@@ -65,6 +65,7 @@ HRESULT InitAtHanabi(void)
 		g_HANABI[i].pos = D3DXVECTOR2(0.0f, 0.0f);	//表示座標
 		g_HANABI[i].dir = D3DXVECTOR2(0.0f, 0.0f);	//移動方向
 		g_HANABI[i].speed = 3.0f;					//移動速度
+		g_HANABI[i].frame = 0.0f;
 
 		g_HANABI[i].use = true;
 	}
@@ -97,9 +98,22 @@ void UpdateAtHanabi(void)
 				//弾の座標更新
 				//g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
 				g_HANABI[i].pos += g_Test;
+
+
+				g_HANABI[i].frame += 1.0f;
+
+				if (g_HANABI[i].frame > 50.0f)
+				{
+					g_HANABI[i].frame = 0.0f;
+					g_HANABI[i].use = false;
+				}
 			}
 		}
 	}
+
+
+
+	
 
 	//花火バッファ全体を走査する
 	//for (int i = 0; i < NUM_HANABI; i++)
