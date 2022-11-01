@@ -184,6 +184,10 @@ void UpdatePlayer(void)
 						g_nownum = -1;
 					}
 				}
+				else
+				{
+
+				}
 			}
 		}
 	}
@@ -261,7 +265,7 @@ void DrawPlayer(void)
 	{
 		if (g_cursor[i].use == true)
 		{
-			DrawSprite(g_TextureNo2, basePos.x + g_cursor[i].pos.x,basePos.y +g_cursor[i].pos.y,
+			DrawSprite(g_TextureNo2,g_cursor[i].pos.x,g_cursor[i].pos.y,
 				120.0f, 120.0f,
 				1.0f, 0.0,
 				1.0f, 1.0f);
@@ -280,14 +284,15 @@ bool CompositionAkari(int clossStart,int clossGoal)
 	bool useflag = false;
 	int length = Float2_length_gather(clossStart, clossGoal);
 
+
 	for (int h = 0; h < AKARI_NUM; h++)
 	{
 		useflag = false;
 		if (GetAkariObject(h).use == true)
 			useflag = true;
-		
+		Float2 apos = GetAkariObject(h).pos;
 
-		if(HitCheckConcavePolygon(g_cursor, GetAkariObject(h).pos, clossStart, length))
+		if(HitCheckConcavePolygon(g_cursor, apos, clossStart, length) == true)
 		{
 			Akarigather(h);
 		}
