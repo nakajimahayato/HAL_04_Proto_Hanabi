@@ -2,6 +2,7 @@
 #include "collision.h"
 #include "main.h"
 #include "sprite.h"
+#include "camera.h"
 
 
 
@@ -135,6 +136,11 @@ bool HitCheckCross2nd(Float2 start1pos, Float2 end1pos
 bool HitCheckConcavePolygon(CURSOR positions[], Float2 target,int start,int cursor_length)
 {
 	float result = 0;
+	//ベース座標を取得する
+	D3DXVECTOR2 basePos = GetBase();
+	Float2 BasePos(basePos.x, basePos.y);
+
+	target = target + BasePos;
 
 	for (int i = start; i < start + cursor_length; i++)
 	{
@@ -147,12 +153,6 @@ bool HitCheckConcavePolygon(CURSOR positions[], Float2 target,int start,int curs
 			D3DXVECTOR2 l2v2 = { l2.x,l2.y };
 
 			float angle = AngleOf2Vector(l1v2, l2v2);
-
-			//Float2 cross = D3DXVec2Cross(l1, l2);
-			//if (Vector3.Dot(cross, normal) < 0)
-			//{
-			//	angle *= -1;
-			//}
 
 			if (D3DXVec2CCW(&l1v2, &l2v2) > 0)
 			{
@@ -170,12 +170,6 @@ bool HitCheckConcavePolygon(CURSOR positions[], Float2 target,int start,int curs
 			D3DXVECTOR2 l2v2 = { l2.x,l2.y };
 
 			float angle = AngleOf2Vector(l1v2, l2v2);
-
-			//Float2 cross = D3DXVec2Cross(l1, l2);
-			//if (Vector3.Dot(cross, normal) < 0)
-			//{
-			//	angle *= -1;
-			//}
 
 			if (D3DXVec2CCW(&l1v2, &l2v2) > 0)
 			{
