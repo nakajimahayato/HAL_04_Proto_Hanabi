@@ -26,6 +26,7 @@ struct AtHANABI
 	float       speed;	//移動速度
 	float		frame;	//持続時間
 	Float2		vec;
+	D3DXCOLOR		color;
 
 	bool			use;	//可視フラグ
 };
@@ -57,18 +58,19 @@ HRESULT InitAtHanabi(void)
 	//------------仮--------------------
 
 	//テクスチャを読み込んで識別子を受け取る
-	g_AtHanabi = LoadTexture((char*)"data/TEXTURE/proto_effect_attack.png");
+	g_AtHanabi = LoadTexture((char*)"data/TEXTURE/proto_effect_attackhanabi.png");
 	g_Test = { 3.0f,3.0f };
 
 	//花火バッファの初期化
 	for (int i = 0; i < NUM_HANABI; i++)
 	{
 		g_HANABI[i].pos = Float2(0.0f, 0.0f);	//表示座標
-		g_HANABI[i].dir = Float2(0.0f, 0.0f);	//移動方向
+		g_HANABI[i].dir = Float2(1.0f, 1.0f);	//移動方向
 		g_HANABI[i].speed = 3.0f;					//移動速度
 		g_HANABI[i].frame = 0.0f;
+		g_HANABI[i].color = { 0.0f,0.0f,0.0f,1.0f };
 
-		g_HANABI[i].use = true;
+		g_HANABI[i].use = false;
 	}
 
 	return S_OK;
@@ -88,32 +90,32 @@ void UninitAtHanabi(void)
 void UpdateAtHanabi(void)
 {
 	//------------仮--------------------
-	if (GetKeyboardPress(DIK_C))
-	{
+
 		//弾バッファ全体を走査する
-		for (int i = 0; i < NUM_HANABI; i++)
+	for (int i = 0; i < NUM_HANABI; i++)
+	{
+		//可視フラグがオンの弾だけ座標を更新する
+		if (g_HANABI[i].use == true)
 		{
-			//可視フラグがオンの弾だけ座標を更新する
-			if (g_HANABI[i].use == true)
+			//弾の座標更新
+			//g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
+			g_HANABI[i].pos.x += g_HANABI[i].dir.x * g_HANABI[i].speed;
+			g_HANABI[i].pos.y += g_HANABI[i].dir.y * g_HANABI[i].speed;
+
+
+			g_HANABI[i].frame += 1.0f;
+
+			if (g_HANABI[i].frame > 80.0f)
 			{
-				//弾の座標更新
-				//g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
-				g_HANABI[i].pos += g_Test;
+				g_HANABI[i].frame = 0.0f;
+				AtHanabiDeadPos[i] = g_HANABI[i].pos;
+				g_HANABI[i].use = false;
 
-
-				g_HANABI[i].frame += 1.0f;
-
-				if (g_HANABI[i].frame > 50.0f)
-				{
-					g_HANABI[i].frame = 0.0f;
-					AtHanabiDeadPos[i] = g_HANABI[i].pos;
-					g_HANABI[i].use = false;
-
-					SetAkari(g_HANABI[i].pos);
-				}
+				SetAkari(g_HANABI[i].pos);
 			}
 		}
 	}
+
 
 
 
@@ -166,7 +168,7 @@ void DrawAtHanabi(void)
 			DrawSpriteColorRotate(g_AtHanabi, basePos.x + g_HANABI[i].pos.x, basePos.y + g_HANABI[i].pos.y,
 				32.0f, 32.0f,
 				0.0f, 0.0f, 1.0f, 1.0f,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+				g_HANABI[i].color,
 				rot);
 		}
 	}
@@ -271,17 +273,36 @@ Float2 GetAtHanabiPos(Float2 PosA, Float2 PosB)
 
 void Normalizer(Float2 Player, Float2 Cursor)
 {
-	Float2 Vec;
-
-	Vec = Cursor - Player;
-
+	D3DXVECTOR2 Vec;
+	Float2 Vecf2;
+	Vecf2 = Cursor - Player;
+	Vec.x = Vecf2.x;
+	Vec.y = Vecf2.y;
 	D3DXVec2Normalize(&Vec, &Vec);
+	Vecf2.x = Vec.x;
+	Vecf2.y = Vec.y;
+
 	for (int i = 0; i < NUM_HANABI; i++)
 	{
 		if (g_HANABI[i].use == false)
 		{
 			g_HANABI[i].use = true;
-			g_HANABI[i].vec = Vec;
+			g_HANABI[i].pos = Player;
+			g_HANABI[i].dir = Vecf2;
+			//色づけ
+			{
+				float RGB[3];
+				int saidai = 0;
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+					if (RGB[saidai] <= RGB[j])
+						saidai = j;
+				}
+				RGB[saidai] = 1.0f;
+				g_HANABI[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+			//ｂレーク
 			break;
 		}
 	}
