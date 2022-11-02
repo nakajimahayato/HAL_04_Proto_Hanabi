@@ -24,7 +24,7 @@ class GameObject
 public:
 	Float2			pos;//À•W
 	Float2			vec;//ˆÚ“®
-	Float2			speed;
+	float			speed;
 	Float2			siz;//‘å‚«‚³
 	Float2			dir;//ˆÚ“®•ûŒü
 	D3DXCOLOR		color;

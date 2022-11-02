@@ -54,6 +54,7 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].pos.y = SCREEN_HEIGHT;
 		g_AkariObject[i].frame = 0;
 		g_AkariObject[i].color = { 1.0f,1.0f,1.0f,1.0f };
+		g_AkariObject[i].siz = { 32.0f,32.0f };
 	}
 
 	////お試し
