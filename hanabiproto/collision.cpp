@@ -71,6 +71,24 @@ bool HitCheckBox(Float2 box1pos, Float2 box1siz
 	return false;
 }
 
+//箱と箱の当たり判定
+bool HitCheckBox(Float2 boxpos, Float2 boxsiz
+				, Float2 pointpos)
+{
+	//箱と箱の中心同士の距離
+	Float2 boxdis(boxpos - pointpos);
+	//箱の大きさの合計の半分
+	Float2 boxsiz_half = boxsiz / 2;
+
+	if (boxsiz_half.x > fabsf(boxdis.x) &&
+		boxsiz_half.y > fabsf(boxdis.y))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 
 bool HitCheckCross(Float2 start1pos, Float2 end1pos
 				 , Float2 start2pos, Float2 end2pos)
@@ -132,6 +150,44 @@ bool HitCheckCross2nd(Float2 start1pos, Float2 end1pos
 
 }
 
+bool HitCheckConcavePolygon(CURSOR positions[], Float2 target,int length)
+{
+	float result = 0;
+	//ベース座標を取得する
+	D3DXVECTOR2 basePos = GetBase();
+	Float2 BasePos(basePos.x, basePos.y);
+
+	target = target + BasePos;
+
+	for (int i = 0; i < length; i++)
+	{
+			Float2 l1 = positions[i].pos - target;
+			Float2 l2 = positions[i+ 1 % length].pos - target;
+
+			D3DXVECTOR2 l1v2 = { l1.x,l1.y };
+			D3DXVECTOR2 l2v2 = { l2.x,l2.y };
+
+			float angle = AngleOf2Vector(l1v2, l2v2);
+
+			if (D3DXVec2CCW(&l1v2, &l2v2) > 0)
+			{
+				angle *= -1;
+			}
+
+			result += angle;
+	}
+
+	float unit = 1.0f / 360.0f;
+	result *= unit;
+
+	// 時計回り・反時計回りどちらもありえるため絶対値で判定する
+	if (fabs(result) >= 0.01f)
+	{
+		return true;
+	}
+	return false;
+	//return Mathf.Abs(result) >= 0.01f;
+}
 
 bool HitCheckConcavePolygon(CURSOR positions[], Float2 target,int start,int cursor_length)
 {
