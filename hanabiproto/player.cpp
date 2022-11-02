@@ -7,13 +7,17 @@
 
 ==============================================================================*/
 #include "player.h"
-#include "input.h"
 #include "texture.h"
 #include "sprite.h"
 #include "collision.h"
 #include "camera.h"
 #include "BENRIclass.h"
 #include "object.h"
+#include "inputx.h"
+#include "input.h"
+//#include <Xinput.h>
+
+//#pragma comment(lib."Xinput.lib")
 
 //*****************************************************************************
 // マクロ定義
@@ -24,7 +28,7 @@
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-
+void pad_reset(void);
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
@@ -37,9 +41,19 @@ static float g_U, g_V;
 
 CURSOR		g_cursor[PLAYER_CURSOR_NUM];	//カーソルの軌跡点
 int			g_nownum = -1;//カーソルの現在個数
+int			g_targetnum = -1;//攻撃先
 int			g_curmax = 0;
 Float2 cursorposf;
 POINT cursorPos;
+
+Float2 g_pad_curpos;
+Float2 g_pad_inputprev;
+bool g_cursol_prev;
+
+int g_playerflame;
+//DWORD        dwUserIndex;
+//XINPUT_STATE State;
+
 
 //static int g_AnimeIndex;
 //static int g_AnimeWait;
@@ -78,7 +92,7 @@ static float g_AnimeTable[4] =
 HRESULT InitPlayer(void)
 {
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_Hanabi_character.png");
-	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_explosion.png");
+	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 
 	//初期化
 	g_Player.pos.x = PLAYER_DISP_X;
@@ -86,6 +100,14 @@ HRESULT InitPlayer(void)
 
 	g_Player.spjp.x = 8.0f;
 	g_Player.spjp.y = 8.0f;
+
+	//Xinput初期化
+	//XInputEnable(true);
+	//XInputGetState(0, &State);
+	//State.Gamepad.
+	pad_reset();
+	g_cursol_prev = false;
+	g_playerflame = 0;
 
 	//g_AnimeIndex = 0;
 	//g_AnimeWait = 0;
@@ -101,6 +123,7 @@ HRESULT InitPlayer(void)
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
 		g_cursor[i].use = false;
+		g_cursor[i].color = { 0.0f,0.0f,0.0f,0.0f };
 	}
 
 	return S_OK;
@@ -119,6 +142,10 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	//ベース座標を取得する
+	D3DXVECTOR2 basePos = GetBase();
+	Float2 BasePos(basePos.x, basePos.y);
+
 	//cursor処理＝＝＝＝＝＝＝＝＝
 	if (GetKeyState(VK_LBUTTON) & 0x80)
 	{
@@ -127,6 +154,13 @@ void UpdatePlayer(void)
 		{
 			flag = true;
 		}
+		if (g_cursol_prev == false)
+		{
+			g_cursor[g_nownum].use = false;
+		}
+		g_cursol_prev = true;
+		g_playerflame += 1;
+
 
 		g_curmax++;
 		g_nownum++;
@@ -152,6 +186,19 @@ void UpdatePlayer(void)
 			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
 		}
 		g_cursor[g_nownum].use = true;
+		//色づけ
+		{
+			float RGB[3];
+			int saidai = 0;
+			for (int j = 0; j < 3; j++)
+			{
+				RGB[j] = frand();
+				if (RGB[saidai] <= RGB[j])
+					saidai = j;
+			}
+			RGB[saidai] = 1.0f;
+			g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
+		}
 		g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
 
 		Float2 maxvec = {0,0};
@@ -182,6 +229,7 @@ void UpdatePlayer(void)
 							g_cursor[i].use = false;
 						}
 						g_nownum = -1;
+						pad_reset();
 					}
 				}
 				else
@@ -191,28 +239,173 @@ void UpdatePlayer(void)
 			}
 		}
 	}
+	else if (0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y) || 0 < fabsf(GetThumbRightX(0)) + fabsf(GetThumbRightY(0)))
+	{
+		g_cursol_prev = false;
+
+		bool flag = false;
+		if (g_nownum != -1)
+		{
+			flag = true;
+		}
+		g_curmax++;
+		g_nownum++;
+		g_playerflame += 1;
+
+
+		if (g_nownum >= PLAYER_CURSOR_NUM)
+		{
+			g_nownum = 0;
+		}
+		if (g_curmax >= PLAYER_CURSOR_NUM)
+		{
+			g_curmax = PLAYER_CURSOR_NUM;
+		}
+
+		g_pad_curpos.x += (GetThumbRightX(0) * 2) * (fabsf(GetThumbRightX(0)) * 7) * 2.5;
+		g_pad_curpos.y += (-GetThumbRightY(0) * 2) * (fabsf(GetThumbRightY(0)) * 7) * 2.5;
+
+		if (g_pad_curpos.x < 0)
+		{
+			g_pad_curpos.x = 0;
+		}
+		if (g_pad_curpos.x > SCREEN_WIDTH)
+		{
+			g_pad_curpos.x = SCREEN_WIDTH;
+		}
+		if (g_pad_curpos.y < 0)
+		{
+			g_pad_curpos.y = 0;
+		}
+		if (g_pad_curpos.y > SCREEN_HEIGHT)
+		{
+			g_pad_curpos.y = SCREEN_HEIGHT;
+		}
+
+		//重要！cursor位置＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ー
+		cursorposf.x = g_pad_curpos.x;
+		cursorposf.y = g_pad_curpos.y;
+		//cursorposf.x = (GetThumbRightX(0) * 0.6 + 1) * (SCREEN_WIDTH / 2);
+		//cursorposf.y = SCREEN_HEIGHT - ((GetThumbRightY(0) * 0.6 + 1) * (SCREEN_HEIGHT / 2));
+		//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+		g_cursor[g_nownum].pos.x = (cursorposf.x);
+		g_cursor[g_nownum].pos.y = (cursorposf.y);
+		g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
+		g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
+		if (flag)
+		{
+			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
+		}
+		g_cursor[g_nownum].use = true;
+		//色づけ
+		{
+			float RGB[3];
+			int saidai = 0;
+			for (int j = 0; j < 3; j++)
+			{
+				RGB[j] = frand();
+				if (RGB[saidai] <= RGB[j])
+					saidai = j;
+			}
+			RGB[saidai] = 1.0f;
+			g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
+		}
+		g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
+
+		Float2 maxvec = { 0,0 };
+		float maxvecf;
+		for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+		{
+			if (g_cursor[i].use == true)
+			{
+				maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
+				maxvecf = maxvec.x + maxvec.y;
+			}
+		}
+
+		for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
+		{
+			int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
+			if (g_cursor[j].use == true)
+			{
+				if (maxvecf > 500 && 0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y))
+				{
+					if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
+						, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
+					{
+						//ここにcross時の処理
+						CompositionAkari(j, g_nownum);
+						for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+						{
+							g_cursor[i].use = false;
+						}
+						g_nownum = -1;
+						pad_reset();
+					}
+				}
+				else
+				{
+
+				}
+			}
+		}
+
+		g_pad_inputprev.x = GetThumbRightX(0);
+		g_pad_inputprev.y = GetThumbRightY(0);
+
+	}
 	else if(g_nownum != -1)
 	{
 		for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 		{
-			g_cursor[i].use = false;
+			if (g_nownum == i)
+			{
+			}
+			else
+			{
+				g_cursor[i].use = false;
+			}
+		}
+		if(g_cursol_prev == true)
+		{
+			pad_reset();
+			g_cursol_prev = false;
+			g_cursor[g_nownum].use = false;
+			g_playerflame = 0;
+			g_targetnum = -1;
+		}
+		else
+		{
+			g_targetnum = g_nownum;
 		}
 		g_nownum = -1;
+
+
 	}
 
 	//==========================================
 
-
+	//==========================================
+	if (g_nownum != -1)
+		g_targetnum = g_nownum;
+	if (g_targetnum != -1)
+		g_playerflame += 1;
+	if (g_playerflame >= 50)
+	{
+		Normalizer(g_Player.pos, g_cursor[g_targetnum].pos - BasePos);
+		g_playerflame = 0;
+	}
+	//==========================================
 
 
 	//キーボードのAキーが押されたら左に移動する
-	if (GetKeyboardPress(DIK_A))
+	if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
 	{
 		g_Player.pos.x -= g_Player.spjp.x;
 		g_Player.vec.x = -2.0;
 	}
 	//キーボードのDキーが押されたら右に移動する
-	if (GetKeyboardPress(DIK_D))
+	if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
 	{
 		g_Player.pos.x += g_Player.spjp.x;
 		g_Player.vec.x = 2.0;
@@ -265,10 +458,11 @@ void DrawPlayer(void)
 	{
 		if (g_cursor[i].use == true)
 		{
-			DrawSprite(g_TextureNo2,g_cursor[i].pos.x,g_cursor[i].pos.y,
-				120.0f, 120.0f,
+
+			DrawSpriteColor(g_TextureNo2,g_cursor[i].pos.x,g_cursor[i].pos.y,
+				40.0f, 40.0f,
 				1.0f, 0.0,
-				1.0f, 1.0f);
+				1.0f, 1.0f, {1.0f,0.6f,0.9f,1.0f});
 
 			//DrawSprite(g_TextureNo, basePos.x + g_cursor[i].pos.x, basePos.y + g_cursor[i].pos.y,
 			//	120.0f, 120.0f,
@@ -308,7 +502,14 @@ PLAYER* GetPlayer(void)
 }
 
 
+void pad_reset(void)
+{
+	g_pad_curpos.x = (SCREEN_WIDTH / 4) * 3;
+	g_pad_curpos.y = SCREEN_HEIGHT / 2;
 
+	g_pad_inputprev.x = 0;
+	g_pad_inputprev.y = 0;
+}
 
 
 //bool CompositionAkari(int clossStart)

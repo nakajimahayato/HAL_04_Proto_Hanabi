@@ -13,9 +13,9 @@
 #include "bg.h"
 #include "collision.h"
 #include "camera.h"
-#include "input.h"
 #include "object.h"
 #include "stage.h"
+#include "inputx.h"
 
 
 //*****************************************************************************

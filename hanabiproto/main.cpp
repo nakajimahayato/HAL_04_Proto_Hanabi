@@ -9,11 +9,12 @@
 #include "main.h"
 #include <time.h>
 #include "renderer.h"
-#include "input.h"
 #include "sound.h"
 #include "texture.h"
 #include "sprite.h"
 #include "game.h"
+#include "inputx.h"
+#include "input.h"
 
 
 //*****************************************************************************
@@ -205,11 +206,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //=============================================================================
 HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
+	// 入力処理の初期化
+	InitInputx(hInstance, hWnd);
+	InitInput(hInstance, hWnd);
 	// レンダリング処理の初期化
 	InitRenderer(hInstance, hWnd, bWindow);
 
-	// 入力処理の初期化
-	InitInput(hInstance, hWnd);
+
 
 	// サウンドの初期化
 	InitSound(hWnd);
@@ -235,6 +238,7 @@ void Uninit(void)
 	UninitSound();
 
 	// 入力処理の終了処理
+	UninitInputx();
 	UninitInput();
 
 	// レンダリングの終了処理
@@ -247,6 +251,7 @@ void Uninit(void)
 void Update(void)
 {
 	// 入力処理の更新処理
+	UpdateInputx();
 	UpdateInput();
 
 	/*switch (g_Scene)
