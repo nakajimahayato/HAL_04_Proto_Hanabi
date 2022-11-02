@@ -149,6 +149,7 @@ void UpdateAkariObject(void)
 						{
 							g_AkariObject[j].use = false;
 							g_AkariObject[j].frame = 0;
+							plus_hissatuwaza(5);
 						}
 					}
 				}
@@ -201,6 +202,49 @@ void Akarigather(int index)
 }
 
 void SetAkari(Float2 pos)
+{
+	int create_akari = 4;
+	Float2 akarivec[4] =
+	{
+		{1.0f,0.0f},
+		{-1.0f,0.0f},
+		{0.0f,1.0f},
+		{0.0f,-1.0f}
+	};
+
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				float RGB[3];
+				int saidai = 0;
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+					if (RGB[saidai] <= RGB[j])
+						saidai = j;
+				}
+				RGB[saidai] = 1.0f;
+				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
+
+void SetAkari(Float2 pos,D3DXCOLOR color)
 {
 	int create_akari = 4;
 	Float2 akarivec[4] =
