@@ -16,6 +16,7 @@
 #include "object.h"
 #include "stage.h"
 #include "inputx.h"
+#include "enemy.h"
 
 
 //*****************************************************************************
@@ -39,6 +40,7 @@ HRESULT InitGame(void)
 	// 頂点管理の初期化処理
 	InitAkariObject();
 	InitPlayer();
+	InitEnemy();
 	InitAtHanabi();
 
 	// 背景の初期化
@@ -65,6 +67,7 @@ void UninitGame(void)
 	UninitStage();
 	// 頂点管理の終了処理
 	UninitPlayer();
+	UninitEnemy();
 
 	UninitAkariObject();
 
@@ -80,6 +83,7 @@ void UpdateGame(void)
 	// 頂点管理の更新処理
 	UpdateAkariObject();
 	UpdatePlayer();
+	UpdateEnemy();
 	UpdateAtHanabi();
 	//背景の更新処理
 	UpdateBG();
@@ -101,6 +105,7 @@ void DrawGame(void)
 	// 頂点管理の描画処理
 	DrawAkariObject();
 	DrawPlayer();
+	DrawEnemy();
 
 	DrawAtHanabi();
 

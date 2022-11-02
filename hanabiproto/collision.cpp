@@ -71,7 +71,7 @@ bool HitCheckBox(Float2 box1pos, Float2 box1siz
 	return false;
 }
 
-//” ‚Æ” ‚Ì“–‚½‚è”»’è
+//” ‚Æ“_‚Ì“–‚½‚è”»’è
 bool HitCheckBox(Float2 boxpos, Float2 boxsiz
 				, Float2 pointpos)
 {
