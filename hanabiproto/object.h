@@ -16,7 +16,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define AKARI_NUM	200
+#define AKARI_NUM	30000
 
 
 class GameObject
@@ -26,6 +26,7 @@ public:
 	Float2			vec;//移動
 	Float2			siz;//大きさ
 	Float2			dir;//移動方向
+	D3DXCOLOR		color;
 	bool			use;//useフラグ
 	bool			setvec;
 };
@@ -60,3 +61,5 @@ void UninitAtHanabi(void);
 void UpdateAtHanabi(void);
 void DrawAtHanabi(void);
 Float2 GetAtHanabiDeadPos(int index);
+Float2 GetAtHanabiPos(Float2 PosA, Float2 PosB);
+void Normalizer(Float2 Player, Float2 Cursor);

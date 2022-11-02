@@ -40,7 +40,7 @@ bool g_composition;
 //=============================================================================							
 HRESULT InitAkariObject(void)
 {
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_effect_explosion.png");
+	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 
 	//初期化
 	for (int i = 0; i < AKARI_NUM; i++)
@@ -52,15 +52,22 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].dir.y = 0.0f;
 		g_AkariObject[i].pos.x = SCREEN_WIDTH;
 		g_AkariObject[i].pos.y = SCREEN_HEIGHT;
+		g_AkariObject[i].frame = 0;
+		g_AkariObject[i].color = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
-	//お試し
-	for (int i = 0; i < 5; i++)
+	////お試し
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	g_AkariObject[i].gather = true;
+	//	g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
+	//	g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
+	//	g_AkariObject[i].use = true;
+	//}
+
+	for (int i = 0; i < AKARI_NUM; i++)
 	{
-		g_AkariObject[i].gather = true;
-		g_AkariObject[i].pos.x = frand() * SCREEN_WIDTH;
-		g_AkariObject[i].pos.y = frand() * SCREEN_HEIGHT;
-		g_AkariObject[i].use = true;
+		MovePos[i] = { 0.0f,0.0f };
 	}
 
 	g_U = 0.0f;
@@ -106,15 +113,15 @@ void UpdateAkariObject(void)
 	//囲った範囲内の「AKARI」が集まるように
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
-		if (g_AkariObject[i].use && g_AkariObject[i].setvec == false && Ppos.x != GetPlayer()->pos.x && Ppos.y != GetPlayer()->pos.y)
+		if (g_AkariObject[i].gather&&g_AkariObject[i].use == true && g_AkariObject[i].setvec == false && Ppos.x != GetPlayer()->pos.x && Ppos.y != GetPlayer()->pos.y)
 		{
 				//地点Aから地点Bの移動距離
 				//MovePos=地点B - 地点A;
 				MovePos[i].x = GetPlayer()->pos.x - g_AkariObject[i].pos.x;
 				MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
 				//何フレームかけて集まるか
-				MovePos[i].x /= 60;
-				MovePos[i].y /= 60;
+				MovePos[i].x /= (60 / (g_AkariObject[i].frame + 1 * 5));
+				MovePos[i].y /= (60 / (g_AkariObject[i].frame + 1 * 5));
 
 				//g_AkariObject[i].setvec = true;
 		}
@@ -125,11 +132,39 @@ void UpdateAkariObject(void)
 			g_AkariObject[i].pos.x += MovePos[i].x;
 			g_AkariObject[i].pos.y += MovePos[i].y;
 
-			if (g_AkariObject[i].pos.x < /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x + 9 && g_AkariObject[i].pos.x >/*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - 9
-				&& g_AkariObject[i].pos.y </*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y + 9 && g_AkariObject[i].pos.y > /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - 9)
+			if (g_AkariObject[i].pos.x < /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x + 19 && g_AkariObject[i].pos.x >/*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - 19
+				&& g_AkariObject[i].pos.y </*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y + 19 && g_AkariObject[i].pos.y > /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - 19)
 			{
 				MovePos[i].x = 0.0f;
 				MovePos[i].y = 0.0f;
+				g_AkariObject[i].frame += 1;
+
+
+				//合成後消滅ーーー
+				if (g_AkariObject[i].frame > 40)
+				{
+					for (int j = 0; j < AKARI_NUM; j++)
+					{
+						if (g_AkariObject[j].gather == true && g_AkariObject[j].use == true)
+						{
+							g_AkariObject[j].use = false;
+							g_AkariObject[j].frame = 0;
+						}
+					}
+				}
+			}
+		}
+		else if (g_AkariObject[i].use == true)
+		{
+			g_AkariObject[i].pos.x += MovePos[i].x * 3;
+			g_AkariObject[i].pos.y += MovePos[i].y * 3;
+			g_AkariObject[i].frame += 1;
+			//合成できず消滅ーーー
+			if (g_AkariObject[i].frame > 400)
+			{
+				g_AkariObject[i].use = false;
+				g_AkariObject[i].frame = 0;
+
 			}
 		}
 	}
@@ -146,8 +181,8 @@ void DrawAkariObject(void)
 	{
 		if (g_AkariObject[i].use == true)
 		{
-			DrawSprite(g_TextureNo, basePos.x + g_AkariObject[i].pos.x, basePos.y + g_AkariObject[i].pos.y, 120.0f, 120.0f,
-				1.0f, 1.0f, 1.0f, 1.0f);
+			DrawSpriteColor(g_TextureNo, basePos.x + g_AkariObject[i].pos.x, basePos.y + g_AkariObject[i].pos.y, 60.0f, 60.0f,
+				1.0f, 1.0f, 1.0f, 1.0f, g_AkariObject[i].color);
 		}
 	}
 
@@ -162,16 +197,48 @@ HanabiAkariObject GetAkariObject(int index)
 void Akarigather(int index)
 {
 	g_AkariObject[index].gather = true;
+	g_AkariObject[index].frame = 0;
 }
 
 void SetAkari(Float2 pos)
 {
+	int create_akari = 4;
+	Float2 akarivec[4] =
+	{
+		{1.0f,0.0f},
+		{-1.0f,0.0f},
+		{0.0f,1.0f},
+		{0.0f,-1.0f}
+	};
+
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
 		if (g_AkariObject[i].use == false)
 		{
 			g_AkariObject[i].use = true;
 			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				float RGB[3];
+				int saidai = 0;
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+					if (RGB[saidai] <= RGB[j])
+						saidai = j;
+				}
+				RGB[saidai] = 1.0f;
+				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
 		}
 	}
 }
