@@ -24,6 +24,7 @@
 //*****************************************************************************
 #define PLAYER_DISP_X (SCREEN_WIDTH/2)
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)
+#define HISSATU_COOLTIME (280)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -51,6 +52,7 @@ Float2 g_pad_inputprev;
 bool g_cursol_prev;
 
 int g_playerflame;
+int g_Hissattu;
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
 
@@ -118,6 +120,7 @@ HRESULT InitPlayer(void)
 	//ゲーム開始時の時刻を取得する
 	g_StartTime = timeGetTime();
 	g_nownum = -1;
+	g_Hissattu = 0;
 
 	//カーソル初期化
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
@@ -146,279 +149,293 @@ void UpdatePlayer(void)
 	D3DXVECTOR2 basePos = GetBase();
 	Float2 BasePos(basePos.x, basePos.y);
 
-	//cursor処理＝＝＝＝＝＝＝＝＝
-	if (GetKeyState(VK_LBUTTON) & 0x80)
+	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+	if (g_Hissattu <= 0)
 	{
-		bool flag = false;
-		if (g_nownum != -1)
+		//cursor処理＝＝＝＝＝＝＝＝＝
+		if (GetKeyState(VK_LBUTTON) & 0x80)
 		{
-			flag = true;
-		}
-		if (g_cursol_prev == false)
-		{
-			g_cursor[g_nownum].use = false;
-		}
-		g_cursol_prev = true;
-		g_playerflame += 1;
-
-
-		g_curmax++;
-		g_nownum++;
-		if (g_nownum >= PLAYER_CURSOR_NUM)
-		{
-			g_nownum = 0;
-		}
-		if (g_curmax >= PLAYER_CURSOR_NUM)
-		{
-			g_curmax = PLAYER_CURSOR_NUM;
-		}
-
-		GetCursorPos(&cursorPos);
-		ScreenToClient(GethWnd(), &cursorPos);
-		cursorposf.x = (float)cursorPos.x;
-		cursorposf.y = (float)cursorPos.y;
-		g_cursor[g_nownum].pos.x = (cursorposf.x);
-		g_cursor[g_nownum].pos.y = (cursorposf.y);
-		g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
-		g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
-		if (flag)
-		{
-			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
-		}
-		g_cursor[g_nownum].use = true;
-		//色づけ
-		{
-			float RGB[3];
-			int saidai = 0;
-			for (int j = 0; j < 3; j++)
+			bool flag = false;
+			if (g_nownum != -1)
 			{
-				RGB[j] = frand();
-				if (RGB[saidai] <= RGB[j])
-					saidai = j;
+				flag = true;
 			}
-			RGB[saidai] = 1.0f;
-			g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
-		}
-		g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
-
-		Float2 maxvec = {0,0};
-		float maxvecf;
-		for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-		{
-			if (g_cursor[i].use == true)
+			if (g_cursol_prev == false)
 			{
-				maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
-				maxvecf = maxvec.x + maxvec.y;
+				g_cursor[g_nownum].use = false;
 			}
-		}
+			g_cursol_prev = true;
+			g_playerflame += 1;
 
-		for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
-		{
-			int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
-			if (g_cursor[j].use == true)
+
+			g_curmax++;
+			g_nownum++;
+			if (g_nownum >= PLAYER_CURSOR_NUM)
 			{
-				if (maxvecf > 700)
+				g_nownum = 0;
+			}
+			if (g_curmax >= PLAYER_CURSOR_NUM)
+			{
+				g_curmax = PLAYER_CURSOR_NUM;
+			}
+
+			GetCursorPos(&cursorPos);
+			ScreenToClient(GethWnd(), &cursorPos);
+			cursorposf.x = (float)cursorPos.x;
+			cursorposf.y = (float)cursorPos.y;
+			g_cursor[g_nownum].pos.x = (cursorposf.x);
+			g_cursor[g_nownum].pos.y = (cursorposf.y);
+			g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
+			g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
+			if (flag)
+			{
+				g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
+			}
+			g_cursor[g_nownum].use = true;
+			//色づけ
+			{
+				float RGB[3];
+				int saidai = 0;
+				for (int j = 0; j < 3; j++)
 				{
-					if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
-						, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
+					RGB[j] = frand();
+					if (RGB[saidai] <= RGB[j])
+						saidai = j;
+				}
+				RGB[saidai] = 1.0f;
+				g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+			g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
+
+			Float2 maxvec = { 0,0 };
+			float maxvecf;
+			for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+			{
+				if (g_cursor[i].use == true)
+				{
+					maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
+					maxvecf = maxvec.x + maxvec.y;
+				}
+			}
+
+			for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
+			{
+				int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
+				if (g_cursor[j].use == true)
+				{
+					if (maxvecf > 700)
 					{
-						//ここにcross時の処理
-						CompositionAkari(j, g_nownum);
-						for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+						if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
+							, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
 						{
-							g_cursor[i].use = false;
+							//ここにcross時の処理
+							CompositionAkari(j, g_nownum);
+							for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+							{
+								g_cursor[i].use = false;
+							}
+							g_nownum = -1;
+							pad_reset();
 						}
-						g_nownum = -1;
-						pad_reset();
 					}
+					else
+					{
+
+					}
+				}
+			}
+		}
+		else if (0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y) || 0 < fabsf(GetThumbRightX(0)) + fabsf(GetThumbRightY(0)))
+		{
+			g_cursol_prev = false;
+
+			bool flag = false;
+			if (g_nownum != -1)
+			{
+				flag = true;
+			}
+			g_curmax++;
+			g_nownum++;
+			g_playerflame += 1;
+
+
+			if (g_nownum >= PLAYER_CURSOR_NUM)
+			{
+				g_nownum = 0;
+			}
+			if (g_curmax >= PLAYER_CURSOR_NUM)
+			{
+				g_curmax = PLAYER_CURSOR_NUM;
+			}
+
+			g_pad_curpos.x += (GetThumbRightX(0) * 2) * (fabsf(GetThumbRightX(0)) * 7) * 2.5;
+			g_pad_curpos.y += (-GetThumbRightY(0) * 2) * (fabsf(GetThumbRightY(0)) * 7) * 2.5;
+
+			if (g_pad_curpos.x < 0)
+			{
+				g_pad_curpos.x = 0;
+			}
+			if (g_pad_curpos.x > SCREEN_WIDTH)
+			{
+				g_pad_curpos.x = SCREEN_WIDTH;
+			}
+			if (g_pad_curpos.y < 0)
+			{
+				g_pad_curpos.y = 0;
+			}
+			if (g_pad_curpos.y > SCREEN_HEIGHT)
+			{
+				g_pad_curpos.y = SCREEN_HEIGHT;
+			}
+
+			//重要！cursor位置＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ー
+			cursorposf.x = g_pad_curpos.x;
+			cursorposf.y = g_pad_curpos.y;
+			//cursorposf.x = (GetThumbRightX(0) * 0.6 + 1) * (SCREEN_WIDTH / 2);
+			//cursorposf.y = SCREEN_HEIGHT - ((GetThumbRightY(0) * 0.6 + 1) * (SCREEN_HEIGHT / 2));
+			//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+			g_cursor[g_nownum].pos.x = (cursorposf.x);
+			g_cursor[g_nownum].pos.y = (cursorposf.y);
+			g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
+			g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
+			if (flag)
+			{
+				g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
+			}
+			g_cursor[g_nownum].use = true;
+			//色づけ
+			{
+				float RGB[3];
+				int saidai = 0;
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+					if (RGB[saidai] <= RGB[j])
+						saidai = j;
+				}
+				RGB[saidai] = 1.0f;
+				g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+			g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
+
+			Float2 maxvec = { 0,0 };
+			float maxvecf;
+			for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+			{
+				if (g_cursor[i].use == true)
+				{
+					maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
+					maxvecf = maxvec.x + maxvec.y;
+				}
+			}
+
+			for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
+			{
+				int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
+				if (g_cursor[j].use == true)
+				{
+					if (maxvecf > 500 && 0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y))
+					{
+						if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
+							, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
+						{
+							//ここにcross時の処理
+							CompositionAkari(j, g_nownum);
+							for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+							{
+								g_cursor[i].use = false;
+							}
+							g_nownum = -1;
+							pad_reset();
+						}
+					}
+					else
+					{
+
+					}
+				}
+			}
+
+			g_pad_inputprev.x = GetThumbRightX(0);
+			g_pad_inputprev.y = GetThumbRightY(0);
+
+		}
+		else if (g_nownum != -1)
+		{
+			for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+			{
+				if (g_nownum == i)
+				{
 				}
 				else
 				{
-
+					g_cursor[i].use = false;
 				}
 			}
-		}
-	}
-	else if (0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y) || 0 < fabsf(GetThumbRightX(0)) + fabsf(GetThumbRightY(0)))
-	{
-		g_cursol_prev = false;
-
-		bool flag = false;
-		if (g_nownum != -1)
-		{
-			flag = true;
-		}
-		g_curmax++;
-		g_nownum++;
-		g_playerflame += 1;
-
-
-		if (g_nownum >= PLAYER_CURSOR_NUM)
-		{
-			g_nownum = 0;
-		}
-		if (g_curmax >= PLAYER_CURSOR_NUM)
-		{
-			g_curmax = PLAYER_CURSOR_NUM;
-		}
-
-		g_pad_curpos.x += (GetThumbRightX(0) * 2) * (fabsf(GetThumbRightX(0)) * 7) * 2.5;
-		g_pad_curpos.y += (-GetThumbRightY(0) * 2) * (fabsf(GetThumbRightY(0)) * 7) * 2.5;
-
-		if (g_pad_curpos.x < 0)
-		{
-			g_pad_curpos.x = 0;
-		}
-		if (g_pad_curpos.x > SCREEN_WIDTH)
-		{
-			g_pad_curpos.x = SCREEN_WIDTH;
-		}
-		if (g_pad_curpos.y < 0)
-		{
-			g_pad_curpos.y = 0;
-		}
-		if (g_pad_curpos.y > SCREEN_HEIGHT)
-		{
-			g_pad_curpos.y = SCREEN_HEIGHT;
-		}
-
-		//重要！cursor位置＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ー
-		cursorposf.x = g_pad_curpos.x;
-		cursorposf.y = g_pad_curpos.y;
-		//cursorposf.x = (GetThumbRightX(0) * 0.6 + 1) * (SCREEN_WIDTH / 2);
-		//cursorposf.y = SCREEN_HEIGHT - ((GetThumbRightY(0) * 0.6 + 1) * (SCREEN_HEIGHT / 2));
-		//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-		g_cursor[g_nownum].pos.x = (cursorposf.x);
-		g_cursor[g_nownum].pos.y = (cursorposf.y);
-		g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
-		g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
-		if (flag)
-		{
-			g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
-		}
-		g_cursor[g_nownum].use = true;
-		//色づけ
-		{
-			float RGB[3];
-			int saidai = 0;
-			for (int j = 0; j < 3; j++)
+			if (g_cursol_prev == true)
 			{
-				RGB[j] = frand();
-				if (RGB[saidai] <= RGB[j])
-					saidai = j;
-			}
-			RGB[saidai] = 1.0f;
-			g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
-		}
-		g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
-
-		Float2 maxvec = { 0,0 };
-		float maxvecf;
-		for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-		{
-			if (g_cursor[i].use == true)
-			{
-				maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
-				maxvecf = maxvec.x + maxvec.y;
-			}
-		}
-
-		for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
-		{
-			int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
-			if (g_cursor[j].use == true)
-			{
-				if (maxvecf > 500 && 0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y))
-				{
-					if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
-						, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
-					{
-						//ここにcross時の処理
-						CompositionAkari(j, g_nownum);
-						for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-						{
-							g_cursor[i].use = false;
-						}
-						g_nownum = -1;
-						pad_reset();
-					}
-				}
-				else
-				{
-
-				}
-			}
-		}
-
-		g_pad_inputprev.x = GetThumbRightX(0);
-		g_pad_inputprev.y = GetThumbRightY(0);
-
-	}
-	else if(g_nownum != -1)
-	{
-		for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-		{
-			if (g_nownum == i)
-			{
+				pad_reset();
+				g_cursol_prev = false;
+				g_cursor[g_nownum].use = false;
+				g_playerflame = 0;
+				g_targetnum = -1;
 			}
 			else
 			{
-				g_cursor[i].use = false;
+				g_targetnum = g_nownum;
 			}
+			g_nownum = -1;
+
+
 		}
-		if(g_cursol_prev == true)
-		{
-			pad_reset();
-			g_cursol_prev = false;
-			g_cursor[g_nownum].use = false;
-			g_playerflame = 0;
-			g_targetnum = -1;
-		}
-		else
-		{
+
+		//==========================================
+
+		//==========================================
+		if (g_nownum != -1)
 			g_targetnum = g_nownum;
+		if (g_targetnum != -1)
+			g_playerflame += 1;
+		if (g_playerflame >= 50)
+		{
+			Normalizer(g_Player.pos, g_cursor[g_targetnum].pos - BasePos);
+			g_playerflame = 0;
 		}
-		g_nownum = -1;
+		//==========================================
 
 
+		//キーボードのAキーが押されたら左に移動する
+		if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
+		{
+			g_Player.pos.x -= g_Player.spjp.x;
+			g_Player.vec.x = -2.0;
+		}
+		//キーボードのDキーが押されたら右に移動する
+		if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
+		{
+			g_Player.pos.x += g_Player.spjp.x;
+			g_Player.vec.x = 2.0;
+		}
+
+		//if (GetKeyboardPress(DIK_W))
+		//{
+		//	g_Player.pos.y -= 2.0f;
+		//}
+		//if (GetKeyboardPress(DIK_S))
+		//{
+		//	g_Player.pos.y += 2.0f;
+		//}
 	}
-
-	//==========================================
-
-	//==========================================
-	if (g_nownum != -1)
-		g_targetnum = g_nownum;
-	if (g_targetnum != -1)
-		g_playerflame += 1;
-	if (g_playerflame >= 50)
+	else if (g_Hissattu > 0)
 	{
-		Normalizer(g_Player.pos, g_cursor[g_targetnum].pos - BasePos);
-		g_playerflame = 0;
+		if (g_Hissattu > HISSATU_COOLTIME)
+		{
+			Float2 hissatuwaza(frand() * SCREEN_WIDTH, frand() * SCREEN_HEIGHT);
+			Normalizer(g_Player.pos, hissatuwaza - BasePos);
+		}
+		g_Hissattu--;
 	}
-	//==========================================
-
-
-	//キーボードのAキーが押されたら左に移動する
-	if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
-	{
-		g_Player.pos.x -= g_Player.spjp.x;
-		g_Player.vec.x = -2.0;
-	}
-	//キーボードのDキーが押されたら右に移動する
-	if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
-	{
-		g_Player.pos.x += g_Player.spjp.x;
-		g_Player.vec.x = 2.0;
-	}
-
-	//if (GetKeyboardPress(DIK_W))
-	//{
-	//	g_Player.pos.y -= 2.0f;
-	//}
-	//if (GetKeyboardPress(DIK_S))
-	//{
-	//	g_Player.pos.y += 2.0f;
-	//}
+	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 
 	//カメラ座標の更新
@@ -436,7 +453,7 @@ void UpdatePlayer(void)
 
 	unsigned int nowTime = timeGetTime();
 
-//	SetNumber(30000-(nowTime - g_StartTime));
+	//	SetNumber(30000-(nowTime - g_StartTime));
 	g_Second = (nowTime - g_StartTime) / 1000;
 	g_MiliSecond = ((nowTime - g_StartTime) % 1000) / 10;
 }
@@ -509,6 +526,17 @@ void pad_reset(void)
 
 	g_pad_inputprev.x = 0;
 	g_pad_inputprev.y = 0;
+}
+
+void plus_hissatuwaza(int index)
+{
+	g_Hissattu += index;
+	if (g_Hissattu > HISSATU_COOLTIME + 200)
+		g_Hissattu = HISSATU_COOLTIME + 200;
+	else if(g_Hissattu < HISSATU_COOLTIME + index)
+	{
+		g_Hissattu = HISSATU_COOLTIME + index;
+	}
 }
 
 
