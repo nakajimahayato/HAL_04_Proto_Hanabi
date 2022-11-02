@@ -24,23 +24,27 @@ class GameObject
 public:
 	Float2			pos;//座標
 	Float2			vec;//移動
+	Float2			speed;
 	Float2			siz;//大きさ
 	Float2			dir;//移動方向
 	D3DXCOLOR		color;
 	bool			use;//useフラグ
-	bool			setvec;
+	float			frame;
 };
 
 class HanabiAkariObject:public GameObject
 {
 public:
 	bool			gather;//集まるあかり
-	float			frame;
+	
+	bool			setvec;
 };
 
 class EnemyObject :public GameObject
 {
-	
+	float			Health;
+	float			Attack;
+	float			Gravity;
 };
 
 //*****************************************************************************
