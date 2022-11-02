@@ -29,9 +29,10 @@ struct PLAYER
 
 struct CURSOR
 {
-
+public:
 	Float2		pos;
 	Float2		prev_pos;
+	D3DXCOLOR	color;
 
 	//bool		csInp;	//カーソル入力判別用
 	bool		use;
