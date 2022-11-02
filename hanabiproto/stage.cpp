@@ -97,7 +97,7 @@ void DrawStage(void)
 		{
 			if (StageBase[y][x] == 1)
 			{
-				DrawSprite(g_TextureNo, 32.0f+64*x, SCREEN_HEIGHT-300.0f, 64.0f, 32.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+				DrawSprite(g_TextureNo, basePos.x + 32.0f + 64.0f*x, basePos.y + SCREEN_HEIGHT - 300.0f, 64.0f, 32.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 			}
 			
 		}
