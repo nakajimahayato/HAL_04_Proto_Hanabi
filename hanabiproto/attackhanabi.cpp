@@ -27,6 +27,7 @@ struct AtHANABI
 	float		frame;	//持続時間
 	Float2		vec;
 	D3DXCOLOR		color;
+	int			saidaiing;
 
 	bool			use;	//可視フラグ
 };
@@ -69,6 +70,7 @@ HRESULT InitAtHanabi(void)
 		g_HANABI[i].speed = 3.0f;					//移動速度
 		g_HANABI[i].frame = 0.0f;
 		g_HANABI[i].color = { 0.0f,0.0f,0.0f,1.0f };
+		g_HANABI[i].saidaiing = 0;
 
 		g_HANABI[i].use = false;
 	}
@@ -111,7 +113,7 @@ void UpdateAtHanabi(void)
 				AtHanabiDeadPos[i] = g_HANABI[i].pos;
 				g_HANABI[i].use = false;
 
-				SetAkari(g_HANABI[i].pos);
+				SetAkari(g_HANABI[i].pos, g_HANABI[i].saidaiing);
 			}
 		}
 	}
@@ -301,6 +303,7 @@ void Normalizer(Float2 Player, Float2 Cursor)
 				}
 				RGB[saidai] = 1.0f;
 				g_HANABI[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+				g_HANABI[i].saidaiing = saidai;
 			}
 			//ｂレーク
 			break;
