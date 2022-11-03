@@ -54,6 +54,7 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].pos.y = SCREEN_HEIGHT;
 		g_AkariObject[i].frame = 0;
 		g_AkariObject[i].color = { 1.0f,1.0f,1.0f,1.0f };
+		g_AkariObject[i].siz = { 32.0f,32.0f };
 	}
 
 	////お試し
@@ -244,7 +245,7 @@ void SetAkari(Float2 pos)
 	}
 }
 
-void SetAkari(Float2 pos,D3DXCOLOR color)
+void SetAkari(Float2 pos, int saidai)
 {
 	int create_akari = 4;
 	Float2 akarivec[4] =
@@ -267,12 +268,9 @@ void SetAkari(Float2 pos,D3DXCOLOR color)
 			//色づけ
 			{
 				float RGB[3];
-				int saidai = 0;
 				for (int j = 0; j < 3; j++)
 				{
 					RGB[j] = frand();
-					if (RGB[saidai] <= RGB[j])
-						saidai = j;
 				}
 				RGB[saidai] = 1.0f;
 				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };

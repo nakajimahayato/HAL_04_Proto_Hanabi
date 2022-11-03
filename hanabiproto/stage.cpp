@@ -54,7 +54,7 @@ static float g_U, g_V;
 //=============================================================================							
 HRESULT InitStage(void)
 {
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_robot_stage_zimen.png");
+	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_robot_stage_zimen2.png");
 
 	//èâä˙âª
 	g_Stage.pos.x = SCREEN_WIDTH;
