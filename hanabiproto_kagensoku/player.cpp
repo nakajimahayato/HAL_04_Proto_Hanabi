@@ -25,6 +25,7 @@
 #define PLAYER_DISP_X (SCREEN_WIDTH/2)
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)
 #define HISSATU_COOLTIME (280)
+#define accelerationX (0.5f)
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -100,8 +101,10 @@ HRESULT InitPlayer(void)
 	g_Player.pos.x = PLAYER_DISP_X;
 	g_Player.pos.y = PLAYER_DISP_Y;
 
-	g_Player.spjp.x = 8.0f;
+	g_Player.spjp.x = 0.0f;
 	g_Player.spjp.y = 8.0f;
+	g_Player.acceleration = 0.0f;
+	g_Player.max_speed = 10.0f;
 
 	//Xinput初期化
 	//XInputEnable(true);
@@ -113,7 +116,7 @@ HRESULT InitPlayer(void)
 
 	//g_AnimeIndex = 0;
 	//g_AnimeWait = 0;
-	
+
 	g_U = 0.0f;
 	g_V = 0.0f;
 
@@ -402,20 +405,37 @@ void UpdatePlayer(void)
 			g_playerflame = 0;
 		}
 		//==========================================
-
-
+		///////////////////
+		//移動/////////////
+		///////////////////
 		//キーボードのAキーが押されたら左に移動する
 		if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
 		{
-			g_Player.pos.x -= g_Player.spjp.x;
+			g_Player.acceleration -= accelerationX;
+			g_Player.spjp.x += g_Player.acceleration;
 			g_Player.vec.x = -2.0;
 		}
 		//キーボードのDキーが押されたら右に移動する
-		if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
+		else if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
 		{
-			g_Player.pos.x += g_Player.spjp.x;
+			g_Player.acceleration += accelerationX;
+			g_Player.spjp.x += g_Player.acceleration;
 			g_Player.vec.x = 2.0;
 		}
+
+		else {
+			g_Player.acceleration = 0;
+		}
+		if (g_Player.spjp.x > g_Player.max_speed) {
+			g_Player.spjp.x = g_Player.max_speed;
+		}
+		if (g_Player.spjp.x < (g_Player.max_speed * -1)) {
+			g_Player.spjp.x = (g_Player.max_speed * -1);
+		}
+
+		g_Player.pos.x += g_Player.spjp.x;
+		g_Player.spjp.x *= 0.9f;
+
 
 		//if (GetKeyboardPress(DIK_W))
 		//{
@@ -466,9 +486,9 @@ void DrawPlayer(void)
 	//ベース座標を取得する
 	D3DXVECTOR2 basePos = GetBase();
 
-	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y, 
+	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y,
 		120.0f, 120.0f,
-		0.33333, 0.0, 
+		0.33333, 0.0,
 		0.33333f, 1.0f);
 
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
@@ -476,10 +496,10 @@ void DrawPlayer(void)
 		if (g_cursor[i].use == true)
 		{
 
-			DrawSpriteColor(g_TextureNo2,g_cursor[i].pos.x,g_cursor[i].pos.y,
+			DrawSpriteColor(g_TextureNo2, g_cursor[i].pos.x, g_cursor[i].pos.y,
 				40.0f, 40.0f,
 				1.0f, 0.0,
-				1.0f, 1.0f, {1.0f,0.6f,0.9f,1.0f});
+				1.0f, 1.0f, { 1.0f,0.6f,0.9f,1.0f });
 
 			//DrawSprite(g_TextureNo, basePos.x + g_cursor[i].pos.x, basePos.y + g_cursor[i].pos.y,
 			//	120.0f, 120.0f,
@@ -490,7 +510,7 @@ void DrawPlayer(void)
 
 }
 
-bool CompositionAkari(int clossStart,int clossGoal)
+bool CompositionAkari(int clossStart, int clossGoal)
 {
 	bool useflag = false;
 	int length = Float2_length_gather(clossStart, clossGoal);
@@ -503,12 +523,12 @@ bool CompositionAkari(int clossStart,int clossGoal)
 			useflag = true;
 		Float2 apos = GetAkariObject(h).pos;
 
-		if(HitCheckConcavePolygon(g_cursor, apos, clossStart, length) == true)
+		if (HitCheckConcavePolygon(g_cursor, apos, clossStart, length) == true)
 		{
 			Akarigather(h);
 		}
 	}
-	
+
 
 	return true;
 }
@@ -528,12 +548,13 @@ void pad_reset(void)
 	g_pad_inputprev.y = 0;
 }
 
+
 void plus_hissatuwaza(int index)
 {
 	g_Hissattu += index;
 	if (g_Hissattu > HISSATU_COOLTIME + 200)
 		g_Hissattu = HISSATU_COOLTIME + 200;
-	else if(g_Hissattu < HISSATU_COOLTIME + index)
+	else if (g_Hissattu < HISSATU_COOLTIME + index)
 	{
 		g_Hissattu = HISSATU_COOLTIME + index;
 	}
