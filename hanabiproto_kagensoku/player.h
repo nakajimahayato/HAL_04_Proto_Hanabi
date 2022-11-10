@@ -24,6 +24,8 @@ struct PLAYER
 	Float2		pos;	//プレイヤーの現在位置
 	Float2		vec;	//プレイヤーのベクトル
 	Float2		spjp;	//プレイヤーの移動とジャンプ速度
+	float       acceleration; //加速度
+	float       max_speed;    //最高速度
 
 };
 
