@@ -284,3 +284,21 @@ void SetAkari(Float2 pos, int saidai)
 		}
 	}
 }
+
+void SetAkari(Float2 pos, int saidai, float speed, Float2 vec)
+{
+
+	//g_AkariObject[i], pos = pos;
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = vec;
+			g_AkariObject[i].gather = false;
+			//MovePos[i] = akarivec[create_akari - 1];
+		}
+	}
+			
+}
