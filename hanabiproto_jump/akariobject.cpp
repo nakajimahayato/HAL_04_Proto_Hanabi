@@ -1,8 +1,8 @@
 /*==============================================================================
 
-				   ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå‡¦ç† [akariobject.cpp]
-				Author : ã„ã§ã†ã‚‰
-				Date    : 2022/10/23(æœ€çµ‚ç·¨é›†æ—¥)
+				   ƒIƒuƒWƒFƒNƒgˆ— [akariobject.cpp]
+				Author : ‚¢‚Å‚¤‚ç
+				Date    : 2022/10/23(ÅI•ÒW“ú)
 ------------------------------------------------------------------------------------------------------------------------------------------
 
 ==============================================================================*/
@@ -15,14 +15,14 @@
 #include "player.h"
 
 //*****************************************************************************							
-// ãƒã‚¯ãƒ­å®šç¾©							
+// ƒ}ƒNƒ’è‹`							
 //*****************************************************************************							
 //*****************************************************************************							
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€							
+// ƒvƒƒgƒ^ƒCƒvéŒ¾							
 //*****************************************************************************							
 
 //*****************************************************************************							
-// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°							
+// ƒOƒ[ƒoƒ‹•Ï”							
 //*****************************************************************************							
 static int g_TextureNo;
 
@@ -36,13 +36,13 @@ Float2 Ppos;
 
 bool g_composition;
 //=============================================================================							
-// åˆæœŸåŒ–å‡¦ç†							
+// ‰Šú‰»ˆ—							
 //=============================================================================							
 HRESULT InitAkariObject(void)
 {
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 
-	//åˆæœŸåŒ–
+	//‰Šú‰»
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
 		g_AkariObject[i].use = false;
@@ -57,7 +57,7 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].siz = { 32.0f,32.0f };
 	}
 
-	////ãŠè©¦ã—
+	////‚¨‚µ
 	//for (int i = 0; i < 5; i++)
 	//{
 	//	g_AkariObject[i].gather = true;
@@ -80,7 +80,7 @@ HRESULT InitAkariObject(void)
 }
 
 //=============================================================================							
-// çµ‚äº†å‡¦ç†							
+// I—¹ˆ—							
 //=============================================================================							
 void UninitAkariObject(void)
 {
@@ -88,11 +88,11 @@ void UninitAkariObject(void)
 }
 
 //=============================================================================							
-// æ›´æ–°å‡¦ç†							
+// XVˆ—							
 //=============================================================================							
 void UpdateAkariObject(void)
 {
-	//ãƒ†ã‚¹ãƒˆ
+	//ƒeƒXƒg
 	if (GetKeyboardTrigger(DIK_SPACE))
 	{
 		for (int i = 0; i < AKARI_NUM; i++)
@@ -106,29 +106,29 @@ void UpdateAkariObject(void)
 				break;
 			}
 		}
-	}//ãƒ†ã‚¹ãƒˆçµ‚ã‚ã‚Š
+	}//ƒeƒXƒgI‚í‚è
 
-	
-		
 
-	//å›²ã£ãŸç¯„å›²å†…ã®ã€ŒAKARIã€ãŒé›†ã¾ã‚‹ã‚ˆã†ã«
+
+
+	//ˆÍ‚Á‚½”ÍˆÍ“à‚ÌuAKARIv‚ªW‚Ü‚é‚æ‚¤‚É
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
-		if (g_AkariObject[i].gather&&g_AkariObject[i].use == true && g_AkariObject[i].setvec == false && Ppos.x != GetPlayer()->pos.x && Ppos.y != GetPlayer()->pos.y)
+		if (g_AkariObject[i].gather && g_AkariObject[i].use == true && g_AkariObject[i].setvec == false && Ppos.x != GetPlayer()->pos.x && Ppos.y != GetPlayer()->pos.y)
 		{
-				//åœ°ç‚¹Aã‹ã‚‰åœ°ç‚¹Bã®ç§»å‹•è·é›¢
-				//MovePos=åœ°ç‚¹B - åœ°ç‚¹A;
-				MovePos[i].x = GetPlayer()->pos.x - g_AkariObject[i].pos.x;
-				MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
-				//ä½•ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‘ã¦é›†ã¾ã‚‹ã‹
-				MovePos[i].x /= (60 / (g_AkariObject[i].frame + 1 * 5));
-				MovePos[i].y /= (60 / (g_AkariObject[i].frame + 1 * 5));
+			//’n“_A‚©‚ç’n“_B‚ÌˆÚ“®‹——£
+			//MovePos=’n“_B - ’n“_A;
+			MovePos[i].x = GetPlayer()->pos.x - g_AkariObject[i].pos.x;
+			MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
+			//‰½ƒtƒŒ[ƒ€‚©‚¯‚ÄW‚Ü‚é‚©
+			MovePos[i].x /= (60 / (g_AkariObject[i].frame + 1 * 5));
+			MovePos[i].y /= (60 / (g_AkariObject[i].frame + 1 * 5));
 
-				//g_AkariObject[i].setvec = true;
+			//g_AkariObject[i].setvec = true;
 		}
 
 
-		if (g_AkariObject[i].gather&&g_AkariObject[i].use)
+		if (g_AkariObject[i].gather && g_AkariObject[i].use)
 		{
 			g_AkariObject[i].pos.x += MovePos[i].x;
 			g_AkariObject[i].pos.y += MovePos[i].y;
@@ -141,7 +141,7 @@ void UpdateAkariObject(void)
 				g_AkariObject[i].frame += 1;
 
 
-				//åˆæˆå¾Œæ¶ˆæ»…ãƒ¼ãƒ¼ãƒ¼
+				//‡¬ŒãÁ–Å[[[
 				if (g_AkariObject[i].frame > 40)
 				{
 					for (int j = 0; j < AKARI_NUM; j++)
@@ -161,7 +161,7 @@ void UpdateAkariObject(void)
 			g_AkariObject[i].pos.x += MovePos[i].x * 3;
 			g_AkariObject[i].pos.y += MovePos[i].y * 3;
 			g_AkariObject[i].frame += 1;
-			//åˆæˆã§ããšæ¶ˆæ»…ãƒ¼ãƒ¼ãƒ¼
+			//‡¬‚Å‚«‚¸Á–Å[[[
 			if (g_AkariObject[i].frame > 400)
 			{
 				g_AkariObject[i].use = false;
@@ -173,11 +173,11 @@ void UpdateAkariObject(void)
 }
 
 //=============================================================================							
-// æç”»å‡¦ç†							
+// •`‰æˆ—							
 //=============================================================================							
 void DrawAkariObject(void)
 {
-	//ãƒ™ãƒ¼ã‚¹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
+	//ƒx[ƒXÀ•W‚ğæ“¾‚·‚é
 	D3DXVECTOR2 basePos = GetBase();
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
@@ -202,6 +202,7 @@ void Akarigather(int index)
 	g_AkariObject[index].frame = 0;
 }
 
+//–¾‚©‚è‚ÌˆÊ’u‚ğƒZƒbƒg
 void SetAkari(Float2 pos)
 {
 	int create_akari = 4;
@@ -222,7 +223,7 @@ void SetAkari(Float2 pos)
 			g_AkariObject[i].setvec = false;
 			g_AkariObject[i].gather = false;
 			MovePos[i] = akarivec[create_akari - 1];
-			//è‰²ã¥ã‘
+			//F‚Ã‚¯
 			{
 				float RGB[3];
 				int saidai = 0;
@@ -245,6 +246,7 @@ void SetAkari(Float2 pos)
 	}
 }
 
+//–¾‚©‚è‚ÌˆÊ’u‚ÆÅ‘åŒÂ”‚ğƒZƒbƒg
 void SetAkari(Float2 pos, int saidai)
 {
 	int create_akari = 4;
@@ -265,7 +267,7 @@ void SetAkari(Float2 pos, int saidai)
 			g_AkariObject[i].setvec = false;
 			g_AkariObject[i].gather = false;
 			MovePos[i] = akarivec[create_akari - 1];
-			//è‰²ã¥ã‘
+			//F‚Ã‚¯
 			{
 				float RGB[3];
 				for (int j = 0; j < 3; j++)

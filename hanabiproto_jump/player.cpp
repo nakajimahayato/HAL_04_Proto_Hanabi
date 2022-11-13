@@ -53,6 +53,10 @@ bool g_cursol_prev;
 
 int g_playerflame;
 int g_Hissattu;
+
+//ジャンプ
+bool g_jflg = false;//ジャンプしてるか
+
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
 
@@ -101,8 +105,10 @@ HRESULT InitPlayer(void)
 	g_Player.pos.y = PLAYER_DISP_Y;
 
 	g_Player.spjp.x = 8.0f;
-	g_Player.spjp.y = 8.0f;
+	g_Player.spjp.y = 0.0f;
 
+	g_Player.jp.x = -10.0f;
+	g_Player.jp.y = 0.0f;
 	//Xinput初期化
 	//XInputEnable(true);
 	//XInputGetState(0, &State);
@@ -415,6 +421,30 @@ void UpdatePlayer(void)
 		{
 			g_Player.pos.x += g_Player.spjp.x;
 			g_Player.vec.x = 2.0;
+		}
+
+
+		//ジャンプ処理
+		//フラグがオンになった時ジャンプ処理を開始する
+		if (g_jflg == true)
+		{
+			//Y方向の速度に加速度を加える
+			g_Player.jp.y += g_Player.spjp.y;
+			//Y座標の更新
+			g_Player.pos.y += g_Player.jp.y;
+			if (g_Player.pos.y >= PLAYER_DISP_Y) //yの360に到達したらフラグをオフにする
+			{
+				g_jflg = false;
+				g_Player.pos.y = PLAYER_DISP_Y;
+			}
+		}
+
+		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
+		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
+		{
+			g_jflg = true;
+			g_Player.jp.y = -20.0f;
+			g_Player.spjp.y = 0.8f;
 		}
 
 		//if (GetKeyboardPress(DIK_W))
