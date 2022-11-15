@@ -30,6 +30,8 @@ public:
 	D3DXCOLOR		color;
 	bool			use;//useƒtƒ‰ƒO
 	float			frame;
+	Float2			drop; //—Ž‚¿‚é
+	Float2			sdrop;//—Ž‚¿‚é‰Á‘¬“x
 };
 
 class HanabiAkariObject:public GameObject
