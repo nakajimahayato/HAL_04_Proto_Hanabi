@@ -24,7 +24,7 @@ struct PLAYER
 	Float2		pos;	//プレイヤーの現在位置
 	Float2		vec;	//プレイヤーのベクトル
 	Float2		spjp;	//プレイヤーの移動とジャンプ速度
-
+	Float2		jp;		//プレイヤーのジャンプ処理
 };
 
 struct CURSOR
