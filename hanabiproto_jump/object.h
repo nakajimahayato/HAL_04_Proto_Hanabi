@@ -32,6 +32,7 @@ public:
 	float			frame;
 	Float2			drop; //—Ž‚¿‚é
 	Float2			sdrop;//—Ž‚¿‚é‰Á‘¬“x
+	bool			hitground;
 };
 
 class HanabiAkariObject:public GameObject
