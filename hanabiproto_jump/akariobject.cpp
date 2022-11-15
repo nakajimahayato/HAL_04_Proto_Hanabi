@@ -165,20 +165,36 @@ void UpdateAkariObject(void)
 		}
 		else if (g_AkariObject[i].use == true)
 		{
-			g_AkariObject[i].pos.y += g_AkariObject[i].vec.y;
+			if (g_AkariObject[i].hitground == true) {
+				g_AkariObject[i].vec.y = 0;
+			}
+			else
+			{
+				g_AkariObject[i].pos.y += g_AkariObject[i].vec.y;
+				g_AkariObject[i].pos.y += MovePos[i].y * 3;
+			}
 			g_AkariObject[i].pos.x += MovePos[i].x * 3;
-			g_AkariObject[i].pos.y += MovePos[i].y * 3;
 			g_AkariObject[i].frame += 1;
+			//落ちる速さ
 			g_AkariObject[i].drop.y = 0.01f;
+			//加速度
 			g_AkariObject[i].sdrop.y = 0.03f;
+			//弾が飛ぶ幅
 			MovePos[i].x /= 1.005;
-			if (g_AkariObject[i].frame > 20)
+			//特定のフレーム後に重力発動
+			if (g_AkariObject[i].frame >= 20)
 			{
 				g_AkariObject[i].drop.y += g_AkariObject[i].sdrop.y;
 				g_AkariObject[i].vec.y += g_AkariObject[i].drop.y;
 			}
+			//地面に残留
+			if (g_AkariObject[i].pos.y >= 360)
+			{
+				g_AkariObject[i].hitground = true;
+				g_AkariObject[i].pos.y = 360;
+			}
 			//合成できず消滅ーーー
-			if (g_AkariObject[i].frame > 400)
+			if (g_AkariObject[i].frame >= 400)
 			{
 				g_AkariObject[i].use = false;
 				g_AkariObject[i].frame = 0;
@@ -265,13 +281,41 @@ void SetAkari(Float2 pos)
 //明かりの位置と最大個数をセット
 void SetAkari(Float2 pos, int saidai)
 {
-	int create_akari = 4;
-	Float2 akarivec[4] =
+	int create_akari = 32;
+	Float2 akarivec[32] =
 	{
 		{1.0f,0.0f},
+		{0.2f,0.7f},
+		{0.3f,0.8f},
+		{0.7f,0.2f},
+		{0.5f,0.5f},
+		{0.1f,0.6f},
+		{0.8f,0.3f},
+		{0.4f,0.9f},
 		{-1.0f,0.0f},
+		{-0.2f,0.7f},
+		{-0.3f,0.8f},
+		{-0.7f,0.2f},
+		{-0.5f,0.5f},
+		{-0.4f,0.9f},
+		{-0.8f,0.3f},
+		{-0.9f,0.4f},
 		{0.0f,1.0f},
-		{0.0f,-1.0f}
+		{-0.2f,-0.7f},
+		{-0.3f,-0.8f},
+		{-0.7f,-0.2f},
+		{-0.5f,-0.5f},
+		{-0.4f,-0.9f},
+		{-0.8f,-0.3f},
+		{-0.4f,-0.9f},
+		{0.0f,-1.0f},
+		{0.2f,-0.7f},
+		{0.3f,-0.8f},
+		{0.7f,-0.2f},
+		{0.5f,-0.5f},
+		{0.4f,-0.9f},
+		{0.8f,-0.3f},
+		{0.9f,-0.4f}
 	};
 
 	for (int i = 0; i < AKARI_NUM; i++)
@@ -283,6 +327,7 @@ void SetAkari(Float2 pos, int saidai)
 			g_AkariObject[i].setvec = false;
 			g_AkariObject[i].gather = false;
 			g_AkariObject[i].vec.y = 0.0f;
+			g_AkariObject[i].hitground = false;
 			MovePos[i] = akarivec[create_akari - 1];
 			//色づけ
 			{
