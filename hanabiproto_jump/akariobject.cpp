@@ -55,6 +55,13 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].frame = 0;
 		g_AkariObject[i].color = { 1.0f,1.0f,1.0f,1.0f };
 		g_AkariObject[i].siz = { 32.0f,32.0f };
+		g_AkariObject[i].drop.x = 0.0f;
+		g_AkariObject[i].drop.y = 0.0f;
+		g_AkariObject[i].sdrop.x = 0.0f;
+		g_AkariObject[i].sdrop.y = 0.0f;
+		g_AkariObject[i].vec.x = 0.0f;
+		g_AkariObject[i].vec.y = 0.0f;
+
 	}
 
 	////お試し
@@ -158,9 +165,18 @@ void UpdateAkariObject(void)
 		}
 		else if (g_AkariObject[i].use == true)
 		{
+			g_AkariObject[i].pos.y += g_AkariObject[i].vec.y;
 			g_AkariObject[i].pos.x += MovePos[i].x * 3;
 			g_AkariObject[i].pos.y += MovePos[i].y * 3;
 			g_AkariObject[i].frame += 1;
+			g_AkariObject[i].drop.y = 0.01f;
+			g_AkariObject[i].sdrop.y = 0.03f;
+			MovePos[i].x /= 1.005;
+			if (g_AkariObject[i].frame > 20)
+			{
+				g_AkariObject[i].drop.y += g_AkariObject[i].sdrop.y;
+				g_AkariObject[i].vec.y += g_AkariObject[i].drop.y;
+			}
 			//合成できず消滅ーーー
 			if (g_AkariObject[i].frame > 400)
 			{
@@ -266,6 +282,7 @@ void SetAkari(Float2 pos, int saidai)
 			g_AkariObject[i].pos = pos;
 			g_AkariObject[i].setvec = false;
 			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec.y = 0.0f;
 			MovePos[i] = akarivec[create_akari - 1];
 			//色づけ
 			{

@@ -11,6 +11,7 @@
 #include "collision.h"
 #include "sprite.h"
 #include "camera.h"
+#include "player.h"
 
 //*****************************************************************************							
 // É}ÉNÉçíËã`							
@@ -27,6 +28,9 @@
 static int g_TextureNo;
 
 static Stage g_Stage;
+
+static PLAYER* g_Player = GetPlayer();
+static Float2 g_Block;
 
 static int StageBase[STAGE_Y][STAGE_X] =
 {
@@ -79,7 +83,6 @@ void UninitStage(void)
 //=============================================================================							
 void UpdateStage(void)
 {
-
 }
 
 //=============================================================================							
@@ -98,6 +101,7 @@ void DrawStage(void)
 			if (StageBase[y][x] == 1)
 			{
 				DrawSprite(g_TextureNo, basePos.x + 32.0f + 64.0f*x, basePos.y + SCREEN_HEIGHT - 300.0f, 64.0f, 32.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+
 			}
 			
 		}
