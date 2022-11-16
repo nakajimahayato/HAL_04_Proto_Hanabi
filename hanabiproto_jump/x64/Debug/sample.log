@@ -1,3 +1,5 @@
-﻿  akariobject.cpp
-C:\Users\acyb1\OneDrive\ドキュメント\GitHub\HAL_04_Proto_Hanabi\HAL_04_Proto_Hanabi\hanabiproto_jump\akariobject.cpp(183,25): warning C4305: '/=': 'double' から 'float' へ切り詰めます。
-  sample.vcxproj -> C:\Users\acyb1\OneDrive\ドキュメント\GitHub\HAL_04_Proto_Hanabi\HAL_04_Proto_Hanabi\hanabiproto_jump\x64\Debug\sample.exe
+﻿  player.cpp
+C:\Users\acyb1\OneDrive\デスクトップ\hanabiproto_jump\player.cpp(277,84): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\acyb1\OneDrive\デスクトップ\hanabiproto_jump\player.cpp(278,85): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\acyb1\OneDrive\デスクトップ\hanabiproto_jump\player.cpp(502,17): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+  sample.vcxproj -> C:\Users\acyb1\OneDrive\デスクトップ\hanabiproto_jump\x64\Debug\sample.exe
