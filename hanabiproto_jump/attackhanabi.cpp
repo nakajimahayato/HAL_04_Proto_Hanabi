@@ -28,8 +28,11 @@ struct AtHANABI
 	Float2		vec;
 	D3DXCOLOR		color;
 	int			saidaiing;
+	Float2			drop;
+	Float2			sdrop;
 
 	bool			use;	//可視フラグ
+	bool			hitground;
 };
 
 //*****************************************************************************
@@ -67,12 +70,19 @@ HRESULT InitAtHanabi(void)
 	{
 		g_HANABI[i].pos = Float2(0.0f, 0.0f);	//表示座標
 		g_HANABI[i].dir = Float2(1.0f, 1.0f);	//移動方向
-		g_HANABI[i].speed = 3.0f;					//移動速度
+		g_HANABI[i].speed = 8.0f;					//移動速度
 		g_HANABI[i].frame = 0.0f;
+		g_HANABI[i].vec.x = 0.0f;
+		g_HANABI[i].vec.y = 0.0f;
+		g_HANABI[i].drop.x = 0;
+		g_HANABI[i].drop.y = 0;
+		g_HANABI[i].sdrop.x = 0;
+		g_HANABI[i].sdrop.y = 0;
 		g_HANABI[i].color = { 0.0f,0.0f,0.0f,1.0f };
 		g_HANABI[i].saidaiing = 0;
 
 		g_HANABI[i].use = false;
+		g_HANABI[i].hitground = false;
 	}
 
 	return S_OK;
@@ -99,22 +109,47 @@ void UpdateAtHanabi(void)
 		//可視フラグがオンの弾だけ座標を更新する
 		if (g_HANABI[i].use == true)
 		{
-			//弾の座標更新
-			//g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
-			g_HANABI[i].pos.x += g_HANABI[i].dir.x * g_HANABI[i].speed;
-			g_HANABI[i].pos.y += g_HANABI[i].dir.y * g_HANABI[i].speed;
-
-
-			g_HANABI[i].frame += 1.0f;
-
-			if (g_HANABI[i].frame > 80.0f)
+			if (g_HANABI[i].hitground == true)
 			{
-				g_HANABI[i].frame = 0.0f;
+				g_HANABI[i].vec.y = 0;
 				AtHanabiDeadPos[i] = g_HANABI[i].pos;
+
 				g_HANABI[i].use = false;
 
 				SetAkari(g_HANABI[i].pos, g_HANABI[i].saidaiing);
 			}
+			else
+			{
+				g_HANABI[i].pos.y += g_HANABI[i].vec.y;
+				g_HANABI[i].pos.y += g_HANABI[i].dir.y * g_HANABI[i].speed;
+
+				if (g_HANABI[i].frame > 50.0f)
+				{
+					g_HANABI[i].frame = 0.0f;
+					AtHanabiDeadPos[i] = g_HANABI[i].pos;
+					g_HANABI[i].use = false;
+
+					SetAkari(g_HANABI[i].pos, g_HANABI[i].saidaiing);
+				}
+			}
+			//弾の座標更新
+			//g_HANABI[i].pos += g_HANABI[i].dir * g_HANABI[i].speed;
+			g_HANABI[i].pos.x += g_HANABI[i].dir.x * g_HANABI[i].speed;
+
+			g_HANABI[i].frame += 1.0f;
+
+			if (g_HANABI[i].pos.y > 360)
+				g_HANABI[i].hitground = true;
+			{
+			}
+			//落ちる速さ
+			g_HANABI[i].drop.y = 0.01f;
+			//加速度
+			g_HANABI[i].sdrop.y = 0.05f;
+
+				g_HANABI[i].drop.y += g_HANABI[i].sdrop.y;
+				g_HANABI[i].vec.y += g_HANABI[i].drop.y;
+			
 		}
 	}
 
@@ -291,6 +326,8 @@ void Normalizer(Float2 Player, Float2 Cursor)
 			g_HANABI[i].use = true;
 			g_HANABI[i].pos = Player;
 			g_HANABI[i].dir = Vecf2;
+			g_HANABI[i].hitground = false;
+			g_HANABI[i].frame = 0;
 			//色づけ
 			{
 				float RGB[3];

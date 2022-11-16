@@ -61,7 +61,7 @@ void Akarigather(int index);
 HanabiAkariObject GetAkariObject(int index);
 void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
-
+void Centergather(float up, float down, float left, float right);
 
 
 HRESULT InitAtHanabi(void);
