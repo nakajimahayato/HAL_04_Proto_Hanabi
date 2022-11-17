@@ -284,3 +284,34 @@ void SetAkari(Float2 pos, int saidai)
 		}
 	}
 }
+
+void SetAkari(Float2 pos, int saidai, float speed, Float2 vec)
+{
+	//個数分のあかりを最大分
+	for (int j = 0; j < saidai; j++) {
+		for (int i = 0; i < AKARI_NUM; i++)
+		{
+
+			if (g_AkariObject[i].use == false)
+			{
+				g_AkariObject[i].use = true;
+				g_AkariObject[i].pos = pos;	//どこに生成するか
+				g_AkariObject[i].setvec = vec *speed;	//どこの方向に
+				g_AkariObject[i].gather = false;
+
+				//色づけ
+				{
+					float RGB[3];
+					for (int j = 0; j < 3; j++)
+					{
+						RGB[j] = frand();
+					}
+					RGB[saidai] = 1.0f;
+					g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+				}
+
+				break;
+			}
+		}
+	}		
+}

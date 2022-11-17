@@ -30,6 +30,9 @@ public:
 	D3DXCOLOR		color;
 	bool			use;//useƒtƒ‰ƒO
 	float			frame;
+	Float2			drop; //—Ž‚¿‚é
+	Float2			sdrop;//—Ž‚¿‚é‰Á‘¬“x
+	bool			hitground;
 };
 
 class HanabiAkariObject:public GameObject
@@ -58,7 +61,7 @@ void Akarigather(int index);
 HanabiAkariObject GetAkariObject(int index);
 void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
-
+Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
 
 HRESULT InitAtHanabi(void);

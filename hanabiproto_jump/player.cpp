@@ -15,6 +15,7 @@
 #include "object.h"
 #include "inputx.h"
 #include "input.h"
+#include "stage.h"
 //#include <Xinput.h>
 
 //#pragma comment(lib."Xinput.lib")
@@ -40,6 +41,8 @@ static PLAYER g_Player;
 
 static float g_U, g_V;
 
+
+
 CURSOR		g_cursor[PLAYER_CURSOR_NUM];	//カーソルの軌跡点
 int			g_nownum = -1;//カーソルの現在個数
 int			g_targetnum = -1;//攻撃先
@@ -53,6 +56,10 @@ bool g_cursol_prev;
 
 int g_playerflame;
 int g_Hissattu;
+
+//ジャンプ
+bool g_jflg;//ジャンプしてるか
+
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
 
@@ -93,7 +100,7 @@ static float g_AnimeTable[4] =
 //=============================================================================
 HRESULT InitPlayer(void)
 {
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_Hanabi_character.png");
+	g_TextureNo = LoadTexture((char*)"data/TEXTURE/testplayer.png");
 	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 
 	//初期化
@@ -101,8 +108,14 @@ HRESULT InitPlayer(void)
 	g_Player.pos.y = PLAYER_DISP_Y;
 
 	g_Player.spjp.x = 8.0f;
-	g_Player.spjp.y = 8.0f;
+	g_Player.spjp.y = 0.8f;
 
+	g_Player.jp.x = -10.0f;
+	g_Player.jp.y = 0.0f;
+
+	g_Player.frame = 0;
+
+	g_jflg = false;
 	//Xinput初期化
 	//XInputEnable(true);
 	//XInputGetState(0, &State);
@@ -148,6 +161,10 @@ void UpdatePlayer(void)
 	//ベース座標を取得する
 	D3DXVECTOR2 basePos = GetBase();
 	Float2 BasePos(basePos.x, basePos.y);
+
+	++g_Player.frame;
+
+	
 
 	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	if (g_Hissattu <= 0)
@@ -417,14 +434,52 @@ void UpdatePlayer(void)
 			g_Player.vec.x = 2.0;
 		}
 
-		//if (GetKeyboardPress(DIK_W))
-		//{
-		//	g_Player.pos.y -= 2.0f;
-		//}
-		//if (GetKeyboardPress(DIK_S))
-		//{
-		//	g_Player.pos.y += 2.0f;
-		//}
+		//ジャンプ処理
+		if (GetStageInfoMIGI(g_Player.pos))
+		{
+			g_Player.pos.x -= 64.0f;
+		}
+
+		if ((int)g_Player.pos.y <= -1000)
+		{
+
+		}
+
+		if (GetStageInfoUE(g_Player.pos))
+		{
+			
+			g_Player.jp.y *= 0.0f;
+		}
+
+		if (GetStageInfoSITA(g_Player.pos))
+		{
+			g_jflg = false;
+			g_Player.jp.y = 0.0f;
+			//g_Player.pos.y=
+
+		}
+		else
+		{
+			g_jflg = true;
+		}
+
+		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
+		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
+		{
+			g_jflg = true;
+			g_Player.jp.y = -20.0f;
+			g_Player.spjp.y = 0.8f;
+		}
+
+		//フラグがオンになった時ジャンプ処理を開始する
+		if (g_jflg == true)
+		{
+			//Y方向の速度に加速度を加える
+			g_Player.jp.y += g_Player.spjp.y;
+			//Y座標の更新
+			g_Player.pos.y += g_Player.jp.y;
+		}
+		
 	}
 	else if (g_Hissattu > 0)
 	{
@@ -445,8 +500,8 @@ void UpdatePlayer(void)
 	cameraPos.y = g_Player.pos.y - PLAYER_DISP_Y;
 	if (cameraPos.x < 0) cameraPos.x = 0.0f;
 	if (cameraPos.y < 0) cameraPos.y = 0.0f;
-	if (cameraPos.x > 960) cameraPos.x = 960.0f;
-	if (cameraPos.y > 540) cameraPos.y = 540.0f;
+	if (cameraPos.x > 1080) cameraPos.x = 1080.0f;
+	if (cameraPos.y > 720) cameraPos.y = 720.0f;
 	SetCameraPos(cameraPos.x, cameraPos.y);
 
 
@@ -467,9 +522,9 @@ void DrawPlayer(void)
 	D3DXVECTOR2 basePos = GetBase();
 
 	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y, 
-		120.0f, 120.0f,
-		0.33333, 0.0, 
-		0.33333f, 1.0f);
+		PLAYER_SIZEX, PLAYER_SIZEY,
+		0.0f, 0.0f, 
+		1.0f, 1.0f);
 
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{

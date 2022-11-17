@@ -61,7 +61,7 @@ void UpdateEnemy(void)
 	{
 		if (g_Enemy[i].use)
 		{
-			for (int j = 0; j < AKARI_NUM; j++)
+			for (int j = 0; j < 5; j++)
 			{
 				if (HitCheckBox(g_Enemy[i].pos, g_Enemy[i].siz, GetAkariObject(j).pos, GetAkariObject(j).siz))
 				{

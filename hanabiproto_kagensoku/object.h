@@ -58,7 +58,7 @@ void Akarigather(int index);
 HanabiAkariObject GetAkariObject(int index);
 void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
-
+void SetAkari(Float2 pos, int saidai, float speed, Float2 vec);	//ê∂ê¨ä÷êî
 
 
 HRESULT InitAtHanabi(void);
@@ -68,3 +68,4 @@ void DrawAtHanabi(void);
 Float2 GetAtHanabiDeadPos(int index);
 Float2 GetAtHanabiPos(Float2 PosA, Float2 PosB);
 void Normalizer(Float2 Player, Float2 Cursor);
+
