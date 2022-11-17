@@ -15,6 +15,11 @@
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
+#define STAGE_X	30 
+#define STAGE_Y 20
+#define CHIPSIZE_X 64.0f
+#define CHIPSIZE_Y 32.0f
+
 class Stage
 {
 public:
@@ -28,3 +33,8 @@ HRESULT InitStage(void);
 void UninitStage(void);
 void UpdateStage(void);
 void DrawStage(void);
+
+bool GetStageInfoSITA(Float2 playerpos);
+bool GetStageInfoUE(Float2 playerpos);
+bool GetStageInfoMIGI(Float2 playerpos);
+bool GetStageInfoHIDARI(Float2 playerpos);

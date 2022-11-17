@@ -17,10 +17,13 @@
 // マクロ定義
 //*****************************************************************************
 #define PLAYER_CURSOR_NUM (56)
+#define PLAYER_SIZEX 64.0f
+#define PLAYER_SIZEY 120.0f
 
 
 struct PLAYER
 {
+	float		frame;	//プレイヤーのフレーム
 	Float2		pos;	//プレイヤーの現在位置
 	Float2		vec;	//プレイヤーのベクトル
 	Float2		spjp;	//プレイヤーの移動とジャンプ速度
