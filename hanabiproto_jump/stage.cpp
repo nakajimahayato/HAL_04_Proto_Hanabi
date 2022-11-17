@@ -11,12 +11,12 @@
 #include "collision.h"
 #include "sprite.h"
 #include "camera.h"
+#include "player.h"
 
 //*****************************************************************************							
 // マクロ定義							
 //*****************************************************************************							
-#define STAGE_X	30
-#define STAGE_Y 16
+
 //*****************************************************************************							
 // プロトタイプ宣言							
 //*****************************************************************************							
@@ -25,7 +25,6 @@
 // グローバル変数							
 //*****************************************************************************							
 static int g_TextureNo;
-
 static Stage g_Stage;
 
 static int StageBase[STAGE_Y][STAGE_X] =
@@ -39,13 +38,17 @@ static int StageBase[STAGE_Y][STAGE_X] =
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0 },
+{ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1 },
 };
 
 static float g_U, g_V;
@@ -97,9 +100,106 @@ void DrawStage(void)
 		{
 			if (StageBase[y][x] == 1)
 			{
-				DrawSprite(g_TextureNo, basePos.x + 32.0f + 64.0f*x, basePos.y + SCREEN_HEIGHT - 300.0f, 64.0f, 32.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+				DrawSprite(g_TextureNo, basePos.x + 32.0f + CHIPSIZE_X * x, basePos.y + CHIPSIZE_Y * y,
+					CHIPSIZE_X, CHIPSIZE_Y, 1.0f, 1.0f, 1.0f, 1.0f);
 			}
-			
 		}
 	}
 }
+
+bool GetStageInfoUE(Float2 playerpos)
+{
+	int StageY, StageXL, StageXR;
+	Float2 playerhead;
+	playerhead.y = (playerpos.y- PLAYER_SIZEY / 2);
+	playerhead.x = playerpos.x;
+
+	StageY = (int)((playerhead.y - CHIPSIZE_Y / 2) / CHIPSIZE_Y);
+	StageXR = (int)((playerhead.x + CHIPSIZE_X / 2) / CHIPSIZE_X);
+	StageXL = (int)((playerhead.x - CHIPSIZE_X / 2) / CHIPSIZE_X);
+
+	switch (StageBase[StageY+1][StageXR])
+	{
+	case 0:
+		break;
+	case 1:
+		return true;
+		break;
+	}
+	switch (StageBase[StageY+1][StageXL])
+	{
+	case 0:
+		break;
+	case 1:
+		return true;
+		break;
+	}
+	return false;
+}
+
+bool GetStageInfoSITA(Float2 playerpos)
+{
+	int StageY, StageXL,StageXR;
+	Float2 playerfoot;
+	playerfoot.y = (playerpos.y + PLAYER_SIZEY / 2);
+	playerfoot.x = playerpos.x;
+
+	StageY = (int)((playerfoot.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
+	StageXR = (int)((playerfoot.x + CHIPSIZE_X / 2) / CHIPSIZE_X);
+	StageXL = (int)((playerfoot.x - CHIPSIZE_X / 2) / CHIPSIZE_X);
+
+	switch (StageBase[StageY][StageXR])
+	{
+	case 0:
+		break;
+	case 1 :
+		return true;
+		break;
+	}
+	switch (StageBase[StageY][StageXL])
+	{
+	case 0:
+		break;
+	case 1:
+		return true;
+		break;
+	}
+	return false;
+}
+
+bool GetStageInfoMIGI(Float2 playerpos)
+{
+	int StageYU, StageYD, StageX;
+	Float2 playerfront;
+	playerfront.y = playerpos.y;
+	playerfront.x = playerpos.x+PLAYER_SIZEX/2;
+
+	StageX = (int)((playerfront.x + CHIPSIZE_X / 2) / CHIPSIZE_X);
+	//StageX = (int)(playerfront.x);
+	StageYD = (int)(playerfront.y /CHIPSIZE_Y);
+	StageYU = (int)(playerfront.y - CHIPSIZE_Y / 2);
+
+	switch (StageBase[StageYU][StageX])
+	{
+	case 0:
+		break;
+	case 1:
+		return true;
+		break;
+	}
+	switch (StageBase[StageYD][StageX])
+	{
+	case 0:
+		break;
+	case 1:
+		return true;
+		break;
+	}
+	return false;
+}
+
+bool GetStageInfoHIDARI(Float2 playerpos)
+{
+	return 0;
+}
+
