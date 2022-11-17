@@ -125,8 +125,8 @@ void UpdateAkariObject(void)
 		{
 			//地点Aから地点Bの移動距離
 			//MovePos=地点B - 地点A;
-			MovePos[i].x = GetPlayer()->pos.x - g_AkariObject[i].pos.x;
-			MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
+			MovePos[i] = Centergather(GetPlayer()->pos, GetPlayer()->pos, {0, 0}, GetPlayer()->pos) - g_AkariObject[i].pos;
+			//MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
 			//何フレームかけて集まるか
 			MovePos[i].x /= (60 / (g_AkariObject[i].frame + 1 * 5));
 			MovePos[i].y /= (60 / (g_AkariObject[i].frame + 1 * 5));
@@ -349,27 +349,14 @@ void SetAkari(Float2 pos, int saidai)
 	}
 }
 
-void Centergather(float up/*-Y*/, float down/*+Y*/, float left/*-X*/, float right/*+X*/)
+Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right)
 {
+	Float2 cp;
+	float y = (up.y + down.y) / 2;
+	float x = (left.x + right.x) / 2;
+	
+	cp.y = y;
+	cp.x = x;
 
-
-	//float radius;		// 半径(描画用)
-	//float angle;		// 向きの角度
-	//float speed;		// 速度
-
-	//// 角度から移動用のベクトルを求めて描画座標に加算する
-	//// 度数法の角度を弧度法に変換
-	//float radius = angle * 3.14f / 180.0f;
-
-	//// 三角関数を使用し、円の位置を割り出す。
-	//float add_x = cos(radius) * enemy.m_Length;
-	//float add_y = sin(radius) * enemy.m_Length;
-
-	//// 結果ででた位置を中心位置に加算し、それを描画位置とする
-	//enemy.m_PosX = enemy.m_CenterX + add_x;
-	//enemy.m_PosY = enemy.m_CenterY + add_y;
-
-	//// 向きを変える
-	//enemy.m_Angle += 10.0f;
-
+	return cp;
 }
