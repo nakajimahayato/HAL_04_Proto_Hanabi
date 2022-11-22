@@ -37,7 +37,7 @@ void pad_reset(void);
 static int g_TextureNo;
 static int g_TextureNo2;
 
-static PLAYER g_Player;
+//static PLAYER g_Player;
 
 static float g_U, g_V;
 
@@ -434,41 +434,46 @@ void UpdatePlayer(void)
 			g_Player.vec.x = 2.0;
 		}
 
+
 		//ジャンプ処理
-		if (GetStageInfoMIGI(g_Player.pos))
+		/*if (GetStageInfoMIGI(g_Player.pos))
 		{
-			g_Player.pos.x -= 64.0f;
-		}
+			g_Player.pos.x -= g_Player.spjp.x;
+			
+		}*/
 
-		if ((int)g_Player.pos.y <= -1000)
+		/*if (GetStageInfoHIDARI(g_Player.pos))
 		{
-
-		}
+			g_Player.pos.x += g_Player.spjp.x;
+		}*/
 
 		if (GetStageInfoUE(g_Player.pos))
 		{
-			
-			g_Player.jp.y *= 0.0f;
+			g_Player.jp.y *= -1.0f;
 		}
 
-		if (GetStageInfoSITA(g_Player.pos))
+		if (g_Player.jp.y >= 0)
 		{
-			g_jflg = false;
-			g_Player.jp.y = 0.0f;
-			//g_Player.pos.y=
+			if (GetStageInfoSITA(g_Player.pos))
+			{
 
+				g_jflg = false;
+				g_Player.jp.y = 0.0f;
+				g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+			}
+			else
+			{
+				g_jflg = true;
+			}
 		}
-		else
-		{
-			g_jflg = true;
-		}
+
+		
 
 		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
 		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
 		{
 			g_jflg = true;
-			g_Player.jp.y = -20.0f;
-			g_Player.spjp.y = 0.8f;
+			g_Player.jp.y = -15.0f;
 		}
 
 		//フラグがオンになった時ジャンプ処理を開始する
@@ -476,8 +481,16 @@ void UpdatePlayer(void)
 		{
 			//Y方向の速度に加速度を加える
 			g_Player.jp.y += g_Player.spjp.y;
+			if (g_Player.jp.y > PLAYER_FALL_SPEED_MAX)
+			{
+				g_Player.jp.y = PLAYER_FALL_SPEED_MAX;
+			}
 			//Y座標の更新
 			g_Player.pos.y += g_Player.jp.y;
+		}
+		else
+		{
+			
 		}
 		
 	}

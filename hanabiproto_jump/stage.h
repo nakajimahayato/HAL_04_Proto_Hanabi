@@ -12,19 +12,22 @@
 #include "renderer.h"
 #include "BENRIclass.h"
 
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define STAGE_X	30 
-#define STAGE_Y 20
-#define CHIPSIZE_X 64.0f
-#define CHIPSIZE_Y 32.0f
+#define STAGE_X	64
+#define STAGE_Y 32
+#define CHIPSIZE_X (SCREEN_WIDTH/60)
+#define CHIPSIZE_Y (SCREEN_HEIGHT/32)
 
 class Stage
 {
 public:
 	Float2			pos;//座標
 };
+
+
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -34,7 +37,9 @@ void UninitStage(void);
 void UpdateStage(void);
 void DrawStage(void);
 
-bool GetStageInfoSITA(Float2 playerpos);
-bool GetStageInfoUE(Float2 playerpos);
-bool GetStageInfoMIGI(Float2 playerpos);
-bool GetStageInfoHIDARI(Float2 playerpos);
+int GetStageInfoSITA(Float2 playerpos);
+int GetStageInfoUE(Float2 playerpos);
+int GetStageInfoMIGI(Float2 playerpos);
+int GetStageInfoHIDARI(Float2 playerpos);
+
+
