@@ -52,7 +52,7 @@ protected:
 	float			Gravity;
 
 public:
-	virtual void Action() = 0;
+	virtual void Action() {}
 };
 
 class CupEnemy :public EnemyObject
@@ -71,6 +71,8 @@ void Akarigather(int index);
 HanabiAkariObject GetAkariObject(int index);
 void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
+void SetAkari(Float2 pos, int saidai, int damagetype);
+void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle);
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
 
