@@ -53,11 +53,13 @@ protected:
 
 public:
 	virtual void Action() {}
+	void SetEnemy(Float2 pos, int saidai, int enemytype);
 };
 
 class CupEnemy :public EnemyObject
 {
-	void Action() override {};
+public:
+	void Action() override;
 };
 
 //*****************************************************************************
