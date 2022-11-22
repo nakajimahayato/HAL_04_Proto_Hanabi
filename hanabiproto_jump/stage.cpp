@@ -11,7 +11,6 @@
 #include "collision.h"
 #include "sprite.h"
 #include "camera.h"
-#include "player.h"
 
 //*****************************************************************************							
 // マクロ定義							
@@ -26,32 +25,42 @@
 //*****************************************************************************							
 static int g_TextureNo;
 static Stage g_Stage;
-
-static PLAYER* g_Player = GetPlayer();
 static Float2 g_Block;
 
 static int StageBase[STAGE_Y][STAGE_X] =
 {
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0 },
-{ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
 };
 
 static float g_U, g_V;
@@ -85,6 +94,7 @@ void UninitStage(void)
 //=============================================================================							
 void UpdateStage(void)
 {
+
 }
 
 //=============================================================================							
@@ -103,106 +113,148 @@ void DrawStage(void)
 			if (StageBase[y][x] == 1)
 			{
 
-				DrawSprite(g_TextureNo, basePos.x + 32.0f + CHIPSIZE_X * x, basePos.y + CHIPSIZE_Y * y,
+				DrawSprite(g_TextureNo, basePos.x + CHIPSIZE_X / 2 + CHIPSIZE_X * x, basePos.y + CHIPSIZE_Y * y,
 					CHIPSIZE_X, CHIPSIZE_Y, 1.0f, 1.0f, 1.0f, 1.0f);
 			}
 		}
 	}
 }
 
-bool GetStageInfoUE(Float2 playerpos)
+int GetStageInfoUE(Float2 playerpos)
 {
-	int StageY, StageXL, StageXR;
+	int StageY, StageX;
+
 	Float2 playerhead;
-	playerhead.y = (playerpos.y- PLAYER_SIZEY / 2);
-	playerhead.x = playerpos.x;
+	playerhead.y = (playerpos.y - PLAYER_SIZEY / 2);
+	playerhead.x = playerpos.x - PLAYER_SIZEX / 2;
 
-	StageY = (int)((playerhead.y - CHIPSIZE_Y / 2) / CHIPSIZE_Y);
-	StageXR = (int)((playerhead.x + CHIPSIZE_X / 2) / CHIPSIZE_X);
-	StageXL = (int)((playerhead.x - CHIPSIZE_X / 2) / CHIPSIZE_X);
+	StageY = (int)((playerhead.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
+	StageX = (int)(playerhead.x / CHIPSIZE_X);
 
-	switch (StageBase[StageY+1][StageXR])
+
+	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X) + 1; i++)
 	{
-	case 0:
-		break;
-	case 1:
-		return true;
-		break;
+
+		switch (StageBase[StageY][StageX + i])
+		{
+		case 0:
+
+			break;
+		case 1:
+			return (StageY * CHIPSIZE_Y);
+			break;
+		}
 	}
-	switch (StageBase[StageY+1][StageXL])
-	{
-	case 0:
-		break;
-	case 1:
-		return true;
-		break;
-	}
-	return false;
+	return NULL;
 }
 
-bool GetStageInfoSITA(Float2 playerpos)
+int GetStageInfoSITA(Float2 playerpos)
 {
-	int StageY, StageXL,StageXR;
+	int StageY, StageX;
+	
 	Float2 playerfoot;
 	playerfoot.y = (playerpos.y + PLAYER_SIZEY / 2);
-	playerfoot.x = playerpos.x;
+	playerfoot.x = playerpos.x - PLAYER_SIZEX / 2;
 
 	StageY = (int)((playerfoot.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
-	StageXR = (int)((playerfoot.x + CHIPSIZE_X / 2) / CHIPSIZE_X);
-	StageXL = (int)((playerfoot.x - CHIPSIZE_X / 2) / CHIPSIZE_X);
+	StageX = (int)(playerfoot.x /CHIPSIZE_X);
+	
 
-	switch (StageBase[StageY][StageXR])
+	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X)+1; i++)
 	{
-	case 0:
-		break;
-	case 1 :
-		return true;
-		break;
+
+		switch (StageBase[StageY][StageX + i])
+		{
+			case 0:
+
+				break;
+			case 1:
+				return (StageY * CHIPSIZE_Y);
+				break;
+		}
 	}
-	switch (StageBase[StageY][StageXL])
-	{
-	case 0:
-		break;
-	case 1:
-		return true;
-		break;
-	}
-	return false;
+	return NULL;
 }
 
-bool GetStageInfoMIGI(Float2 playerpos)
+
+int GetStageInfoMIGI(Float2 playerpos)
 {
-	int StageYU, StageYD, StageX;
+	int StageYue, StageYsita,StageYnaka, StageX;
 	Float2 playerfront;
 	playerfront.y = playerpos.y;
-	playerfront.x = playerpos.x+PLAYER_SIZEX/2;
+	playerfront.x = playerpos.x + PLAYER_SIZEX / 2 + CHIPSIZE_X / 4;
 
-	StageX = (int)((playerfront.x + CHIPSIZE_X / 2) / CHIPSIZE_X);
-	//StageX = (int)(playerfront.x);
-	StageYD = (int)(playerfront.y /CHIPSIZE_Y);
-	StageYU = (int)(playerfront.y - CHIPSIZE_Y / 2);
+	StageX = (int)((playerfront.x + CHIPSIZE_X / 2) / CHIPSIZE_X)-1;
+	///上にもう一段追加
+	StageYsita = (int)(playerfront.y / CHIPSIZE_Y) + 1;
+	StageYnaka = (int)(playerfront.y / CHIPSIZE_Y) + 2;
+	StageYue = (int)(playerfront.y / CHIPSIZE_Y) ;
 
-	switch (StageBase[StageYU][StageX])
+	switch (StageBase[StageYnaka][StageX])
 	{
 	case 0:
 		break;
 	case 1:
-		return true;
+		return (StageX*CHIPSIZE_X);
 		break;
 	}
-	switch (StageBase[StageYD][StageX])
+	switch (StageBase[StageYsita][StageX])
 	{
 	case 0:
 		break;
 	case 1:
-		return true;
+		return (StageX*CHIPSIZE_X);
 		break;
 	}
-	return false;
+	switch (StageBase[StageYue][StageX])
+	{
+	case 0:
+		break;
+	case 1:
+		return (StageX*CHIPSIZE_X);
+		break;
+	}
+	return NULL;
 }
 
-bool GetStageInfoHIDARI(Float2 playerpos)
+int GetStageInfoHIDARI(Float2 playerpos)
 {
-	return 0;
+	int StageYue, StageYsita, StageYnaka, StageX;
+	Float2 playerback;
+	playerback.y = playerpos.y;
+	playerback.x = playerpos.x - PLAYER_SIZEX / 2 + CHIPSIZE_X - (CHIPSIZE_X / 4);
+
+	StageX = (int)((playerback.x - CHIPSIZE_X / 2) / CHIPSIZE_X);
+	///上にもう一段追加
+	StageYsita = (int)(playerback.y / CHIPSIZE_Y) + 1;
+	StageYnaka = (int)(playerback.y / CHIPSIZE_Y) + 2;
+	StageYue = (int)(playerback.y / CHIPSIZE_Y);
+
+	switch (StageBase[StageYnaka][StageX])
+	{
+	case 0:
+		break;
+	case 1:
+		return (StageX*CHIPSIZE_X);
+		break;
+	}
+	switch (StageBase[StageYsita][StageX])
+	{
+	case 0:
+		break;
+	case 1:
+		return (StageX*CHIPSIZE_X);
+		break;
+	}
+	switch (StageBase[StageYue][StageX])
+	{
+	case 0:
+		break;
+	case 1:
+		return (StageX*CHIPSIZE_X);
+		break;
+	}
+	return NULL;
 }
+
 

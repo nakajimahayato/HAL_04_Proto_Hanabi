@@ -349,6 +349,166 @@ void SetAkari(Float2 pos, int saidai)
 	}
 }
 
+//ダメージタイプが0ならプレイヤーにダメージ
+//1ならエネミーにダメージ
+//2なら両方
+void SetAkari(Float2 pos, int saidai,int damagetype)
+{
+	int create_akari = 32;
+	Float2 akarivec[32] =
+	{
+		{1.0f,0.0f},
+		{0.2f,0.7f},
+		{0.3f,0.8f},
+		{0.7f,0.2f},
+		{0.5f,0.5f},
+		{0.1f,0.6f},
+		{0.8f,0.3f},
+		{0.4f,0.9f},
+		{-1.0f,0.0f},
+		{-0.2f,0.7f},
+		{-0.3f,0.8f},
+		{-0.7f,0.2f},
+		{-0.5f,0.5f},
+		{-0.4f,0.9f},
+		{-0.8f,0.3f},
+		{-0.9f,0.4f},
+		{0.0f,1.0f},
+		{-0.2f,-0.7f},
+		{-0.3f,-0.8f},
+		{-0.7f,-0.2f},
+		{-0.5f,-0.5f},
+		{-0.4f,-0.9f},
+		{-0.8f,-0.3f},
+		{-0.4f,-0.9f},
+		{0.0f,-1.0f},
+		{0.2f,-0.7f},
+		{0.3f,-0.8f},
+		{0.7f,-0.2f},
+		{0.5f,-0.5f},
+		{0.4f,-0.9f},
+		{0.8f,-0.3f},
+		{0.9f,-0.4f}
+	};
+
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			switch (damagetype)
+			{
+			case 0:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = false;
+				break;
+			case 1:
+				g_AkariObject[i].damageplayerflug = false;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			case 2:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			default:
+				break;
+			}
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec.y = 0.0f;
+			g_AkariObject[i].hitground = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				float RGB[3];
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+				}
+				RGB[saidai] = 1.0f;
+				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
+
+void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle)
+{
+	int create_akari = 15;
+	Float2 akarivec[15] =
+	{
+		{-0.2f,-0.7f},	//1
+		{-0.3f,-0.8f},	//2
+		{-0.7f,-0.2f},	//3
+		{-0.5f,-0.5f},	//4
+		{-0.4f,-0.9f},	//5
+		{-0.8f,-0.3f},	//6
+		{-0.4f,-0.9f},	//7
+		{0.0f,-1.0f},	//8
+		{0.2f,-0.7f},	//9
+		{0.3f,-0.8f},	//10
+		{0.7f,-0.2f},	//11
+		{0.5f,-0.5f},	//12
+		{0.4f,-0.9f},	//13
+		{0.8f,-0.3f},	//14
+		{0.9f,-0.4f}	//15
+	};
+
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			switch (damagetype)
+			{
+			case 0:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = false;
+				break;
+			case 1:
+				g_AkariObject[i].damageplayerflug = false;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			case 2:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			default:
+				break;
+			}
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec.y = 0.0f;
+			g_AkariObject[i].hitground = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				float RGB[3];
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+				}
+				RGB[saidai] = 1.0f;
+				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
+
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right)
 {
 	Float2 cp;
