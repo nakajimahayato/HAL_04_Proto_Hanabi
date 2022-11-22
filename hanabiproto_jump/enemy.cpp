@@ -94,17 +94,7 @@ void DrawEnemy(void)
 	
 }
 
+void Action()
+{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
