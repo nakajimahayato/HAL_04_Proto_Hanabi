@@ -113,16 +113,12 @@ void UpdateEnemy(void)
 				//	g_Enemy[i].use = false;
 				//}
 
-				if (cupE[i].frame >= 200)
+				//6•bŠÔ‚É1‰ñŽè‘«’ƒ˜q‚ªƒAƒNƒVƒ‡ƒ“‚ð‹N‚±‚·
+				if (cupE[i].frame >= 360)
 				{
 					cupE[i].Action();
-				}
-
-				if (cupE[i].frame >= 200)
-				{
 					cupE[i].frame = 0;
 				}
-
 			}
 		}
 	}
