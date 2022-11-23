@@ -33,7 +33,7 @@ HRESULT InitEnemy(void);
 void UninitEnemy(void);
 void UpdateEnemy(void);
 void DrawEnemy(void);
-
+void SetEnemy(Float2 pos, int saidai, int enemytype);
 
 
 
