@@ -12,13 +12,15 @@
 #include "main.h"
 #include "renderer.h"
 #include "BENRIclass.h"
+#include "stage.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define PLAYER_CURSOR_NUM (56)
-#define PLAYER_SIZEX 64.0f
-#define PLAYER_SIZEY 120.0f
+#define PLAYER_SIZEX (CHIPSIZE_X*1.5)*2
+#define PLAYER_SIZEY (CHIPSIZE_Y*3)*2
+#define PLAYER_FALL_SPEED_MAX 15.0f
 
 
 struct PLAYER
@@ -41,6 +43,7 @@ public:
 	bool		use;
 };
 
+static PLAYER g_Player;
 
 //*****************************************************************************
 // プロトタイプ宣言
