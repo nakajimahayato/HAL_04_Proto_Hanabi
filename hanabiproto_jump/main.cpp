@@ -16,7 +16,6 @@
 #include "inputx.h"
 #include "input.h"
 
-
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -153,6 +152,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				wsprintf(g_DebugStr, WINDOW_CAPTION);
 				wsprintf(&g_DebugStr[strlen(g_DebugStr)], " FPS:%d", g_CountFPS);
 				SetWindowText(hWnd, g_DebugStr);
+
+				
 #endif
 
 				Update();			// 更新処理

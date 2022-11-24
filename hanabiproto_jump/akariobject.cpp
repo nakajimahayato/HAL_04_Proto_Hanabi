@@ -125,8 +125,8 @@ void UpdateAkariObject(void)
 		{
 			//地点Aから地点Bの移動距離
 			//MovePos=地点B - 地点A;
-			MovePos[i].x = GetPlayer()->pos.x - g_AkariObject[i].pos.x;
-			MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
+			MovePos[i] = Centergather(GetPlayer()->pos, GetPlayer()->pos, {0, 0}, GetPlayer()->pos) - g_AkariObject[i].pos;
+			//MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
 			//何フレームかけて集まるか
 			MovePos[i].x /= (60 / (g_AkariObject[i].frame + 1 * 5));
 			MovePos[i].y /= (60 / (g_AkariObject[i].frame + 1 * 5));
@@ -349,27 +349,174 @@ void SetAkari(Float2 pos, int saidai)
 	}
 }
 
-void Centergather(float up/*-Y*/, float down/*+Y*/, float left/*-X*/, float right/*+X*/)
+//ダメージタイプが0ならプレイヤーにダメージ
+//1ならエネミーにダメージ
+//2なら両方
+void SetAkari(Float2 pos, int saidai,int damagetype)
 {
+	int create_akari = 32;
+	Float2 akarivec[32] =
+	{
+		{1.0f,0.0f},
+		{0.2f,0.7f},
+		{0.3f,0.8f},
+		{0.7f,0.2f},
+		{0.5f,0.5f},
+		{0.1f,0.6f},
+		{0.8f,0.3f},
+		{0.4f,0.9f},
+		{-1.0f,0.0f},
+		{-0.2f,0.7f},
+		{-0.3f,0.8f},
+		{-0.7f,0.2f},
+		{-0.5f,0.5f},
+		{-0.4f,0.9f},
+		{-0.8f,0.3f},
+		{-0.9f,0.4f},
+		{0.0f,1.0f},
+		{-0.2f,-0.7f},
+		{-0.3f,-0.8f},
+		{-0.7f,-0.2f},
+		{-0.5f,-0.5f},
+		{-0.4f,-0.9f},
+		{-0.8f,-0.3f},
+		{-0.4f,-0.9f},
+		{0.0f,-1.0f},
+		{0.2f,-0.7f},
+		{0.3f,-0.8f},
+		{0.7f,-0.2f},
+		{0.5f,-0.5f},
+		{0.4f,-0.9f},
+		{0.8f,-0.3f},
+		{0.9f,-0.4f}
+	};
 
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			switch (damagetype)
+			{
+			case 0:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = false;
+				break;
+			case 1:
+				g_AkariObject[i].damageplayerflug = false;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			case 2:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			default:
+				break;
+			}
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec.y = 0.0f;
+			g_AkariObject[i].hitground = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				float RGB[3];
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+				}
+				RGB[saidai] = 1.0f;
+				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
 
-	//float radius;		// 半径(描画用)
-	//float angle;		// 向きの角度
-	//float speed;		// 速度
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
 
-	//// 角度から移動用のベクトルを求めて描画座標に加算する
-	//// 度数法の角度を弧度法に変換
-	//float radius = angle * 3.14f / 180.0f;
+void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle)
+{
+	int create_akari = 15;
+	Float2 akarivec[15] =
+	{
+		{-0.2f,-0.7f},	//1
+		{-0.3f,-0.8f},	//2
+		{-0.7f,-0.2f},	//3
+		{-0.5f,-0.5f},	//4
+		{-0.4f,-0.9f},	//5
+		{-0.8f,-0.3f},	//6
+		{-0.4f,-0.9f},	//7
+		{0.0f,-1.0f},	//8
+		{0.2f,-0.7f},	//9
+		{0.3f,-0.8f},	//10
+		{0.7f,-0.2f},	//11
+		{0.5f,-0.5f},	//12
+		{0.4f,-0.9f},	//13
+		{0.8f,-0.3f},	//14
+		{0.9f,-0.4f}	//15
+	};
 
-	//// 三角関数を使用し、円の位置を割り出す。
-	//float add_x = cos(radius) * enemy.m_Length;
-	//float add_y = sin(radius) * enemy.m_Length;
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			switch (damagetype)
+			{
+			case 0:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = false;
+				break;
+			case 1:
+				g_AkariObject[i].damageplayerflug = false;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			case 2:
+				g_AkariObject[i].damageplayerflug = true;
+				g_AkariObject[i].damageenemyflug = true;
+				break;
+			default:
+				break;
+			}
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec.y = 0.0f;
+			g_AkariObject[i].hitground = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				float RGB[3];
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+				}
+				RGB[saidai] = 1.0f;
+				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
 
-	//// 結果ででた位置を中心位置に加算し、それを描画位置とする
-	//enemy.m_PosX = enemy.m_CenterX + add_x;
-	//enemy.m_PosY = enemy.m_CenterY + add_y;
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
 
-	//// 向きを変える
-	//enemy.m_Angle += 10.0f;
+Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right)
+{
+	Float2 cp;
+	float y = (up.y + down.y) / 2;
+	float x = (left.x + right.x) / 2;
+	
+	cp.y = y;
+	cp.x = x;
 
+	return cp;
 }
