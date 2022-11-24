@@ -107,6 +107,9 @@ HRESULT InitPlayer(void)
 	g_Player.pos.x = PLAYER_DISP_X;
 	g_Player.pos.y = PLAYER_DISP_Y;
 
+	g_Player.oldpos.x = PLAYER_DISP_X;
+	g_Player.oldpos.y = PLAYER_DISP_Y;
+	
 	g_Player.spjp.x = 8.0f;
 	g_Player.spjp.y = 0.8f;
 
@@ -164,7 +167,7 @@ void UpdatePlayer(void)
 
 	++g_Player.frame;
 
-	
+	g_Player.oldpos = g_Player.pos;
 
 	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	if (g_Hissattu <= 0)
@@ -449,7 +452,7 @@ void UpdatePlayer(void)
 
 		if (GetStageInfoUE(g_Player.pos))
 		{
-			g_Player.jp.y *= -1.0f;
+			g_Player.jp.y *= -0.5f;
 		}
 
 		if (g_Player.jp.y >= 0)
@@ -467,13 +470,23 @@ void UpdatePlayer(void)
 			}
 		}
 
+		if (GetStageInfoMIGI(g_Player.pos))
+		{
+			g_Player.pos.x = g_Player.oldpos.x;
+			//g_Player.pos.x = GetStageInfoMIGI(g_Player.pos) - (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+		}
 		
+		if (GetStageInfoHIDARI(g_Player.pos))
+		{
+			g_Player.pos.x = g_Player.oldpos.x;
+			//g_Player.pos.x = GetStageInfoHIDARI(g_Player.pos) + (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+		}
 
 		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
 		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
 		{
 			g_jflg = true;
-			g_Player.jp.y = -15.0f;
+			g_Player.jp.y = -20.0f;
 		}
 
 		//フラグがオンになった時ジャンプ処理を開始する
