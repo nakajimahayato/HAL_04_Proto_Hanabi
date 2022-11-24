@@ -18,8 +18,8 @@
 // マクロ定義
 //*****************************************************************************
 #define PLAYER_CURSOR_NUM (56)
-#define PLAYER_SIZEX (CHIPSIZE_X*1.5)*2
-#define PLAYER_SIZEY (CHIPSIZE_Y*3)*2
+#define PLAYER_SIZEX (CHIPSIZE_X * 1.5) * 2  //96
+#define PLAYER_SIZEY (CHIPSIZE_Y * 3) * 2    //192
 #define PLAYER_FALL_SPEED_MAX 15.0f
 
 
@@ -27,6 +27,7 @@ struct PLAYER
 {
 	float		frame;	//プレイヤーのフレーム
 	Float2		pos;	//プレイヤーの現在位置
+	Float2      oldpos; //プレイヤーの過去の位置
 	Float2		vec;	//プレイヤーのベクトル
 	Float2		spjp;	//プレイヤーの移動とジャンプ速度
 	Float2		jp;		//プレイヤーのジャンプ処理
