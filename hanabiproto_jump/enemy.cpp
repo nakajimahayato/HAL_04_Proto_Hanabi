@@ -7,7 +7,9 @@
 ------------------------------------------------------------------------------------------------------------------------------------------
 
 ==============================================================================*/
-#include "enemy.h"			
+#include "enemy.h"
+#include "object.h"
+#include "input.h"
 
 //*****************************************************************************			
 // マクロ定義			
@@ -25,7 +27,7 @@ static int g_TexCupE;
 
 static EnemyObject g_Enemy[NUM_ENEMY];
 
-static EnemyObject* g_pEnemy[];//仮置き
+static EnemyObject* g_pEnemy[NUM_ENEMY];//仮置き
 static CupEnemy cupE[NUM_CUPENEMY]; //一旦仮置き
 static int g_nowEnemyMax;
 //=============================================================================			
@@ -35,7 +37,7 @@ HRESULT InitEnemy(void)
 {
 
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/enemy00.png");
-	g_TexCupE = LoadTexture((char*)"data/TEXTURE/enemy00.png");
+	g_TexCupE = LoadTexture((char*)"data/TEXTURE/proto_effect_explosion.png");
 
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
@@ -73,6 +75,11 @@ void UninitEnemy(void)
 //=============================================================================			
 void UpdateEnemy(void)
 {
+	if (GetKeyboardPress(DIK_F))
+	{
+		SetEnemy({ 640,360 }, 0, 0);
+	}
+
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		if (g_Enemy[i].use)
@@ -106,13 +113,10 @@ void UpdateEnemy(void)
 				//	g_Enemy[i].use = false;
 				//}
 
-				if (cupE[i].frame >= 200)
+				//6秒間に1回手足茶碗がアクションを起こす
+				if (cupE[i].frame >= 360)
 				{
 					cupE[i].Action();
-				}
-
-				if (cupE[i].frame >= 200)
-				{
 					cupE[i].frame = 0;
 				}
 
@@ -139,7 +143,24 @@ void DrawEnemy(void)
 				1.0f, 1.0f);
 		}
 	}
+
+
+	for (int i = 0; i < g_nowEnemyMax; i++)
+	{
+		if (g_pEnemy[i]->use)
+		{
+			DrawSprite(g_TexCupE, basePos.x + g_pEnemy[i]->pos.x, basePos.y + g_pEnemy[i]->pos.y,
+				80.0f, 80.0f,
+				1.0f, 1.0f,
+				1.0f, 1.0f);
+		}
+	}
 	
+}
+
+EnemyObject* GetEnemy()
+{
+	return g_Enemy;
 }
 
 void CupEnemy::Action()
@@ -150,87 +171,26 @@ void CupEnemy::Action()
 //----------------------------------
 // エネミーのセット処理
 //----------------------------------
-//0なら通常のエネミー
-//1ならカップエネミー
+//0なら
+//1なら
 //2なら...(未定)
-void EnemyObject::SetEnemy(Float2 pos, int saidai, int enemytype)
+void SetEnemy(Float2 pos, int saidai, int enemytype)
 {
-	//int create_akari = 32;
-	//Float2 akarivec[32] =
-	//{
-	//	{1.0f,0.0f},
-	//	{0.2f,0.7f},
-	//	{0.3f,0.8f},
-	//	{0.7f,0.2f},
-	//	{0.5f,0.5f},
-	//	{0.1f,0.6f},
-	//	{0.8f,0.3f},
-	//	{0.4f,0.9f},
-	//	{-1.0f,0.0f},
-	//	{-0.2f,0.7f},
-	//	{-0.3f,0.8f},
-	//	{-0.7f,0.2f},
-	//	{-0.5f,0.5f},
-	//	{-0.4f,0.9f},
-	//	{-0.8f,0.3f},
-	//	{-0.9f,0.4f},
-	//	{0.0f,1.0f},
-	//	{-0.2f,-0.7f},
-	//	{-0.3f,-0.8f},
-	//	{-0.7f,-0.2f},
-	//	{-0.5f,-0.5f},
-	//	{-0.4f,-0.9f},
-	//	{-0.8f,-0.3f},
-	//	{-0.4f,-0.9f},
-	//	{0.0f,-1.0f},
-	//	{0.2f,-0.7f},
-	//	{0.3f,-0.8f},
-	//	{0.7f,-0.2f},
-	//	{0.5f,-0.5f},
-	//	{0.4f,-0.9f},
-	//	{0.8f,-0.3f},
-	//	{0.9f,-0.4f}
-	//};
-
-
-	g_pEnemy[g_nowEnemyMax] = new CupEnemy;
-		
-			switch (enemytype)
-			{
-			case 0:
-				g_pEnemy[0];
-				break;
-			case 1:
-				break;
-			case 2:
-				break;
-			default:
-				break;
-			}
-
-			//g_Enemy[i].pos = pos;
-			//g_Enemy[i].vec.y = 0.0f;
-			//g_Enemy[i].hitground = false;
-			//cupE[i].pos = pos;
-			//cupE[i].vec.y = 0.0f;
-			//cupE[i].hitground = false;
-
-			//色づけ
-			//{
-			//	float RGB[3];
-			//	for (int j = 0; j < 3; j++)
-			//	{
-			//		RGB[j] = frand();
-			//	}
-			//	RGB[saidai] = 1.0f;
-			//	g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
-			//}
-
-			//create_akari -= 1;
-			//if (create_akari <= 0)
-			//{
-			//	break;
-			//}
-		
-	
+	switch (enemytype)
+	{
+	case 0:
+		g_pEnemy[g_nowEnemyMax] = new CupEnemy;
+		g_pEnemy[g_nowEnemyMax]->use = true;
+		g_pEnemy[g_nowEnemyMax]->pos = pos;
+		g_pEnemy[g_nowEnemyMax]->vec.y = 0.0f;
+		g_pEnemy[g_nowEnemyMax]->siz = { 32.0f,32.0f };
+		g_nowEnemyMax += 1;
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	default:
+		break;
+	}
 }

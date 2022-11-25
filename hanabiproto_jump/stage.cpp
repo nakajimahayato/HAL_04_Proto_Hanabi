@@ -40,26 +40,26 @@ static int StageBase[STAGE_Y][STAGE_X] =
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,1,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
 { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
 };
 
@@ -122,20 +122,19 @@ void DrawStage(void)
 
 int GetStageInfoUE(Float2 playerpos)
 {
-	int StageY, StageX;
+	int StageY, StageXL, StageXR;
 
 	Float2 playerhead;
-	playerhead.y = (playerpos.y - PLAYER_SIZEY / 2);
+	playerhead.y = playerpos.y - PLAYER_SIZEY / 2;
 	playerhead.x = playerpos.x - PLAYER_SIZEX / 2;
 
 	StageY = (int)((playerhead.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
-	StageX = (int)(playerhead.x / CHIPSIZE_X);
+	StageXL = (int)(playerhead.x / CHIPSIZE_X);
+	StageXR = (int)((playerhead.x + PLAYER_SIZEX) / CHIPSIZE_X);
 
-
-	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X) + 1; i++)
+	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X); i++)
 	{
-
-		switch (StageBase[StageY][StageX + i])
+		switch (StageBase[StageY][StageXL + i])
 		{
 		case 0:
 
@@ -145,116 +144,207 @@ int GetStageInfoUE(Float2 playerpos)
 			break;
 		}
 	}
+
+	switch (StageBase[StageY][StageXR])
+	{
+	case 0:
+		break;
+	case 1:
+		return (StageY * CHIPSIZE_Y);
+		break;
+	}
+
 	return NULL;
 }
 
 int GetStageInfoSITA(Float2 playerpos)
 {
-	int StageY, StageX;
+	int StageY, StageXL, StageXR;
 	
 	Float2 playerfoot;
 	playerfoot.y = (playerpos.y + PLAYER_SIZEY / 2);
 	playerfoot.x = playerpos.x - PLAYER_SIZEX / 2;
 
 	StageY = (int)((playerfoot.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
-	StageX = (int)(playerfoot.x /CHIPSIZE_X);
+	StageXL = (int)(playerfoot.x /CHIPSIZE_X);
+	StageXR = (int)((playerfoot.x + PLAYER_SIZEX) / CHIPSIZE_X);
 	
-
-	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X)+1; i++)
+	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X); i++)
 	{
 
-		switch (StageBase[StageY][StageX + i])
+		switch (StageBase[StageY][StageXL + i])
 		{
 			case 0:
-
 				break;
 			case 1:
 				return (StageY * CHIPSIZE_Y);
 				break;
 		}
 	}
+
+	switch (StageBase[StageY][StageXR])
+	{
+	case 0:
+		break;
+	case 1:
+		return (StageY * CHIPSIZE_Y);
+		break;
+	}
+
 	return NULL;
 }
 
-
 int GetStageInfoMIGI(Float2 playerpos)
 {
-	int StageYue, StageYsita,StageYnaka, StageX;
+	int StageYT, StageYB, StageX;
+
 	Float2 playerfront;
-	playerfront.y = playerpos.y;
-	playerfront.x = playerpos.x + PLAYER_SIZEX / 2 + CHIPSIZE_X / 4;
+	playerfront.y = playerpos.y - PLAYER_SIZEY / 2;
+	playerfront.x = playerpos.x + PLAYER_SIZEX / 2;
 
-	StageX = (int)((playerfront.x + CHIPSIZE_X / 2) / CHIPSIZE_X)-1;
-	///上にもう一段追加
-	StageYsita = (int)(playerfront.y / CHIPSIZE_Y) + 1;
-	StageYnaka = (int)(playerfront.y / CHIPSIZE_Y) + 2;
-	StageYue = (int)(playerfront.y / CHIPSIZE_Y) ;
+	StageX = (int)(playerfront.x / CHIPSIZE_X);
+	StageYT = (int)(playerfront.y / CHIPSIZE_Y);
+	StageYB = (int)((playerfront.y + PLAYER_SIZEY) / CHIPSIZE_Y);
 
-	switch (StageBase[StageYnaka][StageX])
+	for (int i = 0; i < (int)(PLAYER_SIZEY / CHIPSIZE_Y); i++)
+	{
+		switch (StageBase[StageYT + i][StageX])
+		{
+			case 0:
+				break;
+			case 1:
+				return (StageX * CHIPSIZE_X);
+				break;
+		}
+	}
+
+	switch (StageBase[StageYB][StageX])
 	{
 	case 0:
 		break;
 	case 1:
-		return (StageX*CHIPSIZE_X);
+		return (StageX * CHIPSIZE_X);
 		break;
 	}
-	switch (StageBase[StageYsita][StageX])
-	{
-	case 0:
-		break;
-	case 1:
-		return (StageX*CHIPSIZE_X);
-		break;
-	}
-	switch (StageBase[StageYue][StageX])
-	{
-	case 0:
-		break;
-	case 1:
-		return (StageX*CHIPSIZE_X);
-		break;
-	}
+
 	return NULL;
 }
 
 int GetStageInfoHIDARI(Float2 playerpos)
 {
-	int StageYue, StageYsita, StageYnaka, StageX;
+	int StageYT, StageYB, StageX;
+
 	Float2 playerback;
-	playerback.y = playerpos.y;
-	playerback.x = playerpos.x - PLAYER_SIZEX / 2 + CHIPSIZE_X - (CHIPSIZE_X / 4);
+	playerback.y = (playerpos.y - PLAYER_SIZEY / 2);
+	playerback.x = (playerpos.x - PLAYER_SIZEX / 2);
 
-	StageX = (int)((playerback.x - CHIPSIZE_X / 2) / CHIPSIZE_X);
-	///上にもう一段追加
-	StageYsita = (int)(playerback.y / CHIPSIZE_Y) + 1;
-	StageYnaka = (int)(playerback.y / CHIPSIZE_Y) + 2;
-	StageYue = (int)(playerback.y / CHIPSIZE_Y);
+	StageYT = (int)(playerback.y / CHIPSIZE_Y);
+	StageX = (int)(playerback.x / CHIPSIZE_X);
+	StageYB = (int)((playerback.y + PLAYER_SIZEY) / CHIPSIZE_Y);
+	
 
-	switch (StageBase[StageYnaka][StageX])
+	for (int i = 0; i < (int)(PLAYER_SIZEY / CHIPSIZE_Y); i++)
 	{
-	case 0:
-		break;
-	case 1:
-		return (StageX*CHIPSIZE_X);
-		break;
+		switch (StageBase[StageYT + i][StageX])
+		{
+		case 0:
+			break;
+		case 1:
+			return (StageX * CHIPSIZE_X);
+			break;
+		}
 	}
-	switch (StageBase[StageYsita][StageX])
+
+	switch (StageBase[StageYB][StageX])
 	{
 	case 0:
 		break;
 	case 1:
-		return (StageX*CHIPSIZE_X);
-		break;
-	}
-	switch (StageBase[StageYue][StageX])
-	{
-	case 0:
-		break;
-	case 1:
-		return (StageX*CHIPSIZE_X);
+		return (StageX * CHIPSIZE_X);
 		break;
 	}
 	return NULL;
 }
+
+
+//int GetStageInfoMIGI(Float2 playerpos)
+//{
+//	int StageYue, StageYsita,StageYnaka, StageX;
+//	Float2 playerfront;
+//	playerfront.y = playerpos.y;
+//	playerfront.x = playerpos.x + PLAYER_SIZEX / 2 + CHIPSIZE_X / 4;
+//
+//	StageX = (int)((playerfront.x + CHIPSIZE_X / 2) / CHIPSIZE_X)-1;
+//	///上にもう一段追加
+//	StageYsita = (int)(playerfront.y / CHIPSIZE_Y) + 1;
+//	StageYnaka = (int)(playerfront.y / CHIPSIZE_Y) + 2;
+//	StageYue = (int)(playerfront.y / CHIPSIZE_Y) ;
+//
+//	switch (StageBase[StageYnaka][StageX])
+//	{
+//	case 0:
+//		break;
+//	case 1:
+//		return (StageX * CHIPSIZE_X);
+//		break;
+//	}
+//	switch (StageBase[StageYsita][StageX])
+//	{
+//	case 0:
+//		break;
+//	case 1:
+//		return (StageX * CHIPSIZE_X);
+//		break;
+//	}
+//	switch (StageBase[StageYue][StageX])
+//	{
+//	case 0:
+//		break;
+//	case 1:
+//		return (StageX * CHIPSIZE_X);
+//		break;
+//	}
+//	return NULL;
+//}
+//
+//int GetStageInfoHIDARI(Float2 playerpos)
+//{
+//	int StageYue, StageYsita, StageYnaka, StageX;
+//	Float2 playerback;
+//	playerback.y = playerpos.y;
+//	playerback.x = playerpos.x - PLAYER_SIZEX / 2 + CHIPSIZE_X - (CHIPSIZE_X / 4);
+//
+//	StageX = (int)((playerback.x - CHIPSIZE_X / 2) / CHIPSIZE_X);
+//	///上にもう一段追加
+//	StageYsita = (int)(playerback.y / CHIPSIZE_Y) + 1;
+//	StageYnaka = (int)(playerback.y / CHIPSIZE_Y) + 2;
+//	StageYue = (int)(playerback.y / CHIPSIZE_Y);
+//
+//	switch (StageBase[StageYnaka][StageX])
+//	{
+//	case 0:
+//		break;
+//	case 1:
+//		return (StageX*CHIPSIZE_X);
+//		break;
+//	}
+//	switch (StageBase[StageYsita][StageX])
+//	{
+//	case 0:
+//		break;
+//	case 1:
+//		return (StageX*CHIPSIZE_X);
+//		break;
+//	}
+//	switch (StageBase[StageYue][StageX])
+//	{
+//	case 0:
+//		break;
+//	case 1:
+//		return (StageX*CHIPSIZE_X);
+//		break;
+//	}
+//	return NULL;
+//}
 
 
