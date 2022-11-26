@@ -443,6 +443,11 @@ void UpdatePlayer(void)
 
 		if (GetStageInfoMIGI(g_Player.pos))
 		{
+			//もし川に当たったら
+			if (GetStageInfoMIGI(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+			}
 			//右にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
 			//g_Player.pos.x = GetStageInfoMIGI(g_Player.pos) - (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
@@ -450,6 +455,11 @@ void UpdatePlayer(void)
 
 		if (GetStageInfoHIDARI(g_Player.pos))
 		{
+			//もし川に当たったら
+			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+			}
 			//左にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
 			//g_Player.pos.x = GetStageInfoHIDARI(g_Player.pos) + (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
@@ -457,6 +467,11 @@ void UpdatePlayer(void)
 
 		if (GetStageInfoUE(g_Player.pos))
 		{
+			//もし川に当たったら
+			if (GetStageInfoUE(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+			}
 			//上にマップチップがあれば緩やかに反発
 			g_Player.jp.y *= -0.5f;
 		}
@@ -466,6 +481,12 @@ void UpdatePlayer(void)
 		{
 			if (GetStageInfoSITA(g_Player.pos))
 			{
+				//もし川に当たったら
+				if (GetStageInfoSITA(g_Player.pos) == -1) {
+					g_Player.pos.x = PLAYER_DISP_X;
+					g_Player.pos.y = PLAYER_DISP_Y;
+				}
+
 				//下にブロックがあれば座標をそのブロックの上に調整する
 				g_jflg = false;
 				g_Player.jp.y = 0.0f;
