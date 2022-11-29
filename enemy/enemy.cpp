@@ -75,7 +75,7 @@ void UninitEnemy(void)
 //=============================================================================			
 void UpdateEnemy(void)
 {
-	if (GetKeyboardPress(DIK_F))
+	if (GetKeyboardTrigger(DIK_F))
 	{
 		SetEnemy({ 640,360 }, 0, 0);
 	}
@@ -119,7 +119,25 @@ void UpdateEnemy(void)
 					cupE[i].Action();
 					cupE[i].frame = 0;
 				}
+			}
+		}
+	}
 
+	//•`‰æ‚³‚ê‚Ä‚éè‘«’ƒ˜qˆ—
+	for (int i = 0; i < g_nowEnemyMax; i++)
+	{
+		if (g_pEnemy[i]->use == true)
+		{
+			//¶‚É“®‚©‚µ‚Äframe‚ğ1‘«‚·
+			g_pEnemy[i]->pos.x += -1.0f;
+			g_pEnemy[i]->frame += 1;
+			//‚P•b‚É1‰ñ–¾‚©‚è‚ğ‚R”­”ò‚Î‚·
+			if(g_pEnemy[i]->frame >= 60)
+			{
+				SetAkari(g_pEnemy[i]->pos, { 0.0f,-1.0f }, 1.5f);
+				SetAkari(g_pEnemy[i]->pos, { 0.5f,-1.0f }, 1.5f);
+				SetAkari(g_pEnemy[i]->pos, { -0.5f,-1.0f }, 1.5f);
+				g_pEnemy[i]->frame = 0;
 			}
 		}
 	}
@@ -182,8 +200,10 @@ void SetEnemy(Float2 pos, int saidai, int enemytype)
 		g_pEnemy[g_nowEnemyMax] = new CupEnemy;
 		g_pEnemy[g_nowEnemyMax]->use = true;
 		g_pEnemy[g_nowEnemyMax]->pos = pos;
+		g_pEnemy[g_nowEnemyMax]->vec.x = 0.0f;
 		g_pEnemy[g_nowEnemyMax]->vec.y = 0.0f;
 		g_pEnemy[g_nowEnemyMax]->siz = { 32.0f,32.0f };
+		g_pEnemy[g_nowEnemyMax]->frame = 0.0f;
 		g_nowEnemyMax += 1;
 		break;
 	case 1:
