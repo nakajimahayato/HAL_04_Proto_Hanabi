@@ -578,6 +578,8 @@ void SetAkari(Float2 pos, Float2 vec, float speed)
 	}
 }
 
+
+
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right)
 {
 	Float2 cp;

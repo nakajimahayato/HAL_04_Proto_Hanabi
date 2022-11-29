@@ -15,6 +15,7 @@
 #include "object.h"
 #include "inputx.h"
 #include "input.h"
+#include "stage.h"
 //#include <Xinput.h>
 
 //#pragma comment(lib."Xinput.lib")
@@ -36,9 +37,11 @@ void pad_reset(void);
 static int g_TextureNo;
 static int g_TextureNo2;
 
-static PLAYER g_Player;
+//static PLAYER g_Player;
 
 static float g_U, g_V;
+
+
 
 CURSOR		g_cursor[PLAYER_CURSOR_NUM];	//カーソルの軌跡点
 int			g_nownum = -1;//カーソルの現在個数
@@ -55,7 +58,7 @@ int g_playerflame;
 int g_Hissattu;
 
 //ジャンプ
-bool g_jflg = false;//ジャンプしてるか
+bool g_jflg;//ジャンプしてるか
 
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
@@ -97,18 +100,25 @@ static float g_AnimeTable[4] =
 //=============================================================================
 HRESULT InitPlayer(void)
 {
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_Hanabi_character.png");
+	g_TextureNo = LoadTexture((char*)"data/TEXTURE/testplayer.png");
 	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 
 	//初期化
 	g_Player.pos.x = PLAYER_DISP_X;
 	g_Player.pos.y = PLAYER_DISP_Y;
 
-	g_Player.spjp.x = 8.0f;
-	g_Player.spjp.y = 0.0f;
+	g_Player.oldpos.x = PLAYER_DISP_X;
+	g_Player.oldpos.y = PLAYER_DISP_Y;
+	
+	g_Player.spjp.x = 0.0f;
+	g_Player.spjp.y = 0.8f;
 
-	g_Player.jp.x = -10.0f;
+	g_Player.jp.x = -0.0f;
 	g_Player.jp.y = 0.0f;
+
+	g_Player.frame = 0;
+
+	g_jflg = false;
 	//Xinput初期化
 	//XInputEnable(true);
 	//XInputGetState(0, &State);
@@ -154,6 +164,10 @@ void UpdatePlayer(void)
 	//ベース座標を取得する
 	D3DXVECTOR2 basePos = GetBase();
 	Float2 BasePos(basePos.x, basePos.y);
+
+	++g_Player.frame;
+
+	g_Player.oldpos = g_Player.pos;
 
 	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	if (g_Hissattu <= 0)
@@ -409,52 +423,124 @@ void UpdatePlayer(void)
 		}
 		//==========================================
 
-
 		//キーボードのAキーが押されたら左に移動する
 		if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
 		{
-			g_Player.pos.x -= g_Player.spjp.x;
+			if (g_Player.spjp.x > 0)
+				g_Player.spjp.x *= PLAYER_BRAKE;
+
+			g_Player.spjp.x -= PLAYER_ACCELERATION_X;
 			g_Player.vec.x = -2.0;
 		}
 		//キーボードのDキーが押されたら右に移動する
 		if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
 		{
-			g_Player.pos.x += g_Player.spjp.x;
+			if (g_Player.spjp.x < 0)
+				g_Player.spjp.x *= PLAYER_BRAKE;
+
+			g_Player.spjp.x += PLAYER_ACCELERATION_X;
 			g_Player.vec.x = 2.0;
 		}
+		//何も押されていないときのみ減速する
+		if (!GetKeyboardPress(DIK_A) && !GetKeyboardPress(DIK_D) && (g_jflg == false))
+		{
+			g_Player.spjp.x *= PLAYER_BRAKE;
+		}
+
+		g_Player.spjp.x = fminf(g_Player.spjp.x, PLAYER_SPEEDMAX_X);
+		g_Player.spjp.x = fmaxf(g_Player.spjp.x, -(PLAYER_SPEEDMAX_X));
+
+		g_Player.pos.x += g_Player.spjp.x;
+
 
 
 		//ジャンプ処理
-		//フラグがオンになった時ジャンプ処理を開始する
-		if (g_jflg == true)
+		//マップチップとの衝突処理
+
+		if (GetStageInfoMIGI(g_Player.pos))
 		{
-			//Y方向の速度に加速度を加える
-			g_Player.jp.y += g_Player.spjp.y;
-			//Y座標の更新
-			g_Player.pos.y += g_Player.jp.y;
-			if (g_Player.pos.y >= PLAYER_DISP_Y) //yの360に到達したらフラグをオフにする
-			{
-				g_jflg = false;
+			//もし川に当たったら
+			if (GetStageInfoMIGI(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
 				g_Player.pos.y = PLAYER_DISP_Y;
+				g_Player.spjp.x = 0.0f;
+			}
+			//右にマップチップがあればX座標を戻す
+			g_Player.pos.x = g_Player.oldpos.x;
+			g_Player.spjp.x = 0.0f;
+			//g_Player.pos.x = GetStageInfoMIGI(g_Player.pos) - (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+		}
+
+		if (GetStageInfoHIDARI(g_Player.pos))
+		{
+			//もし川に当たったら
+			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+				g_Player.spjp.x = 0.0f;
+			}
+			//左にマップチップがあればX座標を戻す
+			g_Player.pos.x = g_Player.oldpos.x;
+			g_Player.spjp.x = 0.0f;
+			//g_Player.pos.x = GetStageInfoHIDARI(g_Player.pos) + (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+		}
+
+		if (GetStageInfoUE(g_Player.pos))
+		{
+			//もし川に当たったら
+			if (GetStageInfoUE(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+				g_Player.spjp.x = 0.0f;
+			}
+			//上にマップチップがあれば緩やかに反発
+			g_Player.jp.y *= -0.5f;
+		}
+
+		//平地もしくは落下時のみ判定
+		if (g_Player.jp.y >= 0)
+		{
+			if (GetStageInfoSITA(g_Player.pos))
+			{
+				//もし川に当たったら
+				if (GetStageInfoSITA(g_Player.pos) == -1) {
+					g_Player.pos.x = PLAYER_DISP_X;
+					g_Player.pos.y = PLAYER_DISP_Y;
+					g_Player.spjp.x = 0.0f;
+				}
+
+				//下にブロックがあれば座標をそのブロックの上に調整する
+				g_jflg = false;
+				g_Player.jp.y = 0.0f;
+				g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+			}
+			else
+			{
+				//ブロックがない＝空中
+				g_jflg = true;
 			}
 		}
+
 
 		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
 		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
 		{
 			g_jflg = true;
 			g_Player.jp.y = -20.0f;
-			g_Player.spjp.y = 0.8f;
 		}
 
-		//if (GetKeyboardPress(DIK_W))
-		//{
-		//	g_Player.pos.y -= 2.0f;
-		//}
-		//if (GetKeyboardPress(DIK_S))
-		//{
-		//	g_Player.pos.y += 2.0f;
-		//}
+		//フラグがオンになった時ジャンプ処理を開始する
+		if (g_jflg == true)
+		{
+			//Y方向の速度に加速度を加える
+			g_Player.jp.y += g_Player.spjp.y;
+			if (g_Player.jp.y > PLAYER_FALL_SPEED_MAX)
+			{
+				g_Player.jp.y = PLAYER_FALL_SPEED_MAX;
+			}
+			//Y座標の更新
+			g_Player.pos.y += g_Player.jp.y;
+		}
 	}
 	else if (g_Hissattu > 0)
 	{
@@ -475,8 +561,8 @@ void UpdatePlayer(void)
 	cameraPos.y = g_Player.pos.y - PLAYER_DISP_Y;
 	if (cameraPos.x < 0) cameraPos.x = 0.0f;
 	if (cameraPos.y < 0) cameraPos.y = 0.0f;
-	if (cameraPos.x > 960) cameraPos.x = 960.0f;
-	if (cameraPos.y > 540) cameraPos.y = 540.0f;
+	if (cameraPos.x > 1080) cameraPos.x = 1080.0f;
+	if (cameraPos.y > 720) cameraPos.y = 720.0f;
 	SetCameraPos(cameraPos.x, cameraPos.y);
 
 
@@ -496,10 +582,17 @@ void DrawPlayer(void)
 	//ベース座標を取得する
 	D3DXVECTOR2 basePos = GetBase();
 
-	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y, 
-		120.0f, 120.0f,
-		0.33333, 0.0, 
-		0.33333f, 1.0f);
+	//右側にある亜空間の調整版
+	/*DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x + 4.0f, basePos.y + g_Player.pos.y, 
+		PLAYER_SIZEX + 8.0f, PLAYER_SIZEY,
+		0.0f, 0.0f, 
+		1.0f, 1.0f);*/
+
+	//こっちが調整前
+	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y,
+		PLAYER_SIZEX, PLAYER_SIZEY,
+		0.0f, 0.0f,
+		1.0f, 1.0f);
 
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
