@@ -509,6 +509,8 @@ void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle
 	}
 }
 
+//Žè‘«’ƒ˜q‚ÉŽg—p‚³‚ê‚Ä‚¢‚é
+//“Á’è‚Ì•ûŒü‚É‚ ‚©‚è‚ð”ò‚Î‚·
 void SetAkari(Float2 pos, Float2 vec, float speed)
 {
 	int create_akari = 1;
