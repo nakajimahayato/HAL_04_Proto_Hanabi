@@ -42,6 +42,7 @@ public:
 	bool			setvec;
 	bool			damageenemyflug;  //エネミーにダメージを与える
 	bool			damageplayerflug; //プレイヤーにダメージを与える
+	bool			wet;//濡れた状態
 };
 
 class EnemyObject :public GameObject
