@@ -1,4 +1,3 @@
-
 /*==============================================================================
 
 				   エネミー処理 [enemy.cpp]
@@ -31,6 +30,11 @@ static EnemyObject* g_pEnemy[NUM_ENEMY];//仮置き
 static CupEnemy cupE[NUM_CUPENEMY]; //一旦仮置き
 static int g_nowEnemyMax;
 
+
+static float random[10];
+
+
+
 //=============================================================================			
 // 初期化処理			
 //=============================================================================			
@@ -57,7 +61,7 @@ HRESULT InitEnemy(void)
 		cupE[i].speed = 8.0f;
 	}
 
-	/*テスト*/
+	//テスト
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
 	return S_OK;
@@ -79,7 +83,7 @@ void UpdateEnemy(void)
 
 	if (GetKeyboardPress(DIK_F))
 	{
-		SetEnemy({ 640,400 }, 0, 0);
+		SetEnemy({ 640,450 }, 0, 0);
 
 	}
 
@@ -139,12 +143,19 @@ void UpdateEnemy(void)
 			if(g_pEnemy[i]->frame >= 60)
 			{
 				//SetCupAkari(g_pEnemy[i]->pos, 30, 0, {10.0f,15.0f}, 45.0f);
+				for (int a = 0; a < 5; a++)
+				{
+					random[a * 2] = (frand() / frand() - 1);
+					random[a * 2 + 1] = frand();
 
-				random[0] = frand();//(frand() / frand() - 1);
-				random[1] = frand();
+					if (random[a] > 1)
+					{
+						random[a] = 1;
+					}
+
+					SetAkari(g_pEnemy[i]->pos, { random[a] + 0.2f,-random[a] }, 1.5f);
+				}
 				
-
-				SetAkari(g_pEnemy[i]->pos, { random[0],-random[1]}, 1.5f);
 				g_pEnemy[i]->frame = 0;
 			}
 		}
