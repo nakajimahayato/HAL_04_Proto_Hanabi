@@ -31,12 +31,11 @@ static EnemyObject* g_pEnemy[NUM_ENEMY];//仮置き
 static CupEnemy cupE[NUM_CUPENEMY]; //一旦仮置き
 static int g_nowEnemyMax;
 
-<<<<<<< HEAD
+
 static float random[10];
 
 
-=======
->>>>>>> 4372486b4dab46a683dcf6bdf3df436db4f33e6d
+
 //=============================================================================			
 // 初期化処理			
 //=============================================================================			
