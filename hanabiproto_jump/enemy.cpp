@@ -77,7 +77,7 @@ void UpdateEnemy(void)
 {
 	if (GetKeyboardPress(DIK_F))
 	{
-		SetEnemy({ 640,360 }, 0, 0);
+		SetEnemy({ 640,400 }, 0, 0);
 	}
 
 	for (int i = 0; i < NUM_ENEMY; i++)
@@ -120,6 +120,25 @@ void UpdateEnemy(void)
 					cupE[i].frame = 0;
 				}
 
+			}
+		}
+	}
+
+	//•`‰æ‚³‚ê‚Ä‚éŽè‘«’ƒ˜qˆ—
+	for (int i = 0; i < g_nowEnemyMax; i++)
+	{
+		if (g_pEnemy[i]->use == true)
+		{
+			//¶‚É“®‚©‚µ‚Äframe‚ð1‘«‚·
+			g_pEnemy[i]->pos.x += -1.0f;
+			g_pEnemy[i]->frame += 1;
+			//‚P•b‚É1‰ñ–¾‚©‚è‚ð‚R”­”ò‚Î‚·
+			if (g_pEnemy[i]->frame >= 60)
+			{
+				SetAkari(g_pEnemy[i]->pos, { 0.0f,-1.0f }, 1.5f);
+				SetAkari(g_pEnemy[i]->pos, { 0.5f,-1.0f }, 1.5f);
+				SetAkari(g_pEnemy[i]->pos, { -0.5f,-1.0f }, 1.5f);
+				g_pEnemy[i]->frame = 0;
 			}
 		}
 	}
