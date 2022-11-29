@@ -18,8 +18,8 @@
 //*****************************************************************************
 #define STAGE_X	64
 #define STAGE_Y 32
-#define CHIPSIZE_X (SCREEN_WIDTH/60)
-#define CHIPSIZE_Y (SCREEN_HEIGHT/32)
+#define CHIPSIZE_X (SCREEN_WIDTH/60)  //32
+#define CHIPSIZE_Y (SCREEN_HEIGHT/33) //32
 
 class Stage
 {

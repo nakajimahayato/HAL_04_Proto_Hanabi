@@ -44,7 +44,6 @@ void CreateHanabi(Float2 plpos, Float2 cspos);
 // グローバル変数
 //*****************************************************************************
 static GameObject g_Hanabi0bj;
-static EnemyObject g_Enemy0bj;
 
 //static GameObject g_Objects[256];
 //static PLAYER g_Player;	//プレイヤー用
@@ -351,4 +350,9 @@ void Normalizer(Float2 Player, Float2 Cursor)
 Float2 GetAtHanabiDeadPos(int index)
 {
 	return AtHanabiDeadPos[index];
+}
+
+void RedBurst(int akarinum)
+{
+
 }

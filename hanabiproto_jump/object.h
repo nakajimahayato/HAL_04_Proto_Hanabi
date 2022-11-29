@@ -39,15 +39,27 @@ class HanabiAkariObject:public GameObject
 {
 public:
 	bool			gather;//集まるあかり
-	
 	bool			setvec;
+	bool			damageenemyflug;  //エネミーにダメージを与える
+	bool			damageplayerflug; //プレイヤーにダメージを与える
 };
 
 class EnemyObject :public GameObject
 {
+protected:
 	float			Health;
 	float			Attack;
 	float			Gravity;
+
+public:
+	virtual void Action() {}
+
+};
+
+class CupEnemy :public EnemyObject
+{
+public:
+	void Action() override;
 };
 
 //*****************************************************************************
@@ -61,7 +73,10 @@ void Akarigather(int index);
 HanabiAkariObject GetAkariObject(int index);
 void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
-void Centergather(float up, float down, float left, float right);
+void SetAkari(Float2 pos, int saidai, int damagetype);
+void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle);
+void SetAkari(Float2 pos, Float2 vec, float speed);
+Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
 
 HRESULT InitAtHanabi(void);
@@ -71,3 +86,4 @@ void DrawAtHanabi(void);
 Float2 GetAtHanabiDeadPos(int index);
 Float2 GetAtHanabiPos(Float2 PosA, Float2 PosB);
 void Normalizer(Float2 Player, Float2 Cursor);
+void RedBurst(int akarinum);

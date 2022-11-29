@@ -107,6 +107,9 @@ HRESULT InitPlayer(void)
 	g_Player.pos.x = PLAYER_DISP_X;
 	g_Player.pos.y = PLAYER_DISP_Y;
 
+	g_Player.oldpos.x = PLAYER_DISP_X;
+	g_Player.oldpos.y = PLAYER_DISP_Y;
+	
 	g_Player.spjp.x = 8.0f;
 	g_Player.spjp.y = 0.8f;
 
@@ -164,7 +167,7 @@ void UpdatePlayer(void)
 
 	++g_Player.frame;
 
-	
+	g_Player.oldpos = g_Player.pos;
 
 	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	if (g_Hissattu <= 0)
@@ -436,44 +439,72 @@ void UpdatePlayer(void)
 
 
 		//ジャンプ処理
-		/*if (GetStageInfoMIGI(g_Player.pos))
-		{
-			g_Player.pos.x -= g_Player.spjp.x;
-			
-		}*/
+		//マップチップとの衝突処理
 
-		/*if (GetStageInfoHIDARI(g_Player.pos))
+		if (GetStageInfoMIGI(g_Player.pos))
 		{
-			g_Player.pos.x += g_Player.spjp.x;
-		}*/
+			//もし川に当たったら
+			if (GetStageInfoMIGI(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+			}
+			//右にマップチップがあればX座標を戻す
+			g_Player.pos.x = g_Player.oldpos.x;
+			//g_Player.pos.x = GetStageInfoMIGI(g_Player.pos) - (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+		}
+
+		if (GetStageInfoHIDARI(g_Player.pos))
+		{
+			//もし川に当たったら
+			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+			}
+			//左にマップチップがあればX座標を戻す
+			g_Player.pos.x = g_Player.oldpos.x;
+			//g_Player.pos.x = GetStageInfoHIDARI(g_Player.pos) + (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+		}
 
 		if (GetStageInfoUE(g_Player.pos))
 		{
-			g_Player.jp.y *= -1.0f;
+			//もし川に当たったら
+			if (GetStageInfoUE(g_Player.pos) == -1) {
+				g_Player.pos.x = PLAYER_DISP_X;
+				g_Player.pos.y = PLAYER_DISP_Y;
+			}
+			//上にマップチップがあれば緩やかに反発
+			g_Player.jp.y *= -0.5f;
 		}
 
+		//平地もしくは落下時のみ判定
 		if (g_Player.jp.y >= 0)
 		{
 			if (GetStageInfoSITA(g_Player.pos))
 			{
+				//もし川に当たったら
+				if (GetStageInfoSITA(g_Player.pos) == -1) {
+					g_Player.pos.x = PLAYER_DISP_X;
+					g_Player.pos.y = PLAYER_DISP_Y;
+				}
 
+				//下にブロックがあれば座標をそのブロックの上に調整する
 				g_jflg = false;
 				g_Player.jp.y = 0.0f;
 				g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
 			}
 			else
 			{
+				//ブロックがない＝空中
 				g_jflg = true;
 			}
 		}
 
-		
 
 		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
 		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
 		{
 			g_jflg = true;
-			g_Player.jp.y = -15.0f;
+			g_Player.jp.y = -20.0f;
 		}
 
 		//フラグがオンになった時ジャンプ処理を開始する
@@ -488,11 +519,6 @@ void UpdatePlayer(void)
 			//Y座標の更新
 			g_Player.pos.y += g_Player.jp.y;
 		}
-		else
-		{
-			
-		}
-		
 	}
 	else if (g_Hissattu > 0)
 	{
@@ -534,10 +560,17 @@ void DrawPlayer(void)
 	//ベース座標を取得する
 	D3DXVECTOR2 basePos = GetBase();
 
-	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y, 
-		PLAYER_SIZEX, PLAYER_SIZEY,
+	//右側にある亜空間の調整版
+	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x + 4.0f, basePos.y + g_Player.pos.y, 
+		PLAYER_SIZEX + 8.0f, PLAYER_SIZEY,
 		0.0f, 0.0f, 
 		1.0f, 1.0f);
+
+	//こっちが調整前
+	/*DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y,
+		PLAYER_SIZEX, PLAYER_SIZEY,
+		0.0f, 0.0f,
+		1.0f, 1.0f);*/
 
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
