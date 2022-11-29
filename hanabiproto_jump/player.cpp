@@ -113,7 +113,7 @@ HRESULT InitPlayer(void)
 	g_Player.spjp.x = 0.0f;
 	g_Player.spjp.y = 0.8f;
 
-	g_Player.jp.x = -10.0f;
+	g_Player.jp.x = -0.0f;
 	g_Player.jp.y = 0.0f;
 
 	g_Player.frame = 0;
