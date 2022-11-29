@@ -14,6 +14,7 @@
 #include "input.h"
 #include "player.h"
 #include "enemy.h"
+#include "stage.h"
 
 //*****************************************************************************							
 // マクロ定義							
@@ -181,6 +182,14 @@ void UpdateAkariObject(void)
 			}
 			g_AkariObject[i].pos.x += MovePos[i].x * g_AkariObject[i].speed * 3;
 			g_AkariObject[i].frame += 1;
+
+
+			//もし明かりの中心が雨のマップチップに当たったらフレーム加速
+			if (GetStageInfoRain(g_AkariObject[i].pos)){
+				g_AkariObject[i].frame = 500;
+			}
+				
+
 			//落ちる速さ
 			g_AkariObject[i].drop.y = 0.01f;
 			//加速度
@@ -200,7 +209,7 @@ void UpdateAkariObject(void)
 				g_AkariObject[i].pos.y = 360;
 			}
 			//合成できず消滅ーーー
-			if (g_AkariObject[i].hitground == true && g_AkariObject[i].frame == 400)
+			if (g_AkariObject[i].hitground == true && g_AkariObject[i].frame >= 400)
 			{
 				g_AkariObject[i].use = false;
 				g_AkariObject[i].frame = 0;
