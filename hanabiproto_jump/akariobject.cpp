@@ -578,6 +578,51 @@ void SetAkari(Float2 pos, Float2 vec, float speed)
 	}
 }
 
+//Žè‘«’ƒ˜q‚ÉŽg—p‚³‚ê‚Ä‚¢‚é
+//“Á’è‚Ì•ûŒü‚É‚ ‚©‚è‚ð”ò‚Î‚·
+void SetAkari(Float2 pos, Float2 vec, float speed)
+{
+	int create_akari = 1;
+	Float2 akarivec[1] =
+	{
+		{vec.x,vec.y},
+	};
+
+
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].speed = speed;
+			MovePos[i] = akarivec[create_akari - 1];
+			//F‚Ã‚¯
+			{
+				float RGB[3];
+				int saidai = 0;
+				for (int j = 0; j < 3; j++)
+				{
+					RGB[j] = frand();
+					if (RGB[saidai] <= RGB[j])
+						saidai = j;
+				}
+				RGB[saidai] = 1.0f;
+				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+			}
+
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
+
+
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right)
 {
 	Float2 cp;
