@@ -31,6 +31,12 @@ static EnemyObject* g_pEnemy[NUM_ENEMY];//仮置き
 static CupEnemy cupE[NUM_CUPENEMY]; //一旦仮置き
 static int g_nowEnemyMax;
 
+<<<<<<< HEAD
+static float random[10];
+
+
+=======
+>>>>>>> 4372486b4dab46a683dcf6bdf3df436db4f33e6d
 //=============================================================================			
 // 初期化処理			
 //=============================================================================			
@@ -139,12 +145,19 @@ void UpdateEnemy(void)
 			if(g_pEnemy[i]->frame >= 60)
 			{
 				//SetCupAkari(g_pEnemy[i]->pos, 30, 0, {10.0f,15.0f}, 45.0f);
+				for (int a = 0; a < 5; a++)
+				{
+					random[a * 2] = (frand() / frand() - 1);
+					random[a * 2 + 1] = frand();
 
-				random[0] = frand();//(frand() / frand() - 1);
-				random[1] = frand();
+					if (random[a] > 1)
+					{
+						random[a] = 1;
+					}
+
+					SetAkari(g_pEnemy[i]->pos, { random[a] + 0.2f,-random[a] }, 1.5f);
+				}
 				
-
-				SetAkari(g_pEnemy[i]->pos, { random[0],-random[1]}, 1.5f);
 				g_pEnemy[i]->frame = 0;
 			}
 		}
