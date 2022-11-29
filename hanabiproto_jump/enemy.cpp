@@ -1,4 +1,3 @@
-
 /*==============================================================================
 
 				   エネミー処理 [enemy.cpp]
@@ -62,7 +61,7 @@ HRESULT InitEnemy(void)
 		cupE[i].speed = 8.0f;
 	}
 
-	/*テスト*/
+	//テスト
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
 	return S_OK;
@@ -84,7 +83,7 @@ void UpdateEnemy(void)
 
 	if (GetKeyboardPress(DIK_F))
 	{
-		SetEnemy({ 640,400 }, 0, 0);
+		SetEnemy({ 640,450 }, 0, 0);
 
 	}
 
