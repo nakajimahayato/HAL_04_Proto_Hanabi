@@ -110,7 +110,7 @@ HRESULT InitPlayer(void)
 	g_Player.oldpos.x = PLAYER_DISP_X;
 	g_Player.oldpos.y = PLAYER_DISP_Y;
 	
-	g_Player.spjp.x = 8.0f;
+	g_Player.spjp.x = 0.0f;
 	g_Player.spjp.y = 0.8f;
 
 	g_Player.jp.x = -10.0f;
@@ -423,19 +423,35 @@ void UpdatePlayer(void)
 		}
 		//==========================================
 
-
 		//キーボードのAキーが押されたら左に移動する
 		if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
 		{
-			g_Player.pos.x -= g_Player.spjp.x;
+			if (g_Player.spjp.x > 0)
+				g_Player.spjp.x *= PLAYER_BRAKE;
+
+			g_Player.spjp.x -= PLAYER_ACCELERATION_X;
 			g_Player.vec.x = -2.0;
 		}
 		//キーボードのDキーが押されたら右に移動する
 		if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
 		{
-			g_Player.pos.x += g_Player.spjp.x;
+			if (g_Player.spjp.x < 0)
+				g_Player.spjp.x *= PLAYER_BRAKE;
+
+			g_Player.spjp.x += PLAYER_ACCELERATION_X;
 			g_Player.vec.x = 2.0;
 		}
+		//何も押されていないときのみ減速する
+		if (!GetKeyboardPress(DIK_A) && !GetKeyboardPress(DIK_D) && (g_jflg == false))
+		{
+			g_Player.spjp.x *= PLAYER_BRAKE;
+		}
+
+		g_Player.spjp.x = fminf(g_Player.spjp.x, PLAYER_SPEEDMAX_X);
+		g_Player.spjp.x = fmaxf(g_Player.spjp.x, -(PLAYER_SPEEDMAX_X));
+
+		g_Player.pos.x += g_Player.spjp.x;
+
 
 
 		//ジャンプ処理
@@ -447,9 +463,11 @@ void UpdatePlayer(void)
 			if (GetStageInfoMIGI(g_Player.pos) == -1) {
 				g_Player.pos.x = PLAYER_DISP_X;
 				g_Player.pos.y = PLAYER_DISP_Y;
+				g_Player.spjp.x = 0.0f;
 			}
 			//右にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
+			g_Player.spjp.x = 0.0f;
 			//g_Player.pos.x = GetStageInfoMIGI(g_Player.pos) - (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
 		}
 
@@ -459,9 +477,11 @@ void UpdatePlayer(void)
 			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
 				g_Player.pos.x = PLAYER_DISP_X;
 				g_Player.pos.y = PLAYER_DISP_Y;
+				g_Player.spjp.x = 0.0f;
 			}
 			//左にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
+			g_Player.spjp.x = 0.0f;
 			//g_Player.pos.x = GetStageInfoHIDARI(g_Player.pos) + (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
 		}
 
@@ -471,6 +491,7 @@ void UpdatePlayer(void)
 			if (GetStageInfoUE(g_Player.pos) == -1) {
 				g_Player.pos.x = PLAYER_DISP_X;
 				g_Player.pos.y = PLAYER_DISP_Y;
+				g_Player.spjp.x = 0.0f;
 			}
 			//上にマップチップがあれば緩やかに反発
 			g_Player.jp.y *= -0.5f;
@@ -485,6 +506,7 @@ void UpdatePlayer(void)
 				if (GetStageInfoSITA(g_Player.pos) == -1) {
 					g_Player.pos.x = PLAYER_DISP_X;
 					g_Player.pos.y = PLAYER_DISP_Y;
+					g_Player.spjp.x = 0.0f;
 				}
 
 				//下にブロックがあれば座標をそのブロックの上に調整する
@@ -561,16 +583,16 @@ void DrawPlayer(void)
 	D3DXVECTOR2 basePos = GetBase();
 
 	//右側にある亜空間の調整版
-	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x + 4.0f, basePos.y + g_Player.pos.y, 
+	/*DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x + 4.0f, basePos.y + g_Player.pos.y, 
 		PLAYER_SIZEX + 8.0f, PLAYER_SIZEY,
 		0.0f, 0.0f, 
-		1.0f, 1.0f);
+		1.0f, 1.0f);*/
 
 	//こっちが調整前
-	/*DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y,
+	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y,
 		PLAYER_SIZEX, PLAYER_SIZEY,
 		0.0f, 0.0f,
-		1.0f, 1.0f);*/
+		1.0f, 1.0f);
 
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
