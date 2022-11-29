@@ -42,4 +42,6 @@ int GetStageInfoUE(Float2 playerpos);
 int GetStageInfoMIGI(Float2 playerpos);
 int GetStageInfoHIDARI(Float2 playerpos);
 
+bool GetStageInfoRain(Float2 akaripos);
+
 
