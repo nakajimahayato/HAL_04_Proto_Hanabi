@@ -13,6 +13,8 @@
 #include "camera.h"
 #include "input.h"
 #include "player.h"
+#include "enemy.h"
+#include "stage.h"
 
 //*****************************************************************************							
 // マクロ定義							
@@ -61,6 +63,7 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].sdrop.y = 0.0f;
 		g_AkariObject[i].vec.x = 0.0f;
 		g_AkariObject[i].vec.y = 0.0f;
+		g_AkariObject[i].speed = 1.0f;
 
 	}
 
@@ -115,6 +118,10 @@ void UpdateAkariObject(void)
 		}
 	}//テスト終わり
 
+	if (GetKeyboardTrigger(DIK_G))
+	{
+		SetAkari(GetPlayer()->pos, { 1.0f,-1.0f }, 1.5f);
+	}//テスト終わり
 
 
 
@@ -125,7 +132,7 @@ void UpdateAkariObject(void)
 		{
 			//地点Aから地点Bの移動距離
 			//MovePos=地点B - 地点A;
-			MovePos[i] = Centergather(GetPlayer()->pos, GetPlayer()->pos, {0, 0}, GetPlayer()->pos) - g_AkariObject[i].pos;
+			MovePos[i] = Centergather(GetPlayer()->pos, GetPlayer()->pos, GetPlayer()->pos, GetPlayer()->pos) - g_AkariObject[i].pos;
 			//MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
 			//何フレームかけて集まるか
 			MovePos[i].x /= (60 / (g_AkariObject[i].frame + 1 * 5));
@@ -171,10 +178,18 @@ void UpdateAkariObject(void)
 			else
 			{
 				g_AkariObject[i].pos.y += g_AkariObject[i].vec.y;
-				g_AkariObject[i].pos.y += MovePos[i].y * 3;
+				g_AkariObject[i].pos.y += MovePos[i].y * g_AkariObject[i].speed * 3;
 			}
-			g_AkariObject[i].pos.x += MovePos[i].x * 3;
+			g_AkariObject[i].pos.x += MovePos[i].x * g_AkariObject[i].speed * 3;
 			g_AkariObject[i].frame += 1;
+
+
+			//もし明かりの中心が雨のマップチップに当たったらフレーム加速
+			if (GetStageInfoRain(g_AkariObject[i].pos)){
+				g_AkariObject[i].frame = 500;
+			}
+				
+
 			//落ちる速さ
 			g_AkariObject[i].drop.y = 0.01f;
 			//加速度
@@ -194,7 +209,7 @@ void UpdateAkariObject(void)
 				g_AkariObject[i].pos.y = 360;
 			}
 			//合成できず消滅ーーー
-			if(g_AkariObject[i].hitground == true && g_AkariObject[i].frame == 400)
+			if (g_AkariObject[i].hitground == true && g_AkariObject[i].frame >= 400)
 			{
 				g_AkariObject[i].use = false;
 				g_AkariObject[i].frame = 0;
@@ -240,10 +255,10 @@ void SetAkari(Float2 pos)
 	int create_akari = 4;
 	Float2 akarivec[4] =
 	{
-		{1.0f,0.0f},
-		{-1.0f,0.0f},
-		{0.0f,1.0f},
-		{0.0f,-1.0f}
+		{1.0f,0.0f},	//1
+		{-1.0f,0.0f},	//2
+		{0.0f,1.0f},	//3
+		{0.0f,-1.0f}	//4
 	};
 
 	for (int i = 0; i < AKARI_NUM; i++)
@@ -284,38 +299,38 @@ void SetAkari(Float2 pos, int saidai)
 	int create_akari = 32;
 	Float2 akarivec[32] =
 	{
-		{1.0f,0.0f},
-		{0.2f,0.7f},
-		{0.3f,0.8f},
-		{0.7f,0.2f},
-		{0.5f,0.5f},
-		{0.1f,0.6f},
-		{0.8f,0.3f},
-		{0.4f,0.9f},
-		{-1.0f,0.0f},
-		{-0.2f,0.7f},
-		{-0.3f,0.8f},
-		{-0.7f,0.2f},
-		{-0.5f,0.5f},
-		{-0.4f,0.9f},
-		{-0.8f,0.3f},
-		{-0.9f,0.4f},
-		{0.0f,1.0f},
-		{-0.2f,-0.7f},
-		{-0.3f,-0.8f},
-		{-0.7f,-0.2f},
-		{-0.5f,-0.5f},
-		{-0.4f,-0.9f},
-		{-0.8f,-0.3f},
-		{-0.4f,-0.9f},
-		{0.0f,-1.0f},
-		{0.2f,-0.7f},
-		{0.3f,-0.8f},
-		{0.7f,-0.2f},
-		{0.5f,-0.5f},
-		{0.4f,-0.9f},
-		{0.8f,-0.3f},
-		{0.9f,-0.4f}
+		{1.0f,0.0f},	//1
+		{0.2f,0.7f},	//2
+		{0.3f,0.8f},	//3
+		{0.7f,0.2f},	//4
+		{0.5f,0.5f},	//5
+		{0.1f,0.6f},	//6
+		{0.8f,0.3f},	//7
+		{0.4f,0.9f},	//8
+		{-1.0f,0.0f},	//9
+		{-0.2f,0.7f},	//10
+		{-0.3f,0.8f},	//11
+		{-0.7f,0.2f},	//12
+		{-0.5f,0.5f},	//13
+		{-0.4f,0.9f},	//14
+		{-0.8f,0.3f},	//15
+		{-0.9f,0.4f},	//16
+		{0.0f,1.0f},	//17
+		{-0.2f,-0.7f},	//18
+		{-0.3f,-0.8f},	//19
+		{-0.7f,-0.2f},	//20
+		{-0.5f,-0.5f},	//21
+		{-0.4f,-0.9f},	//22
+		{-0.8f,-0.3f},	//23
+		{-0.4f,-0.9f},	//24
+		{0.0f,-1.0f},	//25
+		{0.2f,-0.7f},	//26
+		{0.3f,-0.8f},	//27
+		{0.7f,-0.2f},	//28
+		{0.5f,-0.5f},	//29
+		{0.4f,-0.9f},	//30
+		{0.8f,-0.3f},	//31
+		{0.9f,-0.4f}	//32
 	};
 
 	for (int i = 0; i < AKARI_NUM; i++)
@@ -352,43 +367,43 @@ void SetAkari(Float2 pos, int saidai)
 //ダメージタイプが0ならプレイヤーにダメージ
 //1ならエネミーにダメージ
 //2なら両方
-void SetAkari(Float2 pos, int saidai,int damagetype)
+void SetAkari(Float2 pos, int saidai, int damagetype)
 {
 	int create_akari = 32;
 	Float2 akarivec[32] =
 	{
-		{1.0f,0.0f},
-		{0.2f,0.7f},
-		{0.3f,0.8f},
-		{0.7f,0.2f},
-		{0.5f,0.5f},
-		{0.1f,0.6f},
-		{0.8f,0.3f},
-		{0.4f,0.9f},
-		{-1.0f,0.0f},
-		{-0.2f,0.7f},
-		{-0.3f,0.8f},
-		{-0.7f,0.2f},
-		{-0.5f,0.5f},
-		{-0.4f,0.9f},
-		{-0.8f,0.3f},
-		{-0.9f,0.4f},
-		{0.0f,1.0f},
-		{-0.2f,-0.7f},
-		{-0.3f,-0.8f},
-		{-0.7f,-0.2f},
-		{-0.5f,-0.5f},
-		{-0.4f,-0.9f},
-		{-0.8f,-0.3f},
-		{-0.4f,-0.9f},
-		{0.0f,-1.0f},
-		{0.2f,-0.7f},
-		{0.3f,-0.8f},
-		{0.7f,-0.2f},
-		{0.5f,-0.5f},
-		{0.4f,-0.9f},
-		{0.8f,-0.3f},
-		{0.9f,-0.4f}
+		{1.0f,0.0f},	//1
+		{0.2f,0.7f},	//2
+		{0.3f,0.8f},	//3
+		{0.7f,0.2f},	//4
+		{0.5f,0.5f},	//5
+		{0.1f,0.6f},	//6
+		{0.8f,0.3f},	//7
+		{0.4f,0.9f},	//8
+		{-1.0f,0.0f},	//9
+		{-0.2f,0.7f},	//10
+		{-0.3f,0.8f},	//11
+		{-0.7f,0.2f},	//12
+		{-0.5f,0.5f},	//13
+		{-0.4f,0.9f},	//14
+		{-0.8f,0.3f},	//15
+		{-0.9f,0.4f},	//16
+		{0.0f,1.0f},	//17
+		{-0.2f,-0.7f},	//18
+		{-0.3f,-0.8f},	//19
+		{-0.7f,-0.2f},	//20
+		{-0.5f,-0.5f},	//21
+		{-0.4f,-0.9f},	//22
+		{-0.8f,-0.3f},	//23
+		{-0.4f,-0.9f},	//24
+		{0.0f,-1.0f},	//25
+		{0.2f,-0.7f},	//26
+		{0.3f,-0.8f},	//27
+		{0.7f,-0.2f},	//28
+		{0.5f,-0.5f},	//29
+		{0.4f,-0.9f},	//30
+		{0.8f,-0.3f},	//31
+		{0.9f,-0.4f}	//32
 	};
 
 	for (int i = 0; i < AKARI_NUM; i++)
@@ -441,70 +456,90 @@ void SetAkari(Float2 pos, int saidai,int damagetype)
 
 void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle)
 {
-	int create_akari = 15;
-	Float2 akarivec[15] =
+	for (int c = 0; c < NUM_CUPENEMY; c++)
 	{
-		{-0.2f,-0.7f},	//1
-		{-0.3f,-0.8f},	//2
-		{-0.7f,-0.2f},	//3
-		{-0.5f,-0.5f},	//4
-		{-0.4f,-0.9f},	//5
-		{-0.8f,-0.3f},	//6
-		{-0.4f,-0.9f},	//7
-		{0.0f,-1.0f},	//8
-		{0.2f,-0.7f},	//9
-		{0.3f,-0.8f},	//10
-		{0.7f,-0.2f},	//11
-		{0.5f,-0.5f},	//12
-		{0.4f,-0.9f},	//13
-		{0.8f,-0.3f},	//14
-		{0.9f,-0.4f}	//15
-	};
+		EnemyObject* g_pEnemy[NUM_CUPENEMY];
+		D3DXVECTOR2 vVEC = GetPlayer()->pos - GetCupEnemy()[c]->pos;
+		D3DXVec2Normalize(&vVEC, &vVEC);
 
-	for (int i = 0; i < AKARI_NUM; i++)
-	{
-		if (g_AkariObject[i].use == false)
+		Float2 randomvec;
+		float  anglef = ((int)angle % 181) / 180;
+
+		randomvec.x = frand();
+		randomvec.y = frand();
+		//vecとramdomvec(angle)との位置関係とベクトル途で内積を計算する
+		D3DXVec2Dot(&vec, &randomvec);
+
+		if (D3DXVec2Dot(&vec, &randomvec) <= anglef)
 		{
-			switch (damagetype)
+			int create_akari = 15;
+			Float2 akarivec[15] =
 			{
-			case 0:
-				g_AkariObject[i].damageplayerflug = true;
-				g_AkariObject[i].damageenemyflug = false;
-				break;
-			case 1:
-				g_AkariObject[i].damageplayerflug = false;
-				g_AkariObject[i].damageenemyflug = true;
-				break;
-			case 2:
-				g_AkariObject[i].damageplayerflug = true;
-				g_AkariObject[i].damageenemyflug = true;
-				break;
-			default:
-				break;
-			}
-			g_AkariObject[i].use = true;
-			g_AkariObject[i].pos = pos;
-			g_AkariObject[i].setvec = false;
-			g_AkariObject[i].gather = false;
-			g_AkariObject[i].vec.y = 0.0f;
-			g_AkariObject[i].hitground = false;
-			MovePos[i] = akarivec[create_akari - 1];
-			//色づけ
+				{-0.2f,-0.7f},	//1
+				{-0.3f,-0.8f},	//2
+				{-0.7f,-0.2f},	//3
+				{-0.5f,-0.5f},	//4
+				{-0.4f,-0.9f},	//5
+				{-0.8f,-0.3f},	//6
+				{-0.4f,-0.9f},	//7
+				{0.0f,-1.0f},	//8
+				{0.2f,-0.7f},	//9
+				{0.3f,-0.8f},	//10
+				{0.7f,-0.2f},	//11
+				{0.5f,-0.5f},	//12
+				{0.4f,-0.9f},	//13
+				{0.8f,-0.3f},	//14
+				{0.9f,-0.4f}	//15
+			};
+
+			for (int i = 0; i < AKARI_NUM; i++)
 			{
-				float RGB[3];
-				for (int j = 0; j < 3; j++)
+				if (g_AkariObject[i].use == false)
 				{
-					RGB[j] = frand();
+					switch (damagetype)
+					{
+					case 0:
+						g_AkariObject[i].damageplayerflug = true;
+						g_AkariObject[i].damageenemyflug = false;
+						break;
+					case 1:
+						g_AkariObject[i].damageplayerflug = false;
+						g_AkariObject[i].damageenemyflug = true;
+						break;
+					case 2:
+						g_AkariObject[i].damageplayerflug = true;
+						g_AkariObject[i].damageenemyflug = true;
+						break;
+					default:
+						break;
+					}
+					g_AkariObject[i].use = true;
+					g_AkariObject[i].pos = pos;
+					g_AkariObject[i].setvec = false;
+					g_AkariObject[i].gather = false;
+					g_AkariObject[i].vec.y = 0.0f;
+					g_AkariObject[i].hitground = false;
+					MovePos[i] = akarivec[create_akari - 1];
+					//色づけ
+					{
+						float RGB[3];
+						for (int j = 0; j < 3; j++)
+						{
+							RGB[j] = frand();
+						}
+						RGB[saidai] = 1.0f;
+						g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+					}
+
+					create_akari -= 1;
+					if (create_akari <= 0)
+					{
+						break;
+					}
 				}
-				RGB[saidai] = 1.0f;
-				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
 			}
 
-			create_akari -= 1;
-			if (create_akari <= 0)
-			{
-				break;
-			}
+
 		}
 	}
 }
@@ -527,6 +562,7 @@ void SetAkari(Float2 pos, Float2 vec, float speed)
 			g_AkariObject[i].setvec = false;
 			g_AkariObject[i].gather = false;
 			g_AkariObject[i].speed = speed;
+			
 			MovePos[i] = akarivec[create_akari - 1];
 			//色づけ
 			{
@@ -552,12 +588,13 @@ void SetAkari(Float2 pos, Float2 vec, float speed)
 }
 
 
+
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right)
 {
 	Float2 cp;
 	float y = (up.y + down.y) / 2;
 	float x = (left.x + right.x) / 2;
-	
+
 	cp.y = y;
 	cp.x = x;
 

@@ -1,7 +1,6 @@
-
 /*==============================================================================
 
-				   ƒGƒlƒ~[ˆ— [enemy.cpp]
+				   ã‚¨ãƒãƒŸãƒ¼å‡¦ç† [enemy.cpp]
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------
@@ -12,26 +11,32 @@
 #include "input.h"
 
 //*****************************************************************************			
-// ƒ}ƒNƒ’è‹`			
+// ãƒã‚¯ãƒ­å®šç¾©			
 //*****************************************************************************			
 
 //*****************************************************************************			
-// ƒvƒƒgƒ^ƒCƒvéŒ¾			
+// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€			
 //*****************************************************************************			
 
 //*****************************************************************************			
-// ƒOƒ[ƒoƒ‹•Ï”			
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°			
 //*****************************************************************************			
 static int g_TextureNo;
 static int g_TexCupE;
 
 static EnemyObject g_Enemy[NUM_ENEMY];
 
-static EnemyObject* g_pEnemy[NUM_ENEMY];//‰¼’u‚«
-static CupEnemy cupE[NUM_CUPENEMY]; //ˆê’U‰¼’u‚«
+static EnemyObject* g_pEnemy[NUM_ENEMY];//ä»®ç½®ã
+static CupEnemy cupE[NUM_CUPENEMY]; //ä¸€æ—¦ä»®ç½®ã
 static int g_nowEnemyMax;
+
+
+static float random[10];
+
+
+
 //=============================================================================			
-// ‰Šú‰»ˆ—			
+// åˆæœŸåŒ–å‡¦ç†			
 //=============================================================================			
 HRESULT InitEnemy(void)
 {
@@ -47,7 +52,7 @@ HRESULT InitEnemy(void)
 		g_Enemy[i].speed = 8.0f;
 		g_Enemy[i].siz = { 32.0f,32.0f };
 	}
-	//«‚±‚Ìfor•K—vHã‚Ìfor‚Æ“‡H
+	//â†“ã“ã®forå¿…è¦ï¼Ÿä¸Šã®forã¨çµ±åˆï¼Ÿ
 	for (int i = 0; i < NUM_CUPENEMY; i++)
 	{
 		cupE[i].frame = 0.0f;
@@ -56,14 +61,14 @@ HRESULT InitEnemy(void)
 		cupE[i].speed = 8.0f;
 	}
 
-	/*ƒeƒXƒg*/
+	//ãƒ†ã‚¹ãƒˆ
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
 	return S_OK;
 }
 
 //=============================================================================			
-// I—¹ˆ—			
+// çµ‚äº†å‡¦ç†			
 //=============================================================================			
 void UninitEnemy(void)
 {
@@ -71,13 +76,15 @@ void UninitEnemy(void)
 }
 
 //=============================================================================			
-// XVˆ—			
+// æ›´æ–°å‡¦ç†			
 //=============================================================================			
 void UpdateEnemy(void)
 {
+
 	if (GetKeyboardPress(DIK_F))
 	{
-		SetEnemy({ 640,400 }, 0, 0);
+		SetEnemy({ 640,450 }, 0, 0);
+
 	}
 
 	for (int i = 0; i < NUM_ENEMY; i++)
@@ -86,7 +93,7 @@ void UpdateEnemy(void)
 		{
 			for (int j = 0; j < 5; j++)
 			{
-				//ƒGƒlƒ~[‚Æ‚ ‚©‚è‚Ì“–‚½‚è”»’èˆ—
+				//ã‚¨ãƒãƒŸãƒ¼ã¨ã‚ã‹ã‚Šã®å½“ãŸã‚Šåˆ¤å®šå‡¦ç†
 				if (HitCheckBox(g_Enemy[i].pos, g_Enemy[i].siz, GetAkariObject(j).pos, GetAkariObject(j).siz))
 				{
 					SetAkari(g_Enemy[i].pos);
@@ -106,38 +113,49 @@ void UpdateEnemy(void)
 			cupE[i].frame += 1;
 			for (int j = 0; j < 5; j++)
 			{
-				////ƒGƒlƒ~[‚Æ‚ ‚©‚è‚Ì“–‚½‚è”»’èˆ—
+				////ã‚¨ãƒãƒŸãƒ¼ã¨ã‚ã‹ã‚Šã®å½“ãŸã‚Šåˆ¤å®šå‡¦ç†
 				//if (HitCheckBox(g_Enemy[i].pos, g_Enemy[i].siz, GetAkariObject(j).pos, GetAkariObject(j).siz))
 				//{
 				//	SetAkari(g_Enemy[i].pos);
 				//	g_Enemy[i].use = false;
 				//}
 
-				//6•bŠÔ‚É1‰ñè‘«’ƒ˜q‚ªƒAƒNƒVƒ‡ƒ“‚ğ‹N‚±‚·
+				//6ç§’é–“ã«1å›æ‰‹è¶³èŒ¶ç¢—ãŒã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’èµ·ã“ã™
 				if (cupE[i].frame >= 360)
 				{
 					cupE[i].Action();
 					cupE[i].frame = 0;
 				}
-
 			}
 		}
 	}
 
-	//•`‰æ‚³‚ê‚Ä‚éè‘«’ƒ˜qˆ—
+	//æç”»ã•ã‚Œã¦ã‚‹æ‰‹è¶³èŒ¶ç¢—å‡¦ç†
 	for (int i = 0; i < g_nowEnemyMax; i++)
 	{
 		if (g_pEnemy[i]->use == true)
 		{
-			//¶‚É“®‚©‚µ‚Äframe‚ğ1‘«‚·
+			//å·¦ã«å‹•ã‹ã—ã¦frameã‚’1è¶³ã™
 			g_pEnemy[i]->pos.x += -1.0f;
 			g_pEnemy[i]->frame += 1;
-			//‚P•b‚É1‰ñ–¾‚©‚è‚ğ‚R”­”ò‚Î‚·
-			if (g_pEnemy[i]->frame >= 60)
+			//ï¼‘ç§’ã«1å›æ˜ã‹ã‚Šã‚’ï¼“ç™ºé£›ã°ã™
+
+			if(g_pEnemy[i]->frame >= 60)
 			{
-				SetAkari(g_pEnemy[i]->pos, { 0.0f,-1.0f }, 1.5f);
-				SetAkari(g_pEnemy[i]->pos, { 0.5f,-1.0f }, 1.5f);
-				SetAkari(g_pEnemy[i]->pos, { -0.5f,-1.0f }, 1.5f);
+				//SetCupAkari(g_pEnemy[i]->pos, 30, 0, {10.0f,15.0f}, 45.0f);
+				for (int a = 0; a < 5; a++)
+				{
+					random[a * 2] = (frand() / frand() - 1);
+					random[a * 2 + 1] = frand();
+
+					if (random[a] > 1)
+					{
+						random[a] = 1;
+					}
+
+					SetAkari(g_pEnemy[i]->pos, { random[a] + 0.2f,-random[a] }, 1.5f);
+				}
+				
 				g_pEnemy[i]->frame = 0;
 			}
 		}
@@ -145,11 +163,11 @@ void UpdateEnemy(void)
 }
 
 //=============================================================================			
-// •`‰æˆ—			
+// æç”»å‡¦ç†			
 //=============================================================================			
 void DrawEnemy(void)
 {
-	//ƒx[ƒXÀ•W‚ğæ“¾‚·‚é
+	//ãƒ™ãƒ¼ã‚¹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
 	D3DXVECTOR2 basePos = GetBase();
 
 	for (int i = 0; i < NUM_ENEMY; i++)
@@ -178,21 +196,26 @@ void DrawEnemy(void)
 }
 
 EnemyObject* GetEnemy()
+
 {
 	return g_Enemy;
+}
+
+EnemyObject** GetCupEnemy()
+{
+	return g_pEnemy;
 }
 
 void CupEnemy::Action()
 {
 	SetAkari(pos);
 }
-
 //----------------------------------
-// ƒGƒlƒ~[‚ÌƒZƒbƒgˆ—
+// ã‚¨ãƒãƒŸãƒ¼ã®ã‚»ãƒƒãƒˆå‡¦ç†
 //----------------------------------
-//0‚È‚ç
-//1‚È‚ç
-//2‚È‚ç...(–¢’è)
+//0ãªã‚‰
+//1ãªã‚‰
+//2ãªã‚‰...(æœªå®š)
 void SetEnemy(Float2 pos, int saidai, int enemytype)
 {
 	switch (enemytype)
@@ -201,8 +224,11 @@ void SetEnemy(Float2 pos, int saidai, int enemytype)
 		g_pEnemy[g_nowEnemyMax] = new CupEnemy;
 		g_pEnemy[g_nowEnemyMax]->use = true;
 		g_pEnemy[g_nowEnemyMax]->pos = pos;
+		g_pEnemy[g_nowEnemyMax]->vec.x = 0.0f;
 		g_pEnemy[g_nowEnemyMax]->vec.y = 0.0f;
 		g_pEnemy[g_nowEnemyMax]->siz = { 32.0f,32.0f };
+		g_pEnemy[g_nowEnemyMax]->frame = 0.0f;
+
 		g_nowEnemyMax += 1;
 		break;
 	case 1:
