@@ -445,43 +445,45 @@ void SetAkari(Float2 pos, int saidai, int damagetype)
 	}
 }
 
-void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle)
+//引数:カップ明かりの座標,色の種類 (赤:0.緑:1.青:2),攻撃の種類(プレイヤーダメージ0.エネミーダメージ1,両方2),
+//範囲選択開始角度,範囲選択終了地点,明かりの個数
+void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle,int akarinum)
 {
-	for (int c = 0; c < NUM_CUPENEMY; c++)
-	{
-		EnemyObject* g_pEnemy[NUM_CUPENEMY];
-		D3DXVECTOR2 vVEC = GetPlayer()->pos - GetCupEnemy()[c]->pos;
-		D3DXVec2Normalize(&vVEC, &vVEC);
+	//for (int c = 0; c < NUM_CUPENEMY; c++)
+	//{
+	//	EnemyObject* g_pEnemy[NUM_CUPENEMY];
+	//	D3DXVECTOR2 vVEC = GetPlayer()->pos - GetCupEnemy()[c]->pos;
+	//	D3DXVec2Normalize(&vVEC, &vVEC);
 
-		Float2 randomvec;
-		float  anglef = ((int)angle % 181) / 180;
+	//	Float2 randomvec;
+	//	float  anglef = ((int)angle % 181) / 180;
 
-		randomvec.x = frand();
-		randomvec.y = frand();
-		//vecとramdomvec(angle)との位置関係とベクトル途で内積を計算する
-		D3DXVec2Dot(&vec, &randomvec);
+	//	randomvec.x = frand();
+	//	randomvec.y = frand();
+	//	//vecとramdomvec(angle)との位置関係とベクトル途で内積を計算する
+	//	D3DXVec2Dot(&vec, &randomvec);
 
-		if (D3DXVec2Dot(&vec, &randomvec) <= anglef)
-		{
-			int create_akari = 15;
-			Float2 akarivec[15] =
+	//	if (D3DXVec2Dot(&vec, &randomvec) <= anglef)
+	//	{
+			float firstrad,endrad;
+			float first_x,first_y,end_x,end_y;
+			int create_akari = min(akarinum,300);
+			Float2 akarivec[300];
+			Float2 fangle;
+			Float2 eangle;
+
+			for (int i = 0; i < create_akari; i++)
 			{
-				{-0.2f,-0.7f},	//1
-				{-0.3f,-0.8f},	//2
-				{-0.7f,-0.2f},	//3
-				{-0.5f,-0.5f},	//4
-				{-0.4f,-0.9f},	//5
-				{-0.8f,-0.3f},	//6
-				{-0.4f,-0.9f},	//7
-				{0.0f,-1.0f},	//8
-				{0.2f,-0.7f},	//9
-				{0.3f,-0.8f},	//10
-				{0.7f,-0.2f},	//11
-				{0.5f,-0.5f},	//12
-				{0.4f,-0.9f},	//13
-				{0.8f,-0.3f},	//14
-				{0.9f,-0.4f}	//15
-			};
+				firstrad = (firstangle - 90) * (D3DX_PI / 180);
+				first_x = cos(firstrad);
+				first_y = sin(firstrad);
+
+				endrad = (endangle - 90) * (D3DX_PI / 180);
+				end_x = cos(endrad);
+				end_y = sin(endrad);
+			}
+
+
 
 			for (int i = 0; i < AKARI_NUM; i++)
 			{
@@ -531,8 +533,8 @@ void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle
 			}
 
 
-		}
-	}
+	//	}
+	//}
 }
 
 void SetAkari(Float2 pos, Float2 vec, float speed)
