@@ -1,0 +1,4 @@
+﻿  enemy.cpp
+c:\users\acyb1\onedrive\ドキュメント\github\hal_04_proto_hanabi\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+c:\users\acyb1\onedrive\ドキュメント\github\hal_04_proto_hanabi\hal_04_proto_hanabi\hanabiproto_jump\enemy.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  sample.vcxproj -> C:\Users\acyb1\OneDrive\ドキュメント\GitHub\HAL_04_Proto_Hanabi\HAL_04_Proto_Hanabi\hanabiproto_jump\x64\Debug\sample.exe
