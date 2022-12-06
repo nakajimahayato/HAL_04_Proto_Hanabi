@@ -76,7 +76,7 @@ void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
 void SetAkari(Float2 pos, int saidai, int damagetype);
 void SetAkari(Float2 pos, Float2 vec, float speed);
-void SetCupAkari(Float2 pos, int saidai, int damagetype, Float2 vec, float angle);
+void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle, int akarinum);
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
 
