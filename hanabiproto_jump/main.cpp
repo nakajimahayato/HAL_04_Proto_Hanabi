@@ -15,6 +15,7 @@
 #include "game.h"
 #include "inputx.h"
 #include "input.h"
+#include "title.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -220,7 +221,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	InitSprite();
 
-	SetScene(SCENE_GAME);
+	SetScene(SCENE_TITLE);
 
 	return S_OK;
 }
@@ -255,16 +256,16 @@ void Update(void)
 	UpdateInputx();
 	UpdateInput();
 
-	/*switch (g_Scene)
+	switch (g_Scene)
 	{
 	case SCENE_TITLE:
 		UpdateTitle();
 
 		break;
-	case SCENE_GAME:*/
+	case SCENE_GAME:
 		UpdateGame();
-	/*	break;
-	}*/
+		break;
+	}
 }
 
 //=============================================================================
@@ -281,16 +282,16 @@ void Draw(void)
 	// 2D描画なので深度無効
 	SetDepthEnable(false);
 
-	/*switch (g_Scene)
+	switch (g_Scene)
 	{
 	case SCENE_TITLE:
 		DrawTitle();
 		break;
 
-	case SCENE_GAME:*/
+	case SCENE_GAME:
 		DrawGame();
-	/*	break;
-	}*/
+		break;
+	}
 
 	// バックバッファ、フロントバッファ入れ替え
 	Present();
@@ -300,29 +301,29 @@ void Draw(void)
 void SetScene(SCENE nextScene)
 {
 	//現在動作しているシーンの終了処理を実行する
-	/*switch (g_Scene)
+	switch (g_Scene)
 	{
 	case SCENE_TITLE:
 		UninitTitle();
 		break;
-	case SCENE_GAME:*/
+	case SCENE_GAME:
 		UninitGame();
-	/*	break;
-	}*/
+		break;
+	}
 
 	//動作するシーンを更新する
 	g_Scene = nextScene;
 
 	//動作するシーンの初期化処理を実行する
-	/*switch (g_Scene)
+	switch (g_Scene)
 	{
 	case SCENE_TITLE:
 		InitTitle();
 		break;
-	case SCENE_GAME:*/
+	case SCENE_GAME:
 		InitGame();
-		/*break;
-	}*/
+		break;
+	}
 }
 
 float frand(void)
