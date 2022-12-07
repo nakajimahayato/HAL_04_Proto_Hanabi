@@ -116,12 +116,23 @@ void UpdateAkariObject(void)
 				break;
 			}
 		}
-	}//テスト終わり
+	}
 
 	if (GetKeyboardTrigger(DIK_G))
 	{
 		SetAkari(GetPlayer()->pos, { 1.0f,-1.0f }, 1.5f);
-	}//テスト終わり
+	}
+	
+
+	//カップあかりテスト
+	if (GetKeyboardTrigger(DIK_C))
+	{
+		SetCupAkari(GetPlayer()->pos, 1, 1, 30, 60, 10, 5.0f);
+	}
+
+
+
+	//テスト終わり
 
 
 
@@ -203,11 +214,13 @@ void UpdateAkariObject(void)
 				g_AkariObject[i].vec.y += g_AkariObject[i].drop.y;
 			}
 			//地面に残留
+/*
 			if (g_AkariObject[i].pos.y >= 360)
 			{
 				g_AkariObject[i].hitground = true;
 				g_AkariObject[i].pos.y = 360;
 			}
+*/
 			//合成できず消滅ーーー
 			if (g_AkariObject[i].hitground == true && g_AkariObject[i].frame >= 400)
 			{
@@ -455,10 +468,11 @@ void SetAkari(Float2 pos, int saidai, int damagetype)
 }
 
 //引数:カップ明かりの座標,色の種類 (赤:0.緑:1.青:2),攻撃の種類(プレイヤーダメージ0.エネミーダメージ1,両方2),
-//範囲選択開始角度,範囲選択終了地点,明かりの個数(最大300)
+//範囲選択開始角度,範囲選択終了地点,明かりの個数(最大300),速さ倍率
 //角度は右を0度として上を90度、左を180度、下を270度とし、
 //選択開始角度から左回りに回って終了地点までを範囲とする。
-void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle,int akarinum)
+//(追記)サンプルとしてスピードも設定できるようにしました
+void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle, int akarinum, float speed)
 {
 
 	float firstrad, endrad; //ラジアン角用
@@ -602,9 +616,7 @@ void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int end
 						}
 					}
 					else {
-						if ((-1.0f <= vec.y) && (vec.y <= 1.0f)) {
-							break;
-						}
+						break;
 					}
 				}
 				akarivec[i] = vec;
@@ -618,20 +630,374 @@ void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int end
 		switch ((int)(endangle / 90)) //終わりの角度がどこのエリアか
 		{
 		case 1: //同じエリアかつ180度をまたがない
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを範囲内になるまで取り直し
+				while (1) {
+					vec.x = frand() + frand() - 1; //-1.0~1.0
+					if ((cos(endrad) <= vec.x) && (vec.x <= cos(firstrad))) {
+						break;
+					}
+				}//yを範囲内になるまで取り直し
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if ((sin(endrad) <= vec.y) && (vec.y <= sin(firstrad))) {
+						break;
+					}
+				}
+				akarivec[i] = vec;
+			}
 			break;
-		case 2: //90度をまたぐ
+		case 2: //180度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//yを範囲内になるまで取り直し
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if ((sin(endrad) <= vec.y) && (vec.y <= sin(firstrad))) {
+						break;
+					}
+				}
+				//xを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.x = frand() + frand() - 1;
+					if (0 <= vec.y) {
+						if ((cos(firstrad) <= vec.x) && (vec.x <= 1.0f)) {
+							break;
+						}
+					}
+					else {
+						if ((cos(endrad) <= vec.x) && (vec.x <= 1.0f)) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
 			break;
-		case 3: //90度と180度をまたぐ
+		case 3: //180度と270度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを範囲内になるまで取り直し
+				while (1) {
+					vec.x = frand() + frand() - 1;
+					if ((-1.0f <= vec.x) && (vec.x <= cos(endrad))) {
+						break;
+					}
+				}
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(endrad))) {
+							break;
+						}
+					}
+					else {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(firstrad))) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
 			break;
-		case 4: //90度と180度と270度をまたぐ
+		case 4: //180度と270度と0度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを先に取る
+				vec.x = frand() + frand() - 1;
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(endrad))) {
+							break;
+						}
+					}
+					else {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(firstrad))) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
 			break;
-		case 5: //同じエリアかつ90、180、270、0度をまたぐ
+		case 5: //同じエリアかつ180、270、0、90度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを先に取る
+				vec.x = frand() + frand() - 1;
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						break;
+					}
+					else {
+						if (!((sin(firstrad) <= vec.y) && (vec.y <= sin(endrad)))) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
 			break;
 		}
 		break;
 	case 2: //180～269°
+		switch ((int)(endangle / 90)) //終わりの角度がどこのエリアか
+		{
+		case 2: //同じエリアかつ270度をまたがない
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを範囲内になるまで取り直し
+				while (1) {
+					vec.x = frand() + frand() - 1; //-1.0~1.0
+					if ((cos(firstrad) <= vec.x) && (vec.x <= cos(endrad))) {
+						break;
+					}
+				}//yを範囲内になるまで取り直し
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if ((sin(endrad) <= vec.y) && (vec.y <= sin(firstrad))) {
+						break;
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 3: //270度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを範囲内になるまで取り直し
+				while (1) {
+					vec.x = frand() + frand() - 1;
+					if ((cos(firstrad) <= vec.x) && (vec.x <= cos(endrad))) {
+						break;
+					}
+				}
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(endrad))) {
+							break;
+						}
+					}
+					else {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(firstrad))) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 4: //270度と0度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを範囲内になるまで取り直し
+				while (1) {
+					vec.x = frand() + frand() - 1;
+					if ((cos(firstrad) <= vec.x) && (vec.x <= 1.0f)) {
+						break;
+					}
+				}
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(endrad))) {
+							break;
+						}
+					}
+					else {
+						if ((-1.0f <= vec.y) && (vec.y <= sin(firstrad))) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 5: //270度と0度と90度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//yを先に取る
+				vec.y = frand() + frand() - 1;
+				//xを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.x = frand() + frand() - 1;
+					if (0 <= vec.y) {
+						if ((cos(endrad) <= vec.x) && (vec.x <= 1.0f)) {
+							break;
+						}
+					}
+					else {
+						if ((cos(firstrad) <= vec.x) && (vec.x <= 1.0f)) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 6: //同じエリアかつ270、0、90、180度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを先に取る
+				vec.x = frand() + frand() - 1;
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						break;
+					}
+					else {
+						if (!((sin(firstrad) <= vec.y) && (vec.y <= sin(endrad)))) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		}
 		break;
 	case 3: //270～359°
+		switch ((int)(endangle / 90)) //終わりの角度がどこのエリアか
+		{
+		case 3: //同じエリアかつ0度をまたがない
+			//ここで発射角度の設定
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを範囲内になるまで取り直し
+				while (1) {
+					vec.x = frand() + frand() - 1; //-1.0~1.0
+					if ((cos(firstrad) <= vec.x) && (vec.x <= cos(endrad))) {
+						break;
+					}
+				}//yを範囲内になるまで取り直し
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if ((sin(firstrad) <= vec.y) && (vec.y <= sin(endrad))) {
+						break;
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 4: //0度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//yを範囲内になるまで取り直し
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if ((sin(firstrad) <= vec.y) && (vec.y <= sin(endrad))) {
+						break;
+					}
+				}
+				//xを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.x = frand() + frand() - 1;
+					if (0 <= vec.y) {
+						if ((cos(endrad) <= vec.x) && (vec.x <= 1.0f)) {
+							break;
+						}
+					}
+					else {
+						if ((cos(firstrad) <= vec.x) && (vec.x <= 1.0f)) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 5: //0度と90度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを範囲内になるまで取り直し
+				while (1) {
+					vec.x = frand() + frand() - 1;
+					if ((cos(endrad) <= vec.x) && (vec.x <= 1.0f)) {
+						break;
+					}
+				}
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						if ((sin(firstrad) <= vec.y) && (vec.y <= 1.0f)) {
+							break;
+						}
+					}
+					else {
+						if ((sin(endrad) <= vec.y) && (vec.y <= 1.0f)) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 6: //0度と90度と180度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを先に取る
+				vec.x = frand() + frand() - 1;
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						if ((sin(firstrad) <= vec.y) && (vec.y <= 1.0f)) {
+							break;
+						}
+					}
+					else {
+						if ((sin(endrad) <= vec.y) && (vec.y <= 1.0f)) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		case 7: //同じエリアかつ0、90、180、270度をまたぐ
+			for (int i = 0; i < create_akari; i++)
+			{
+				//xを先に取る
+				vec.x = frand() + frand() - 1;
+				//yを範囲内になるまで取り直し
+				//2パターン想定する
+				while (1) {
+					vec.y = frand() + frand() - 1;
+					if (0 <= vec.x) {
+						break;
+					}
+					else {
+						if (!((sin(endrad) <= vec.y) && (vec.y <= sin(firstrad)))) {
+							break;
+						}
+					}
+				}
+				akarivec[i] = vec;
+			}
+			break;
+		}
 		break;
 	}
 
@@ -662,7 +1028,14 @@ void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int end
 			g_AkariObject[i].gather = false;
 			g_AkariObject[i].vec.y = 0.0f;
 			g_AkariObject[i].hitground = false;
-			MovePos[i] = akarivec[create_akari - 1];
+			//MovePos[i] = akarivec[create_akari - 1];
+
+			//ここのakarivecにスピードを掛けると加速するよ
+			//(追記)とりまスピード追加、要らんかったら消してくれ
+			//追加した奴→引数のspeed,この下の( * speed)
+			MovePos[i].x = akarivec[create_akari - 1].x * speed;
+			MovePos[i].y = -akarivec[create_akari - 1].y * speed; //単位円上yは上が正になるがゲーム上だと上は負になるため
+
 			//色づけ
 			{
 				float RGB[3];
