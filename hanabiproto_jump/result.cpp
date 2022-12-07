@@ -34,7 +34,7 @@ static int g_BGMNo;		//タイトル用BGMの識別子
 HRESULT InitResult(void)
 {
 	//テクスチャを読み込んで識別子を受け取る
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/runningman002.png");
+	g_TextureNo = LoadTexture((char*)"data/TEXTURE/result.png");
 
 	//音声ファイルを読み込んで識別子を受け取る
 	//g_BGMNo = LoadSound("data/BGM/");
