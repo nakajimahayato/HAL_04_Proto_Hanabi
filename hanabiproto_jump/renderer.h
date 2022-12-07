@@ -108,6 +108,7 @@ void SetSamplerState(FILTER_MODE fm, ADDRESS_MODE am);
 void SetSamplerBorderColor(D3DXCOLOR col);
 
 void SetWorldViewProjection2D(CAMERA_2D scale);
+void SetTitleViewProjection2D();
 void SetWorldMatrix( D3DXMATRIX *WorldMatrix );
 void SetViewMatrix( D3DXMATRIX *ViewMatrix );
 void SetProjectionMatrix( D3DXMATRIX *ProjectionMatrix );

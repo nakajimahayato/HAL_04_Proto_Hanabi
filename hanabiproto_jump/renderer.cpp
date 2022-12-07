@@ -194,6 +194,15 @@ void SetWorldViewProjection2D(CAMERA_2D scale)
 	GetDeviceContext()->UpdateSubresource( g_ConstantBuffer, 0, NULL, &worldViewProjection, 0, 0 );
 }
 
+void SetTitleViewProjection2D()
+{
+	D3DXMATRIX worldViewProjection;
+	D3DXMatrixOrthoOffCenterLH(&worldViewProjection, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	D3DXMatrixTranspose(&worldViewProjection, &worldViewProjection);
+
+	GetDeviceContext()->UpdateSubresource(g_ConstantBuffer, 0, NULL, &worldViewProjection, 0, 0);
+}
+
 
 void SetWorldMatrix( D3DXMATRIX *WorldMatrix )
 {
