@@ -138,11 +138,12 @@ void UpdateEnemy(void)
 			//左に動かしてframeを1足す
 			//g_pEnemy[i]->pos.x += -1.0f;
 			g_pEnemy[i]->frame += 1;
+
 			//１秒に1回明かりを5発飛ばす
 
 			if(g_pEnemy[i]->frame >= 60)
 			{
-				SetCupAkari(g_pEnemy[i]->pos, 0, 0, 30, 330,10);
+				SetCupAkari(g_pEnemy[i]->pos, 0, 0, 30, 150, 5, 3.0f);
 				//for (int a = 0; a < 10; a++)
 				//{
 				//	random[a * 2] = (frand() / frand() - 1);
