@@ -75,7 +75,7 @@ void UpdateCamera(void)
 		//g_Camera.right += ZOOM_SCALE * SCREEN_WIDTH_RATE;
 
 		//SetWorldViewProjection2D(g_Camera);
-		Zoomout();
+		ZoomOut();
 	}
 	else
 	{
@@ -97,7 +97,7 @@ void UpdateCamera(void)
 		//	g_Camera.right += ZOOM_SCALE * SCREEN_WIDTH_RATE;
 		//}
 		//SetWorldViewProjection2D(g_Camera);
-		Zoomin();
+		ZoomIn();
 		
 	}
 	else
