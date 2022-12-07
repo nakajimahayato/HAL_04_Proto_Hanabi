@@ -15,6 +15,7 @@
 #include "game.h"
 #include "inputx.h"
 #include "input.h"
+#include "camera.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -276,7 +277,7 @@ void Draw(void)
 	Clear();
 
 	// マトリクス設定
-	SetWorldViewProjection2D();//座標の2D変換
+	//SetWorldViewProjection2D(0.0f);//座標の2D変換
 
 	// 2D描画なので深度無効
 	SetDepthEnable(false);
