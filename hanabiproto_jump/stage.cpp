@@ -23,13 +23,14 @@
 //*****************************************************************************							
 // グローバル変数							
 //*****************************************************************************							
-static int g_TextureNo;
-static int g_TextureNo2;
-static int g_TextureNo3;
+static int g_TextureNo;	//ブロック
+static int g_TextureNo2;//川
+static int g_TextureNo3;//雨
+static int g_TextureNo4;//ゴール
 static Stage g_Stage;
 static Float2 g_Block;
 
-static int StageBase[STAGE_Y][STAGE_X] =
+static int StageBase[STAGE_Y][STAGE_X] =/*０：空気　１：ブロック　２：川　３：雨　４：ゴール(?)*/
 {
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
@@ -50,9 +51,9 @@ static int StageBase[STAGE_Y][STAGE_X] =
 { 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,1,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0 },
 { 0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
@@ -74,6 +75,7 @@ HRESULT InitStage(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/proto_robot_stage_zimen2.png");
 	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/River-sample.png");
 	g_TextureNo3 = LoadTexture((char*)"data/TEXTURE/Rain-sample.png");
+	g_TextureNo4 = LoadTexture((char*)"data/TEXTURE/Flag.png");
 
 	//初期化
 	g_Stage.pos.x = SCREEN_WIDTH;
@@ -128,6 +130,10 @@ void DrawStage(void)
 				DrawSprite(g_TextureNo3, basePos.x + CHIPSIZE_X / 2 + CHIPSIZE_X * x, basePos.y + CHIPSIZE_Y * y,
 					CHIPSIZE_X, CHIPSIZE_Y, 1.0f, 1.0f, 1.0f, 1.0f);
 				break;
+			case 4:
+				DrawSprite(g_TextureNo4, basePos.x + CHIPSIZE_X + CHIPSIZE_X * x, basePos.y + CHIPSIZE_Y * y,
+					CHIPSIZE_X*1.5, CHIPSIZE_Y*4, 1.0f, 1.0f, 1.0f, 1.0f);
+				break;
 			}
 		}
 	}
@@ -158,6 +164,9 @@ int GetStageInfoUE(Float2 playerpos)
 		case 2:
 			return -1;
 			break;
+		case 4:
+			return -2;
+			break;
 		}
 	}
 
@@ -170,6 +179,9 @@ int GetStageInfoUE(Float2 playerpos)
 		break;
 	case 2:
 		return -1;
+		break;
+	case 4:
+		return -2;
 		break;
 	}
 
@@ -202,6 +214,9 @@ int GetStageInfoSITA(Float2 playerpos)
 		case 2:
 			return -1;
 			break;
+		case 4:
+			return -2;
+			break;
 		}
 	}
 
@@ -214,6 +229,9 @@ int GetStageInfoSITA(Float2 playerpos)
 		break;
 	case 2:
 		return -1;
+		break;
+	case 4:
+		return -2;
 		break;
 	}
 
@@ -245,6 +263,9 @@ int GetStageInfoMIGI(Float2 playerpos)
 			case 2:
 				return -1;
 				break;
+			case 4:
+				return -2;
+				break;
 		}
 	}
 
@@ -257,6 +278,9 @@ int GetStageInfoMIGI(Float2 playerpos)
 		break;
 	case 2:
 		return -1;
+		break;
+	case 4:
+		return -2;
 		break;
 	}
 
@@ -289,6 +313,9 @@ int GetStageInfoHIDARI(Float2 playerpos)
 		case 2:
 			return -1;
 			break;
+		case 4:
+			return -2;
+			break;
 		}
 	}
 
@@ -301,6 +328,9 @@ int GetStageInfoHIDARI(Float2 playerpos)
 		break;
 	case 2:
 		return -1;
+		break;
+	case 4:
+		return -2;
 		break;
 	}
 	return ReturnPos;
