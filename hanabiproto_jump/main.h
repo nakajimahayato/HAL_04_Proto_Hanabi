@@ -53,7 +53,6 @@ enum SCENE
 	SCENE_TITLE,	//タイトル画面
 	SCENE_GAME,		//ゲーム本編
 	SCENE_RESULT,	//リザルト画面
-
 	SCENE_NUM,		//終端コード
 };
 
