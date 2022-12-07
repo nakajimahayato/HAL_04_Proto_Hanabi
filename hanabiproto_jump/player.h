@@ -28,7 +28,7 @@
 
 struct PLAYER
 {
-	float		frame;	//プレイヤーのフレーム
+	int		frame;	//プレイヤーのフレーム
 	Float2		pos;	//プレイヤーの現在位置
 	Float2      oldpos; //プレイヤーの過去の位置
 	Float2		vec;	//プレイヤーのベクトル

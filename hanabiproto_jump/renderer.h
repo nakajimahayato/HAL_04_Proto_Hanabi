@@ -65,6 +65,17 @@ struct VERTEX_3D
     D3DXVECTOR2 TexCoord;
 };
 
+struct CAMERA_2D
+{
+	D3DXVECTOR2 pos;
+	float up;
+	float down;
+	float left;
+	float right;
+};
+
+
+
 
 // マテリアル構造体
 struct MATERIAL
@@ -96,7 +107,7 @@ void SetCullingMode(CULL_MODE cm);
 void SetSamplerState(FILTER_MODE fm, ADDRESS_MODE am);
 void SetSamplerBorderColor(D3DXCOLOR col);
 
-void SetWorldViewProjection2D( void );
+void SetWorldViewProjection2D(CAMERA_2D scale);
 void SetWorldMatrix( D3DXMATRIX *WorldMatrix );
 void SetViewMatrix( D3DXMATRIX *ViewMatrix );
 void SetProjectionMatrix( D3DXMATRIX *ProjectionMatrix );
