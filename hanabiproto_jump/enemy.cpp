@@ -42,7 +42,7 @@ HRESULT InitEnemy(void)
 {
 
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/enemy00.png");
-	g_TexCupE = LoadTexture((char*)"data/TEXTURE/proto_effect_explosion.png");
+	g_TexCupE = LoadTexture((char*)"data/TEXTURE/ue.png");
 
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
@@ -81,9 +81,9 @@ void UninitEnemy(void)
 void UpdateEnemy(void)
 {
 
-	if (GetKeyboardPress(DIK_F))
+	if (GetKeyboardTrigger(DIK_F))
 	{
-		SetEnemy({ 640,450 }, 0, 0);
+		SetEnemy({ SCREEN_WIDTH,250 }, 0, 0);
 
 	}
 
@@ -136,25 +136,30 @@ void UpdateEnemy(void)
 		if (g_pEnemy[i]->use == true)
 		{
 			//左に動かしてframeを1足す
-			g_pEnemy[i]->pos.x += -1.0f;
+			//g_pEnemy[i]->pos.x += -1.0f;
 			g_pEnemy[i]->frame += 1;
-			//１秒に1回明かりを３発飛ばす
+
+			//１秒に1回明かりを5発飛ばす
 
 			if(g_pEnemy[i]->frame >= 60)
 			{
-				//SetCupAkari(g_pEnemy[i]->pos, 30, 0, {10.0f,15.0f}, 45.0f);
-				for (int a = 0; a < 5; a++)
-				{
-					random[a * 2] = (frand() / frand() - 1);
-					random[a * 2 + 1] = frand();
+				SetCupAkari(g_pEnemy[i]->pos, 0, 0, 30, 150, 5, 3.0f);
+				//for (int a = 0; a < 10; a++)
+				//{
+				//	random[a * 2] = (frand() / frand() - 1);
+				//	random[a * 2 + 1] = frand();
 
-					if (random[a] > 1)
-					{
-						random[a] = 1;
-					}
+				//	while (random[a * 2] > 1)
+				//	{
+				//		random[a * 2] = (frand() / frand() - 1);
+				//	}
+				//	while (random[a * 2 + 1] > 1)
+				//	{
+				//		random[a * 2 + 1] = frand();
+				//	}
 
-					SetAkari(g_pEnemy[i]->pos, { random[a] + 0.2f,-random[a] }, 1.5f);
-				}
+				//	SetAkari(g_pEnemy[i]->pos, { random[a * 2] + 0.2f,-random[a * 2 + 1] }, 1.5f);
+				//}
 				
 				g_pEnemy[i]->frame = 0;
 			}

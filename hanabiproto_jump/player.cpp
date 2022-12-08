@@ -165,7 +165,7 @@ void UpdatePlayer(void)
 	D3DXVECTOR2 basePos = GetBase();
 	Float2 BasePos(basePos.x, basePos.y);
 
-	++g_Player.frame;
+	g_Player.frame++;
 
 	g_Player.oldpos = g_Player.pos;
 
@@ -465,6 +465,11 @@ void UpdatePlayer(void)
 				g_Player.pos.y = PLAYER_DISP_Y;
 				g_Player.spjp.x = 0.0f;
 			}
+			//もし旗に当たったら
+			if (GetStageInfoMIGI(g_Player.pos)==-2)
+			{
+				SetScene(SCENE_RESULT);
+			}
 			//右にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
 			g_Player.spjp.x = 0.0f;
@@ -479,6 +484,11 @@ void UpdatePlayer(void)
 				g_Player.pos.y = PLAYER_DISP_Y;
 				g_Player.spjp.x = 0.0f;
 			}
+			//もし旗に当たったら
+			if (GetStageInfoHIDARI(g_Player.pos) == -2)
+			{
+				SetScene(SCENE_RESULT);
+			}
 			//左にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
 			g_Player.spjp.x = 0.0f;
@@ -492,6 +502,11 @@ void UpdatePlayer(void)
 				g_Player.pos.x = PLAYER_DISP_X;
 				g_Player.pos.y = PLAYER_DISP_Y;
 				g_Player.spjp.x = 0.0f;
+			}
+			//もし旗に当たったら
+			if (GetStageInfoUE(g_Player.pos) == -2)
+			{
+				SetScene(SCENE_RESULT);
 			}
 			//上にマップチップがあれば緩やかに反発
 			g_Player.jp.y *= -0.5f;
@@ -508,7 +523,11 @@ void UpdatePlayer(void)
 					g_Player.pos.y = PLAYER_DISP_Y;
 					g_Player.spjp.x = 0.0f;
 				}
-
+				//もし旗に当たったら
+				if (GetStageInfoSITA(g_Player.pos) == -2)
+				{
+					SetScene(SCENE_RESULT);
+				}
 				//下にブロックがあれば座標をそのブロックの上に調整する
 				g_jflg = false;
 				g_Player.jp.y = 0.0f;
@@ -525,9 +544,11 @@ void UpdatePlayer(void)
 		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
 		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
 		{
+
 			g_jflg = true;
 			g_Player.jp.y = -20.0f;
 		}
+
 
 		//フラグがオンになった時ジャンプ処理を開始する
 		if (g_jflg == true)
@@ -553,16 +574,15 @@ void UpdatePlayer(void)
 	}
 	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
-
 	//カメラ座標の更新
 	//プレイヤー座標から表示座標分を引いた値をカメラ座標としてセットする
 	D3DXVECTOR2 cameraPos;
 	cameraPos.x = g_Player.pos.x - PLAYER_DISP_X;
 	cameraPos.y = g_Player.pos.y - PLAYER_DISP_Y;
-	if (cameraPos.x < 0) cameraPos.x = 0.0f;
+	/*if (cameraPos.x < 0) cameraPos.x = 0.0f;
 	if (cameraPos.y < 0) cameraPos.y = 0.0f;
-	if (cameraPos.x > 1080) cameraPos.x = 1080.0f;
-	if (cameraPos.y > 720) cameraPos.y = 720.0f;
+	if (cameraPos.x > SCREEN_WIDTH) cameraPos.x = SCREEN_WIDTH;
+	if (cameraPos.y > SCREEN_HEIGHT) cameraPos.y = SCREEN_HEIGHT;*/
 	SetCameraPos(cameraPos.x, cameraPos.y);
 
 

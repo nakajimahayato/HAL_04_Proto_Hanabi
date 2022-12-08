@@ -7,6 +7,7 @@
 
 ==============================================================================*/
 #include "renderer.h"
+#include "camera.h"
 
 
 
@@ -183,14 +184,23 @@ void SetSamplerBorderColor(D3DXCOLOR col)
 	g_BorderColor = col;
 }
 
-void SetWorldViewProjection2D( void )
+//ここいじればワンチャン？（カメラの拡大率(?)）
+void SetWorldViewProjection2D(CAMERA_2D scale)
 {
 	D3DXMATRIX worldViewProjection;
-
-	D3DXMatrixOrthoOffCenterLH(&worldViewProjection, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	D3DXMatrixOrthoOffCenterLH(&worldViewProjection, (0.0f + SCREEN_WIDTH / 4) - scale.left/*画面左端の座標*/, (SCREEN_WIDTH - SCREEN_WIDTH / 4) + scale.right/*画面右端の座標*/, (SCREEN_HEIGHT - SCREEN_HEIGHT / 4) + scale.down/*画面下端の座標*/, (0.0f + SCREEN_HEIGHT / 4) - scale.up/*画面上端の座標*/, 0.0f, 1.0f);
 	D3DXMatrixTranspose(&worldViewProjection, &worldViewProjection);
 
 	GetDeviceContext()->UpdateSubresource( g_ConstantBuffer, 0, NULL, &worldViewProjection, 0, 0 );
+}
+
+void SetTitleViewProjection2D()
+{
+	D3DXMATRIX worldViewProjection;
+	D3DXMatrixOrthoOffCenterLH(&worldViewProjection, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	D3DXMatrixTranspose(&worldViewProjection, &worldViewProjection);
+
+	GetDeviceContext()->UpdateSubresource(g_ConstantBuffer, 0, NULL, &worldViewProjection, 0, 0);
 }
 
 
