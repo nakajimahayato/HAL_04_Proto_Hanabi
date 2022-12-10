@@ -7,6 +7,10 @@
   ゲーム内時間を記録できる時間管理クラスを作成
   好きなように時間を動かせるようにする
   Updateにシーン遷移の条件
+
+  時間管理.cppにクリア、ゲームオーバーの判定追加し、何らかの形でリザルトに渡す。
+  リザルトにあるゲームクリアとゲームオーバーをどうやって切り替えるかを考える
+  →(例)成功＆失敗フラグを時間管理クラスに作ってそのゲッターをリザルトに渡すとか
 ==============================================================================*/
 #include "timemanager.h"
 
@@ -41,11 +45,6 @@ void UpdateTimeManager()
 	//制限時間がきたら
 	if (tm.time >= TIME_LIMIT*60)
 	{
-
-		//if (/*ボルテージが敵のスコアを上回っていたら。もしくはボスと雑魚敵を全て倒したら。*/)
-		//{
-		//	SetScene(SCENE_RESULT);
-		//}
 		SetScene(SCENE_RESULT);
 	}
 
@@ -64,4 +63,17 @@ void UpdateTimeManager()
 void DrawTimeManager(void)
 {
 
+}
+
+bool Result(float enemyscore,float playerscore)
+{
+	//とりあえず引き分けは考えてない
+	if (enemyscore> playerscore)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

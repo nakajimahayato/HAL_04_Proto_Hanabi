@@ -84,7 +84,7 @@ void UpdateGame(void)
 {
 
 	// ’¸“_ŠÇ—‚ÌXVˆ—
-	//UpdateTimeManager();
+	UpdateTimeManager();
 	UpdateAkariObject();
 	UpdatePlayer();
 	UpdateEnemy();
