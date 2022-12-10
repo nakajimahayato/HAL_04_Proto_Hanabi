@@ -16,6 +16,7 @@
 #include "inputx.h"
 #include "input.h"
 #include "title.h"
+#include "result.h"
 #include "camera.h"
 
 //*****************************************************************************
@@ -261,10 +262,12 @@ void Update(void)
 	{
 	case SCENE_TITLE:
 		UpdateTitle();
-
 		break;
 	case SCENE_GAME:
 		UpdateGame();
+		break;
+	case SCENE_RESULT:
+		UpdateResult();
 		break;
 	}
 }
@@ -277,8 +280,7 @@ void Draw(void)
 	// バックバッファクリア
 	Clear();
 
-	// マトリクス設定
-	//SetWorldViewProjection2D(0.0f);//座標の2D変換
+	
 
 	// 2D描画なので深度無効
 	SetDepthEnable(false);
@@ -286,11 +288,17 @@ void Draw(void)
 	switch (g_Scene)
 	{
 	case SCENE_TITLE:
+		// マトリクス設定
+		SetTitleViewProjection2D();//座標の2D変換
 		DrawTitle();
 		break;
-
 	case SCENE_GAME:
 		DrawGame();
+		break;
+	case SCENE_RESULT:
+		// マトリクス設定
+		SetTitleViewProjection2D();//座標の2D変換
+		DrawResult();
 		break;
 	}
 
@@ -310,6 +318,9 @@ void SetScene(SCENE nextScene)
 	case SCENE_GAME:
 		UninitGame();
 		break;
+	case SCENE_RESULT:
+		UninitResult();
+		break;
 	}
 
 	//動作するシーンを更新する
@@ -323,6 +334,9 @@ void SetScene(SCENE nextScene)
 		break;
 	case SCENE_GAME:
 		InitGame();
+		break;
+	case SCENE_RESULT:
+		InitResult();
 		break;
 	}
 }
