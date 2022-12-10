@@ -72,6 +72,7 @@ void UpdateTitle(void)
 //*****************************************************************************
 void DrawTitle(void)
 {
+
 	DrawSpriteLeftTop(g_TextureNo, 0.0f, 0.0f,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
 		0.0f, 0.0f, 1.0f, 1.0f);
