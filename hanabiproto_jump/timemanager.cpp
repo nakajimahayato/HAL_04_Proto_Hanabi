@@ -39,19 +39,20 @@ void UpdateTimeManager()
 	//シーン遷移の条件
 
 	//制限時間がきたら
-	if (tm.time >= TIME_LIMIT)
+	if (tm.time >= TIME_LIMIT*60)
 	{
-		
+
 		//if (/*ボルテージが敵のスコアを上回っていたら。もしくはボスと雑魚敵を全て倒したら。*/)
 		//{
 		//	SetScene(SCENE_RESULT);
 		//}
+		SetScene(SCENE_RESULT);
 	}
 
-	if (tm.frame = 60.0f)
+	if ((int)tm.frame %60)
 	{
-		tm.time++;
 		tm.frame = 0.0f;
+		tm.time++;
 	}
 
 	tm.frame++;
