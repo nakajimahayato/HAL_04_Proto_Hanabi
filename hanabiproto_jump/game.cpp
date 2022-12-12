@@ -17,6 +17,7 @@
 #include "stage.h"
 #include "inputx.h"
 #include "enemy.h"
+#include "timemanager.h"
 
 
 //*****************************************************************************
@@ -38,6 +39,7 @@
 HRESULT InitGame(void)
 {
 	// 頂点管理の初期化処理
+	InitTimeManager();
 	InitAkariObject();
 	InitPlayer();
 	InitEnemy();
@@ -60,6 +62,7 @@ HRESULT InitGame(void)
 void UninitGame(void)
 {
 	UninitCamera();
+	UninitTimeManager();
 
 
 	//背景の終了処理
@@ -81,6 +84,7 @@ void UpdateGame(void)
 {
 
 	// 頂点管理の更新処理
+	UpdateTimeManager();
 	UpdateAkariObject();
 	UpdatePlayer();
 	UpdateEnemy();
