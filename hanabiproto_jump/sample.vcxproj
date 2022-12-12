@@ -133,9 +133,11 @@
     <ClCompile Include="BENRIclass.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="clear_result.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gameover_result.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputx.cpp" />
     <ClCompile Include="main.cpp" />
@@ -147,14 +149,18 @@
     <ClCompile Include="texture.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="timemanager.cpp" />
+    <ClCompile Include="title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BENRIclass.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="clear_result.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="gameover_result.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="inputx.h" />
     <ClInclude Include="main.h" />
@@ -166,6 +172,8 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="timemanager.h" />
+    <ClInclude Include="title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

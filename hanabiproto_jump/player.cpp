@@ -452,8 +452,6 @@ void UpdatePlayer(void)
 
 		g_Player.pos.x += g_Player.spjp.x;
 
-
-
 		//ジャンプ処理
 		//マップチップとの衝突処理
 
@@ -464,6 +462,11 @@ void UpdatePlayer(void)
 				g_Player.pos.x = PLAYER_DISP_X;
 				g_Player.pos.y = PLAYER_DISP_Y;
 				g_Player.spjp.x = 0.0f;
+			}
+			//もし旗に当たったら
+			if (GetStageInfoMIGI(g_Player.pos)==-2)
+			{
+				SetScene(SCENE_CRESULT);
 			}
 			//右にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
@@ -479,6 +482,11 @@ void UpdatePlayer(void)
 				g_Player.pos.y = PLAYER_DISP_Y;
 				g_Player.spjp.x = 0.0f;
 			}
+			//もし旗に当たったら
+			if (GetStageInfoHIDARI(g_Player.pos) == -2)
+			{
+				SetScene(SCENE_CRESULT);
+			}
 			//左にマップチップがあればX座標を戻す
 			g_Player.pos.x = g_Player.oldpos.x;
 			g_Player.spjp.x = 0.0f;
@@ -492,6 +500,11 @@ void UpdatePlayer(void)
 				g_Player.pos.x = PLAYER_DISP_X;
 				g_Player.pos.y = PLAYER_DISP_Y;
 				g_Player.spjp.x = 0.0f;
+			}
+			//もし旗に当たったら
+			if (GetStageInfoUE(g_Player.pos) == -2)
+			{
+				SetScene(SCENE_CRESULT);
 			}
 			//上にマップチップがあれば緩やかに反発
 			g_Player.jp.y *= -0.5f;
@@ -508,7 +521,11 @@ void UpdatePlayer(void)
 					g_Player.pos.y = PLAYER_DISP_Y;
 					g_Player.spjp.x = 0.0f;
 				}
-
+				//もし旗に当たったら
+				if (GetStageInfoSITA(g_Player.pos) == -2)
+				{
+					SetScene(SCENE_CRESULT);
+				}
 				//下にブロックがあれば座標をそのブロックの上に調整する
 				g_jflg = false;
 				g_Player.jp.y = 0.0f;
