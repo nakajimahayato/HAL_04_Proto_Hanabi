@@ -16,7 +16,8 @@
 #include "inputx.h"
 #include "input.h"
 #include "title.h"
-#include "result.h"
+#include "clear_result.h"
+#include "gameover_result.h"
 #include "camera.h"
 
 //*****************************************************************************
@@ -266,8 +267,11 @@ void Update(void)
 	case SCENE_GAME:
 		UpdateGame();
 		break;
-	case SCENE_RESULT:
-		UpdateResult();
+	case SCENE_CRESULT:
+		UpdateClearResult();
+		break;
+	case SCENE_GRESULT:
+		UpdateGameOverResult();
 		break;
 	}
 }
@@ -295,11 +299,17 @@ void Draw(void)
 	case SCENE_GAME:
 		DrawGame();
 		break;
-	case SCENE_RESULT:
+	case SCENE_CRESULT:
 		// マトリクス設定
 		SetTitleViewProjection2D();//座標の2D変換
-		DrawResult();
+		DrawClearResult();
 		break;
+	case SCENE_GRESULT:
+		// マトリクス設定
+		SetTitleViewProjection2D();//座標の2D変換
+		DrawGameOverResult();
+		break;
+
 	}
 
 	// バックバッファ、フロントバッファ入れ替え
@@ -318,9 +328,13 @@ void SetScene(SCENE nextScene)
 	case SCENE_GAME:
 		UninitGame();
 		break;
-	case SCENE_RESULT:
-		UninitResult();
+	case SCENE_CRESULT:
+		UninitClearResult();
 		break;
+	case SCENE_GRESULT:
+		UninitGameOverResult();
+		break;
+
 	}
 
 	//動作するシーンを更新する
@@ -335,9 +349,13 @@ void SetScene(SCENE nextScene)
 	case SCENE_GAME:
 		InitGame();
 		break;
-	case SCENE_RESULT:
-		InitResult();
+	case SCENE_CRESULT:
+		InitClearResult();
 		break;
+	case SCENE_GRESULT:
+		InitGameOverResult();
+		break;
+
 	}
 }
 
