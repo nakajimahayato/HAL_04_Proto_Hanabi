@@ -18,6 +18,7 @@
 #include "inputx.h"
 #include "enemy.h"
 #include "timemanager.h"
+#include "score.h"
 
 
 //*****************************************************************************
@@ -44,6 +45,7 @@ HRESULT InitGame(void)
 	InitPlayer();
 	InitEnemy();
 	InitAtHanabi();
+	InitScore();
 
 	// ”wŒi‚Ì‰Šú‰»
 	InitBG();
@@ -63,6 +65,7 @@ void UninitGame(void)
 {
 	UninitCamera();
 	UninitTimeManager();
+	
 
 
 	//”wŒi‚ÌI—¹ˆ—
@@ -75,6 +78,7 @@ void UninitGame(void)
 	UninitAkariObject();
 
 	UninitAtHanabi();
+	UninitScore();
 }
 
 //=============================================================================
@@ -89,6 +93,9 @@ void UpdateGame(void)
 	UpdatePlayer();
 	UpdateEnemy();
 	UpdateAtHanabi();
+	UpdatePlayerScore();
+	UpdateEnemyScore();
+	
 	//”wŒi‚ÌXVˆ—
 	UpdateBG();
 	UpdateStage();
@@ -110,9 +117,12 @@ void DrawGame(void)
 	DrawAkariObject();
 	DrawPlayer();
 	DrawEnemy();
-
 	DrawAtHanabi();
+	DrawPlayerScore();
+	DrawEnemyScore();
+	
 
 	DrawCamera();
 
+	
 }
