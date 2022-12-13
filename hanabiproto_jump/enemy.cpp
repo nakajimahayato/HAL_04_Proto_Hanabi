@@ -9,6 +9,7 @@
 #include "enemy.h"
 #include "object.h"
 #include "input.h"
+#include "score.h"
 
 //*****************************************************************************			
 // マクロ定義			
@@ -96,6 +97,7 @@ void UpdateEnemy(void)
 				//エネミーとあかりの当たり判定処理
 				if (HitCheckBox(g_Enemy[i].pos, g_Enemy[i].siz, GetAkariObject(j).pos, GetAkariObject(j).siz))
 				{
+					PlusPlayerScore(100);
 					SetAkari(g_Enemy[i].pos);
 					g_Enemy[i].use = false;
 				}
