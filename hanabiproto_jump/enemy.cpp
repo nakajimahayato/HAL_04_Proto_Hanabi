@@ -10,6 +10,9 @@
 #include "object.h"
 #include "input.h"
 #include "score.h"
+#include "stage.h"
+
+
 
 //*****************************************************************************			
 // マクロ定義			
@@ -34,6 +37,8 @@ static int g_nowEnemyMax;
 
 static float random[10];
 
+int EnemyMakeframe = 0;
+
 
 
 //=============================================================================			
@@ -50,8 +55,10 @@ HRESULT InitEnemy(void)
 		g_Enemy[i].frame = 0.0f;
 		g_Enemy[i].use = false;
 		g_Enemy[i].pos = { SCREEN_WIDTH/2 ,SCREEN_HEIGHT/2  };
-		g_Enemy[i].speed = 8.0f;
+		g_Enemy[i].speed = ENEMY_WALK_SPEED;
 		g_Enemy[i].siz = { 32.0f,32.0f };
+		g_Enemy[i].fall = false;
+		g_Enemy[i].sdrop.y = ENEMY_FALL_SPEED;
 	}
 	//↓このfor必要？上のforと統合？
 	for (int i = 0; i < NUM_CUPENEMY; i++)
@@ -84,27 +91,77 @@ void UpdateEnemy(void)
 
 	if (GetKeyboardTrigger(DIK_F))
 	{
-		SetEnemy({ SCREEN_WIDTH,250 }, 0, 0);
-
+		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 0, 1);
 	}
+
+	//エネミー生成
+	if (GetKeyboardTrigger(DIK_K))
+	{
+		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 1, 1);
+	}
+
+	EnemyMakeframe++;
+
+	if ((EnemyMakeframe % 70) == 0)
+		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 1, -1);
+
+	
 
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		if (g_Enemy[i].use)
 		{
-			for (int j = 0; j < 5; j++)
+			//for (int j = 0; j < 5; j++)
+			//{
+			//	//エネミーとあかりの当たり判定処理
+			//	if (HitCheckBox(g_Enemy[i].pos, g_Enemy[i].siz, GetAkariObject(j).pos, GetAkariObject(j).siz))
+			//	{
+			//		PlusPlayerScore(100);
+			//		SetAkari(g_Enemy[i].pos);
+			//		g_Enemy[i].use = false;
+			//	}
+			//}
+
+
+			//右か左に蟹歩き
+			g_Enemy[i].pos.x += g_Enemy[i].speed * g_Enemy[i].directionX;
+
+			//落下処理
+			if (g_Enemy[i].fall == true) {
+				g_Enemy[i].drop.y += g_Enemy[i].sdrop.y;
+				g_Enemy[i].pos.y += g_Enemy[i].drop.y;
+			}
+
+			if (g_Enemy[i].pos.y > SCREEN_HEIGHT) {
+				g_Enemy[i].use = false;
+			}
+
+			//エネミーと地面の判定
+			if (GetStageInfoEnemySITA(g_Enemy[i].pos, Float2(ENEMY1_SIZEX, ENEMY1_SIZEY)))
 			{
-				//エネミーとあかりの当たり判定処理
-				if (HitCheckBox(g_Enemy[i].pos, g_Enemy[i].siz, GetAkariObject(j).pos, GetAkariObject(j).siz))
-				{
-					PlusPlayerScore(100);
-					SetAkari(g_Enemy[i].pos);
+				//もし川に当たったら
+				if (GetStageInfoEnemySITA(g_Enemy[i].pos, Float2(ENEMY1_SIZEX, ENEMY1_SIZEY)) == -1) {
 					g_Enemy[i].use = false;
 				}
 
+				////もし旗に当たったら
+				//if (GetStageInfoSITA(g_Player.pos) == -2)
+				//{
+				//	SetScene(SCENE_CRESULT);
+				//}
 
+				//下にブロックがあれば座標をそのブロックの上に調整する
+				g_Enemy[i].drop.y = 0.0f;
+				g_Enemy[i].pos.y = GetStageInfoEnemySITA(g_Enemy[i].pos, Float2(ENEMY1_SIZEX, ENEMY1_SIZEY)) - (ENEMY1_SIZEY / 2 + CHIPSIZE_Y / 2);
+				g_Enemy[i].fall = false;
+			}
+			else
+			{
+				//ブロックがない＝空中
+				g_Enemy[i].fall = true;
 			}
 		}
+		
 	}
 
 
@@ -182,7 +239,7 @@ void DrawEnemy(void)
 		if (g_Enemy[i].use)
 		{
 			DrawSprite(g_TextureNo, basePos.x + g_Enemy[i].pos.x, basePos.y + g_Enemy[i].pos.y,
-				80.0f, 80.0f,
+				ENEMY1_SIZEX, ENEMY1_SIZEY,
 				1.0f, 1.0f,
 				1.0f, 1.0f);
 		}
@@ -194,7 +251,7 @@ void DrawEnemy(void)
 		if (g_pEnemy[i]->use)
 		{
 			DrawSprite(g_TexCupE, basePos.x + g_pEnemy[i]->pos.x, basePos.y + g_pEnemy[i]->pos.y,
-				80.0f, 80.0f,
+				ENEMY2_SIZEX, ENEMY2_SIZEY,
 				1.0f, 1.0f,
 				1.0f, 1.0f);
 		}
@@ -223,7 +280,9 @@ void CupEnemy::Action()
 //0なら
 //1なら
 //2なら...(未定)
-void SetEnemy(Float2 pos, int saidai, int enemytype)
+//向きがプラスで→
+//マイナスで←
+void SetEnemy(Float2 pos, int saidai, int enemytype, int muki)
 {
 	switch (enemytype)
 	{
@@ -239,6 +298,19 @@ void SetEnemy(Float2 pos, int saidai, int enemytype)
 		g_nowEnemyMax += 1;
 		break;
 	case 1:
+		for (int i = 0; i < NUM_ENEMY; i++) {
+			if (g_Enemy[i].use == false) {
+				g_Enemy[i].use = true;
+				g_Enemy[i].pos = pos;
+				if (muki > 0) {
+					g_Enemy[i].directionX = 1;
+				}
+				else {
+					g_Enemy[i].directionX = -1;
+				}
+				break;
+			}
+		}
 		break;
 	case 2:
 		break;
