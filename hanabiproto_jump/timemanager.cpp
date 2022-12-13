@@ -45,7 +45,7 @@ void UpdateTimeManager()
 	//§ŒÀŽžŠÔ‚ª‚«‚½‚ç
 	if (tm.time >= TIME_LIMIT*60)
 	{
-		SetScene(SCENE_RESULT);
+		//SetScene(SCENE_RESULT);
 	}
 
 	if ((int)tm.frame %60)

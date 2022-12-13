@@ -57,49 +57,40 @@ void UninitScore()
 //=============================================================================							
 // 更新処理							
 //=============================================================================	
-void UpdatePlayerScore()
+void UpdateScore()
 {
+	UpdatePlayerScore();
+	UpdateEnemyScore();
+}
+
+//=============================================================================							
+// 描画処理							
+//=============================================================================	
+void DrawScore()
+{
+	DrawPlayerScore();
+	DrawEnemyScore();
+}
+
+
+//PlayerScore関連
+void UpdatePlayerScore() {
 	g_PlayerScore.score++;
 	if (g_PlayerScore.score > g_PlayerScore.max_score) {
 		g_PlayerScore.score = g_PlayerScore.max_score;
 	}
 }
 
-void UpdateEnemyScore()
-{
-	g_EnemyScore.score++;
-	if (g_EnemyScore.score > g_EnemyScore.max_score) {
-		g_EnemyScore.score = g_EnemyScore.max_score;
-	}
-}
-
-//=============================================================================							
-// 描画処理							
-//=============================================================================	
-void DrawPlayerScore()
-{
+void DrawPlayerScore() {
 	int drawscore = g_PlayerScore.score;
 
-	for (int i = 0; i < SCORE_DIGITS; i++){
+	for (int i = 0; i < SCORE_DIGITS; i++) {
 		int num = drawscore % 10;
 		DrawSpriteLeftTop(g_Texture, PLAYERSCORE_POSX - (i * 40.0f), SCORE_POSY, SCORE_SIZE_X, SCORE_SIZE_Y, 0.1f * num, 0.0f, 0.1f, 1.0f);
 		drawscore /= 10;
 	}
 }
 
-void DrawEnemyScore()
-{
-	int drawscore = g_EnemyScore.score;
-
-	for (int i = 0; i < SCORE_DIGITS; i++) {
-		int num = drawscore % 10;
-		DrawSpriteLeftTop(g_Texture, ENEMYSCORE_POSX - (i * 40.0f), SCORE_POSY, SCORE_SIZE_X, SCORE_SIZE_Y, 0.1f * num, 0.0f, 0.1f, 1.0f);
-		drawscore /= 10;
-	}
-}
-
-
-//PlayerScore関連
 void PlusPlayerScore(int score) {
 	g_PlayerScore.max_score += score;
 	if (g_PlayerScore.max_score < 0) {
@@ -116,6 +107,24 @@ int GetPlayerScore() {
 }
 
 //EnemyScore関連
+void UpdateEnemyScore()
+{
+	g_EnemyScore.score++;
+	if (g_EnemyScore.score > g_EnemyScore.max_score) {
+		g_EnemyScore.score = g_EnemyScore.max_score;
+	}
+}
+
+void DrawEnemyScore() {
+	int drawscore = g_EnemyScore.score;
+
+	for (int i = 0; i < SCORE_DIGITS; i++) {
+		int num = drawscore % 10;
+		DrawSpriteLeftTop(g_Texture, ENEMYSCORE_POSX - (i * 40.0f), SCORE_POSY, SCORE_SIZE_X, SCORE_SIZE_Y, 0.1f * num, 0.0f, 0.1f, 1.0f);
+		drawscore /= 10;
+	}
+}
+
 void PlusEnemyScore(int score) {
 	g_EnemyScore.score += score;
 	if (g_EnemyScore.score < 0) {
@@ -130,4 +139,3 @@ void SetEnemyScore(int score) {
 int GetEnemyScore() {
 	return g_EnemyScore.score;
 }
-

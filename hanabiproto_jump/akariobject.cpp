@@ -206,7 +206,7 @@ void UpdateAkariObject(void)
 			//加速度
 			g_AkariObject[i].sdrop.y = 0.03f;
 			//弾が飛ぶ幅
-			MovePos[i].x /= 1.005;
+			MovePos[i].x /= 1.005f;
 			//特定のフレーム後に重力発動
 			if (g_AkariObject[i].frame >= 20)
 			{
@@ -222,7 +222,7 @@ void UpdateAkariObject(void)
 			}
 */
 			//合成できず消滅ーーー
-			if (g_AkariObject[i].hitground == true && g_AkariObject[i].frame >= 400)
+			if (/*g_AkariObject[i].hitground == true &&*/ g_AkariObject[i].frame >= 400)
 			{
 				g_AkariObject[i].use = false;
 				g_AkariObject[i].frame = 0;
