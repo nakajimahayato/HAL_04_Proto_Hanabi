@@ -20,7 +20,6 @@
 #include "timemanager.h"
 #include "score.h"
 
-
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
@@ -53,8 +52,6 @@ HRESULT InitGame(void)
 
 	InitCamera();
 
-	
-
 	return S_OK;
 }
 
@@ -66,8 +63,6 @@ void UninitGame(void)
 	UninitCamera();
 	UninitTimeManager();
 	
-
-
 	//îwåiÇÃèIóπèàóù
 	UninitBG();
 	UninitStage();
@@ -93,16 +88,12 @@ void UpdateGame(void)
 	UpdatePlayer();
 	UpdateEnemy();
 	UpdateAtHanabi();
-	UpdatePlayerScore();
-	UpdateEnemyScore();
+	UpdateScore();
 	
 	//îwåiÇÃçXêVèàóù
 	UpdateBG();
 	UpdateStage();
 	UpdateCamera();
-
-	
-
 }
 
 //=============================================================================
@@ -118,11 +109,7 @@ void DrawGame(void)
 	DrawPlayer();
 	DrawEnemy();
 	DrawAtHanabi();
-	DrawPlayerScore();
-	DrawEnemyScore();
+	DrawScore();
 	
-
 	DrawCamera();
-
-	
 }
