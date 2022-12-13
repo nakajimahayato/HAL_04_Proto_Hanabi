@@ -53,6 +53,8 @@ protected:
 	float			Gravity;
 
 public:
+	bool            fall;
+	int             directionX;
 	virtual void Action() {}
 
 };
