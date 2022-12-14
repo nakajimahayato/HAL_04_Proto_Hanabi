@@ -24,6 +24,8 @@
 #define PLAYER_ACCELERATION_X 0.5f //プレイヤーの横加速度
 #define PLAYER_SPEEDMAX_X 8.0f //プレイヤーの最大速度
 #define PLAYER_BRAKE 0.4 //地面との摩擦
+#define PLAYER_MAXHP 30	
+#define PLAYER_HP_PRINT 30	
 
 
 struct PLAYER
@@ -35,6 +37,9 @@ struct PLAYER
 	Float2		spjp;	//プレイヤーの移動とジャンプ速度
 	//Float2      acceleration;//プレイヤーの加速度
 	Float2		jp;		//プレイヤーのジャンプ処理
+	int			hp;
+	int			hpframe;
+	int			maxframe;
 };
 
 struct CURSOR
@@ -60,7 +65,8 @@ void DrawPlayer(void);
 bool CompositionAkari(int clossStart, int clossGoal);
 PLAYER* GetPlayer(void);
 void plus_hissatuwaza(int index);
-
+void HP_Minus(int damage);
+void HP_Plus(int healing);
 
 
 //PLAYER* GetPlayer(void);
