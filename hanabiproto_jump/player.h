@@ -21,27 +21,28 @@
 #define PLAYER_SIZEX (CHIPSIZE_X * 1)  //
 #define PLAYER_SIZEY (CHIPSIZE_Y * 3)  //192
 #define PLAYER_FALL_SPEED_MAX 15.0f
-#define PLAYER_ACCELERATION_X 0.5f //プレイヤーの横加速度
-#define PLAYER_SPEEDMAX_X 8.0f //プレイヤーの最大速度
-#define PLAYER_BRAKE 0.4 //地面との摩擦
-#define PLAYER_MAXHP 30	
-#define PLAYER_HP_PRINT 30	
-#define PLAYER_HP_HEALFRAME  1//回復する速度
-#define PLAYER_HP_HEAL 0.033333
+#define PLAYER_ACCELERATION_X 0.5f	//プレイヤーの横加速度
+#define PLAYER_SPEEDMAX_X 8.0f		//プレイヤーの最大速度
+#define PLAYER_BRAKE 0.4			//地面との摩擦
+#define PLAYER_MAXHP 30				//最大体力
+#define PLAYER_HP_PRINT 30			//体力表示
+#define PLAYER_HP_HEALFRAME 1		//回復する速度フレーム
+#define PLAYER_HP_MAXFRAME 180		//体力が最大になってからの時間フレーム
+#define PLAYER_HP_HEAL 0.033333		//自動回復数値
 
 
 struct PLAYER
 {
-	int		frame;	//プレイヤーのフレーム
-	Float2		pos;	//プレイヤーの現在位置
-	Float2      oldpos; //プレイヤーの過去の位置
-	Float2		vec;	//プレイヤーのベクトル
-	Float2		spjp;	//プレイヤーの移動とジャンプ速度
+	int			frame;		//プレイヤーのフレーム
+	Float2		pos;		//プレイヤーの現在位置
+	Float2      oldpos;		//プレイヤーの過去の位置
+	Float2		vec;		//プレイヤーのベクトル
+	Float2		spjp;		//プレイヤーの移動とジャンプ速度
 	//Float2      acceleration;//プレイヤーの加速度
-	Float2		jp;		//プレイヤーのジャンプ処理
-	float			hp;
-	int			hpframe;
-	int			maxframe;
+	Float2		jp;			//プレイヤーのジャンプ処理
+	float		hp;			//プレイヤーの体力
+	int			hpframe;	//プレイヤーの体力
+	int			maxframe;	//プレイヤーの体力
 };
 
 struct CURSOR

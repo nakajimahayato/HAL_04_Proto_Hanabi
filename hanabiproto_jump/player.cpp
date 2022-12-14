@@ -61,7 +61,7 @@ int g_Hissattu;
 //ジャンプ
 bool g_jflg;//ジャンプしてるか
 
-bool g_hpflg;
+bool g_hpflg;//体力バーを表示するか
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
 
@@ -572,43 +572,59 @@ void UpdatePlayer(void)
 		}
 
 
-
+		//テスト用
+		//1キーで体力を1減らす
 		if (GetKeyboardTrigger(DIK_1))
 		{
 			HP_Minus(1.0f);
 		}
+		//テスト用
+		//2キーで体力を5減らす
 		if (GetKeyboardTrigger(DIK_2))
 		{
 			HP_Minus(5.0f);
 		}
 
+		//体力が最大体力より低いとき
 		if (g_Player.hp <= PLAYER_MAXHP)
 		{
+			//体力が0になったらゲームオーバー
 			if (g_Player.hp <= 0)
 			{
 				SetScene(SCENE_GRESULT);
 			}
 
+			//フレームを１足す
 			g_Player.hpframe++;
 
+			//フレームがPLAYER_HP_HEALFRAMEに達したとき
 			if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
 			{
+				//体力をPLAYER_HP_HEAL分回復する
 				HP_Plus(PLAYER_HP_HEAL);
 
+				//プレイヤーの体力が最大以上になった時
 				if (g_Player.hp >= PLAYER_MAXHP)
 				{
+					//最大体力を固定する(最大以上にならないように)
 					g_Player.hp = PLAYER_MAXHP;
 				}
+				//フレームリセット
 				g_Player.hpframe = 0;
 			}
 		}
 
+		//プレイヤーの体力が最大になった時
 		if (g_Player.hp == PLAYER_MAXHP)
 		{
+			//フレームを1足す
 			g_Player.maxframe++;
-			if (g_Player.maxframe >= 180)
+			//フレームがPLAYER_HP_MAXFRAMEに達したら
+			if (g_Player.maxframe >= PLAYER_HP_MAXFRAME)
 			{
+				//体力バーの表示をオフにする
 				g_hpflg = false;
+				//フレームリセット
 				g_Player.maxframe = 0;
 			}
 		}
@@ -682,7 +698,8 @@ void DrawPlayer(void)
 		}
 	}
 
-	int Hp_length = PLAYER_HP_PRINT * g_Player.hp;
+	//体力描画処理
+	int Hp_length = PLAYER_HP_PRINT * g_Player.hp; //体力が減ればバーが縮む
 
 	if (g_Player.hp > 0 && g_hpflg == true) {
 		DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
@@ -741,12 +758,14 @@ void plus_hissatuwaza(int index)
 	}
 }
 
+//プレイヤーの体力を減らす
 void HP_Minus(float damage)
 {
 	g_Player.hp -= damage;
-	g_hpflg = true;
+	g_hpflg = true;	//体力が減ったので体力バーを表示する
 }
 
+//プレイヤーの体力を増やす
 void HP_Plus(float healing)
 {
 	g_Player.hp += healing;
