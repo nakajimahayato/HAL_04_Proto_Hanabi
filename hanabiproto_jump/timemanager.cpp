@@ -44,7 +44,7 @@ void UpdateTimeManager()
 	//シーン遷移の条件
 
 	//制限時間がきたら
-	if (tm.time >= TIME_LIMIT*60||/*ボスと敵沸きをすべて破壊時に。*/0)
+	if (tm.time >= TIME_LIMIT*60/*||ボスと敵沸きをすべて破壊時に。0*/)
 	{
 		//SetScene(SCENE_GRESULT);
 		Result(GetEnemyScore(), GetPlayerScore());
