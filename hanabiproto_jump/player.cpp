@@ -61,7 +61,7 @@ int g_Hissattu;
 //ジャンプ
 bool g_jflg;//ジャンプしてるか
 
-bool g_hpflg;
+bool g_hpflg;//体力バーを表示するか
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
 
@@ -467,55 +467,57 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoMIGI(g_Player.pos) == -1) {
-				g_Player.pos.x = PLAYER_DISP_X;
-				g_Player.pos.y = PLAYER_DISP_Y;
+				//リスポーン
+				g_Player.pos = Respawn();
 				g_Player.spjp.x = 0.0f;
 			}
-			//もし旗に当たったら
-			if (GetStageInfoMIGI(g_Player.pos)==-2)
+			else if (GetStageInfoMIGI(g_Player.pos)==-2)//もし旗に当たったら
 			{
-				SetScene(SCENE_CRESULT);
+				SetRespawnPos(60, 19);
 			}
-			//右にマップチップがあればX座標を戻す
-			g_Player.pos.x = g_Player.oldpos.x;
-			g_Player.spjp.x = 0.0f;
-			//g_Player.pos.x = GetStageInfoMIGI(g_Player.pos) - (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+			else//右にマップチップがあればX座標を戻す
+			{
+				g_Player.pos.x = g_Player.oldpos.x;
+				g_Player.spjp.x = 0.0f;
+			}
 		}
 
 		if (GetStageInfoHIDARI(g_Player.pos))
 		{
 			//もし川に当たったら
 			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
-				g_Player.pos.x = PLAYER_DISP_X;
-				g_Player.pos.y = PLAYER_DISP_Y;
+				//リスポーン
+				g_Player.pos = Respawn();
 				g_Player.spjp.x = 0.0f;
 			}
-			//もし旗に当たったら
-			if (GetStageInfoHIDARI(g_Player.pos) == -2)
+			else if (GetStageInfoHIDARI(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetScene(SCENE_CRESULT);
+				SetRespawnPos(60, 19);
 			}
-			//左にマップチップがあればX座標を戻す
-			g_Player.pos.x = g_Player.oldpos.x;
-			g_Player.spjp.x = 0.0f;
-			//g_Player.pos.x = GetStageInfoHIDARI(g_Player.pos) + (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+			else//左にマップチップがあればX座標を戻す
+			{
+				g_Player.pos.x = g_Player.oldpos.x;
+				g_Player.spjp.x = 0.0f;
+			}
+			
 		}
 
 		if (GetStageInfoUE(g_Player.pos))
 		{
 			//もし川に当たったら
 			if (GetStageInfoUE(g_Player.pos) == -1) {
-				g_Player.pos.x = PLAYER_DISP_X;
-				g_Player.pos.y = PLAYER_DISP_Y;
+				//リスポーン
+				g_Player.pos = Respawn();
 				g_Player.spjp.x = 0.0f;
 			}
-			//もし旗に当たったら
-			if (GetStageInfoUE(g_Player.pos) == -2)
+			else if (GetStageInfoUE(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetScene(SCENE_CRESULT);
+				SetRespawnPos(60, 19);
 			}
-			//上にマップチップがあれば緩やかに反発
-			g_Player.jp.y *= -0.5f;
+			else//上にマップチップがあれば緩やかに反発
+			{
+				g_Player.jp.y *= -0.5f;
+			}
 		}
 
 		//平地もしくは落下時のみ判定
@@ -525,19 +527,20 @@ void UpdatePlayer(void)
 			{
 				//もし川に当たったら
 				if (GetStageInfoSITA(g_Player.pos) == -1) {
-					g_Player.pos.x = PLAYER_DISP_X;
-					g_Player.pos.y = PLAYER_DISP_Y;
+					//リスポーン
+					g_Player.pos = Respawn();
 					g_Player.spjp.x = 0.0f;
 				}
-				//もし旗に当たったら
-				if (GetStageInfoSITA(g_Player.pos) == -2)
+				else if (GetStageInfoSITA(g_Player.pos) == -2)//もし旗に当たったら
 				{
-					SetScene(SCENE_CRESULT);
+					SetRespawnPos(60, 19);
 				}
-				//下にブロックがあれば座標をそのブロックの上に調整する
-				g_jflg = false;
-				g_Player.jp.y = 0.0f;
-				g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+				else//下にブロックがあれば座標をそのブロックの上に調整する
+				{
+					g_jflg = false;
+					g_Player.jp.y = 0.0f;
+					g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+				}
 			}
 			else
 			{
@@ -569,43 +572,59 @@ void UpdatePlayer(void)
 		}
 
 
-
+		//テスト用
+		//1キーで体力を1減らす
 		if (GetKeyboardTrigger(DIK_1))
 		{
-			HP_Minus(1);
+			HP_Minus(1.0f);
 		}
+		//テスト用
+		//2キーで体力を5減らす
 		if (GetKeyboardTrigger(DIK_2))
 		{
-			HP_Minus(5);
+			HP_Minus(5.0f);
 		}
 
+		//体力が最大体力より低いとき
 		if (g_Player.hp <= PLAYER_MAXHP)
 		{
+			//体力が0になったらゲームオーバー
 			if (g_Player.hp <= 0)
 			{
 				SetScene(SCENE_GRESULT);
 			}
 
+			//フレームを１足す
 			g_Player.hpframe++;
 
-			if (g_Player.hpframe >= 60)
+			//フレームがPLAYER_HP_HEALFRAMEに達したとき
+			if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
 			{
-				HP_Plus(6);
+				//体力をPLAYER_HP_HEAL分回復する
+				HP_Plus(PLAYER_HP_HEAL);
 
+				//プレイヤーの体力が最大以上になった時
 				if (g_Player.hp >= PLAYER_MAXHP)
 				{
+					//最大体力を固定する(最大以上にならないように)
 					g_Player.hp = PLAYER_MAXHP;
 				}
+				//フレームリセット
 				g_Player.hpframe = 0;
 			}
 		}
 
+		//プレイヤーの体力が最大になった時
 		if (g_Player.hp == PLAYER_MAXHP)
 		{
+			//フレームを1足す
 			g_Player.maxframe++;
-			if (g_Player.maxframe >= 180)
+			//フレームがPLAYER_HP_MAXFRAMEに達したら
+			if (g_Player.maxframe >= PLAYER_HP_MAXFRAME)
 			{
+				//体力バーの表示をオフにする
 				g_hpflg = false;
+				//フレームリセット
 				g_Player.maxframe = 0;
 			}
 		}
@@ -679,7 +698,8 @@ void DrawPlayer(void)
 		}
 	}
 
-	int Hp_length = PLAYER_HP_PRINT * g_Player.hp;
+	//体力描画処理
+	int Hp_length = PLAYER_HP_PRINT * g_Player.hp; //体力が減ればバーが縮む
 
 	if (g_Player.hp > 0 && g_hpflg == true) {
 		DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
@@ -738,13 +758,15 @@ void plus_hissatuwaza(int index)
 	}
 }
 
-void HP_Minus(int damage)
+//プレイヤーの体力を減らす
+void HP_Minus(float damage)
 {
 	g_Player.hp -= damage;
-	g_hpflg = true;
+	g_hpflg = true;	//体力が減ったので体力バーを表示する
 }
 
-void HP_Plus(int healing)
+//プレイヤーの体力を増やす
+void HP_Plus(float healing)
 {
 	g_Player.hp += healing;
 }
