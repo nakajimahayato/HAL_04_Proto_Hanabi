@@ -18,6 +18,8 @@
 #define SCORE_POSY        290.0f  //Player&Enemyの表示位置Y
 #define SCORE_SIZE_X      40.0f   //Player&EnemyのサイズX
 #define SCORE_SIZE_Y      40.0f   //Player&EnemyのサイズY
+#define PLUSPLAYERSCORE   5       //PlusScore関数の引数
+#define PLUSPLAYERSCORE   5       //EnemyScore関数の引数
 
 struct PLAYERSCORE {
 	int   score;
@@ -34,6 +36,8 @@ struct ENEMYSCORE {
 //*****************************************************************************
 HRESULT InitScore();
 void UninitScore();
+void UpdateScore();
+void DrawScore();
 
 //Playerのスコア関連の関数
 void UpdatePlayerScore();

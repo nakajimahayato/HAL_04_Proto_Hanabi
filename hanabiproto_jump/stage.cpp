@@ -11,6 +11,8 @@
 #include "collision.h"
 #include "sprite.h"
 #include "camera.h"
+#include "player.h"
+#include "enemy.h"
 
 //*****************************************************************************							
 // マクロ定義							
@@ -29,6 +31,7 @@ static int g_TextureNo3;//雨
 static int g_TextureNo4;//ゴール
 static Stage g_Stage;
 static Float2 g_Block;
+Float2 ReSpawnPos;
 
 static int StageBase[STAGE_Y][STAGE_X] =/*０：空気　１：ブロック　２：川　３：雨　４：ゴール(?)*/
 {
@@ -59,7 +62,7 @@ static int StageBase[STAGE_Y][STAGE_X] =/*０：空気　１：ブロック　�
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 { 1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,2,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,1,1,1,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,1,1,1,1,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,2,0,0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
@@ -358,3 +361,64 @@ bool GetStageInfoRain(Float2 akaripos)
 	return false;
 }
 
+int GetStageInfoEnemySITA(Float2 enemypos, Float2 enemysize)
+{
+	int StageY, StageXL, StageXR;
+	int ReturnPos = NULL;
+
+	Float2 enemyfoot;
+	enemyfoot.y = (enemypos.y + enemysize.y / 2);
+	enemyfoot.x = enemypos.x - enemysize.x / 2;
+
+	StageY = (int)((enemyfoot.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
+	StageXL = (int)(enemyfoot.x / CHIPSIZE_X);
+	StageXR = (int)((enemyfoot.x + enemysize.x) / CHIPSIZE_X);
+
+	for (int i = 0; i < (int)(enemysize.x / CHIPSIZE_X); i++)
+	{
+		switch (StageBase[StageY][StageXL + i])
+		{
+		case 0:
+			break;
+		case 1:
+			ReturnPos = (StageY * CHIPSIZE_Y);
+			break;
+		case 2:
+			return -1;
+			break;
+		case 4:
+			return -2;
+			break;
+		}
+	}
+
+	switch (StageBase[StageY][StageXR])
+	{
+	case 0:
+		break;
+	case 1:
+		ReturnPos = (StageY * CHIPSIZE_Y);
+		break;
+	case 2:
+		return -1;
+		break;
+	case 4:
+		return -2;
+		break;
+	}
+
+	return ReturnPos;
+}
+
+void SetRespawnPos(float x, float y)
+{
+	x *= CHIPSIZE_X;
+	y *= CHIPSIZE_Y;
+	ReSpawnPos.x = x;
+	ReSpawnPos.y = y;
+}
+
+Float2 Respawn()
+{
+	return ReSpawnPos;
+}

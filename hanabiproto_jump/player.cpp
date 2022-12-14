@@ -36,6 +36,7 @@ void pad_reset(void);
 //*****************************************************************************
 static int g_TextureNo;
 static int g_TextureNo2;
+static int g_TextureNo3;
 
 //static PLAYER g_Player;
 
@@ -60,6 +61,7 @@ int g_Hissattu;
 //ジャンプ
 bool g_jflg;//ジャンプしてるか
 
+bool g_hpflg;
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
 
@@ -102,6 +104,7 @@ HRESULT InitPlayer(void)
 {
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/testplayer.png");
 	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
+	g_TextureNo3 = LoadTexture((char*)"data/TEXTURE/HP.png");
 
 	//初期化
 	g_Player.pos.x = PLAYER_DISP_X;
@@ -118,7 +121,12 @@ HRESULT InitPlayer(void)
 
 	g_Player.frame = 0;
 
+	g_Player.hp = PLAYER_MAXHP;
+	g_Player.hpframe = 0;
+
 	g_jflg = false;
+
+	g_hpflg = true;
 	//Xinput初期化
 	//XInputEnable(true);
 	//XInputGetState(0, &State);
@@ -538,7 +546,6 @@ void UpdatePlayer(void)
 			}
 		}
 
-
 		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
 		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
 		{
@@ -560,6 +567,49 @@ void UpdatePlayer(void)
 			//Y座標の更新
 			g_Player.pos.y += g_Player.jp.y;
 		}
+
+
+
+		if (GetKeyboardTrigger(DIK_1))
+		{
+			HP_Minus(1.0f);
+		}
+		if (GetKeyboardTrigger(DIK_2))
+		{
+			HP_Minus(5.0f);
+		}
+
+		if (g_Player.hp <= PLAYER_MAXHP)
+		{
+			if (g_Player.hp <= 0)
+			{
+				SetScene(SCENE_GRESULT);
+			}
+
+			g_Player.hpframe++;
+
+			if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
+			{
+				HP_Plus(PLAYER_HP_HEAL);
+
+				if (g_Player.hp >= PLAYER_MAXHP)
+				{
+					g_Player.hp = PLAYER_MAXHP;
+				}
+				g_Player.hpframe = 0;
+			}
+		}
+
+		if (g_Player.hp == PLAYER_MAXHP)
+		{
+			g_Player.maxframe++;
+			if (g_Player.maxframe >= 180)
+			{
+				g_hpflg = false;
+				g_Player.maxframe = 0;
+			}
+		}
+
 	}
 	else if (g_Hissattu > 0)
 	{
@@ -629,6 +679,14 @@ void DrawPlayer(void)
 		}
 	}
 
+	int Hp_length = PLAYER_HP_PRINT * g_Player.hp;
+
+	if (g_Player.hp > 0 && g_hpflg == true) {
+		DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
+			Hp_length, 60.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+	}
 }
 
 bool CompositionAkari(int clossStart,int clossGoal)
@@ -678,6 +736,17 @@ void plus_hissatuwaza(int index)
 	{
 		g_Hissattu = HISSATU_COOLTIME + index;
 	}
+}
+
+void HP_Minus(float damage)
+{
+	g_Player.hp -= damage;
+	g_hpflg = true;
+}
+
+void HP_Plus(float healing)
+{
+	g_Player.hp += healing;
 }
 
 
