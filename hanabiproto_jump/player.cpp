@@ -467,55 +467,57 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoMIGI(g_Player.pos) == -1) {
-				g_Player.pos.x = PLAYER_DISP_X;
-				g_Player.pos.y = PLAYER_DISP_Y;
+				//リスポーン
+				g_Player.pos = Respawn();
 				g_Player.spjp.x = 0.0f;
 			}
-			//もし旗に当たったら
-			if (GetStageInfoMIGI(g_Player.pos)==-2)
+			else if (GetStageInfoMIGI(g_Player.pos)==-2)//もし旗に当たったら
 			{
-				SetScene(SCENE_CRESULT);
+				SetRespawnPos(60, 19);
 			}
-			//右にマップチップがあればX座標を戻す
-			g_Player.pos.x = g_Player.oldpos.x;
-			g_Player.spjp.x = 0.0f;
-			//g_Player.pos.x = GetStageInfoMIGI(g_Player.pos) - (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+			else//右にマップチップがあればX座標を戻す
+			{
+				g_Player.pos.x = g_Player.oldpos.x;
+				g_Player.spjp.x = 0.0f;
+			}
 		}
 
 		if (GetStageInfoHIDARI(g_Player.pos))
 		{
 			//もし川に当たったら
 			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
-				g_Player.pos.x = PLAYER_DISP_X;
-				g_Player.pos.y = PLAYER_DISP_Y;
+				//リスポーン
+				g_Player.pos = Respawn();
 				g_Player.spjp.x = 0.0f;
 			}
-			//もし旗に当たったら
-			if (GetStageInfoHIDARI(g_Player.pos) == -2)
+			else if (GetStageInfoHIDARI(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetScene(SCENE_CRESULT);
+				SetRespawnPos(60, 19);
 			}
-			//左にマップチップがあればX座標を戻す
-			g_Player.pos.x = g_Player.oldpos.x;
-			g_Player.spjp.x = 0.0f;
-			//g_Player.pos.x = GetStageInfoHIDARI(g_Player.pos) + (PLAYER_SIZEX / 2 + CHIPSIZE_X / 2);
+			else//左にマップチップがあればX座標を戻す
+			{
+				g_Player.pos.x = g_Player.oldpos.x;
+				g_Player.spjp.x = 0.0f;
+			}
+			
 		}
 
 		if (GetStageInfoUE(g_Player.pos))
 		{
 			//もし川に当たったら
 			if (GetStageInfoUE(g_Player.pos) == -1) {
-				g_Player.pos.x = PLAYER_DISP_X;
-				g_Player.pos.y = PLAYER_DISP_Y;
+				//リスポーン
+				g_Player.pos = Respawn();
 				g_Player.spjp.x = 0.0f;
 			}
-			//もし旗に当たったら
-			if (GetStageInfoUE(g_Player.pos) == -2)
+			else if (GetStageInfoUE(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetScene(SCENE_CRESULT);
+				SetRespawnPos(60, 19);
 			}
-			//上にマップチップがあれば緩やかに反発
-			g_Player.jp.y *= -0.5f;
+			else//上にマップチップがあれば緩やかに反発
+			{
+				g_Player.jp.y *= -0.5f;
+			}
 		}
 
 		//平地もしくは落下時のみ判定
@@ -525,19 +527,20 @@ void UpdatePlayer(void)
 			{
 				//もし川に当たったら
 				if (GetStageInfoSITA(g_Player.pos) == -1) {
-					g_Player.pos.x = PLAYER_DISP_X;
-					g_Player.pos.y = PLAYER_DISP_Y;
+					//リスポーン
+					g_Player.pos = Respawn();
 					g_Player.spjp.x = 0.0f;
 				}
-				//もし旗に当たったら
-				if (GetStageInfoSITA(g_Player.pos) == -2)
+				else if (GetStageInfoSITA(g_Player.pos) == -2)//もし旗に当たったら
 				{
-					SetScene(SCENE_CRESULT);
+					SetRespawnPos(60, 19);
 				}
-				//下にブロックがあれば座標をそのブロックの上に調整する
-				g_jflg = false;
-				g_Player.jp.y = 0.0f;
-				g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+				else//下にブロックがあれば座標をそのブロックの上に調整する
+				{
+					g_jflg = false;
+					g_Player.jp.y = 0.0f;
+					g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+				}
 			}
 			else
 			{
@@ -572,11 +575,11 @@ void UpdatePlayer(void)
 
 		if (GetKeyboardTrigger(DIK_1))
 		{
-			HP_Minus(1);
+			HP_Minus(1.0f);
 		}
 		if (GetKeyboardTrigger(DIK_2))
 		{
-			HP_Minus(5);
+			HP_Minus(5.0f);
 		}
 
 		if (g_Player.hp <= PLAYER_MAXHP)
@@ -588,9 +591,9 @@ void UpdatePlayer(void)
 
 			g_Player.hpframe++;
 
-			if (g_Player.hpframe >= 60)
+			if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
 			{
-				HP_Plus(6);
+				HP_Plus(PLAYER_HP_HEAL);
 
 				if (g_Player.hp >= PLAYER_MAXHP)
 				{
@@ -738,13 +741,13 @@ void plus_hissatuwaza(int index)
 	}
 }
 
-void HP_Minus(int damage)
+void HP_Minus(float damage)
 {
 	g_Player.hp -= damage;
 	g_hpflg = true;
 }
 
-void HP_Plus(int healing)
+void HP_Plus(float healing)
 {
 	g_Player.hp += healing;
 }
