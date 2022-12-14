@@ -13,6 +13,7 @@
   →(例)成功＆失敗フラグを時間管理クラスに作ってそのゲッターをリザルトに渡すとか
 ==============================================================================*/
 #include "timemanager.h"
+#include "score.h"
 
 static TimeManager tm;
 //=============================================================================
@@ -43,9 +44,10 @@ void UpdateTimeManager()
 	//シーン遷移の条件
 
 	//制限時間がきたら
-	if (tm.time >= TIME_LIMIT*60)
+	if (tm.time >= TIME_LIMIT*60||/*ボスと敵沸きをすべて破壊時に。*/0)
 	{
-		SetScene(SCENE_RESULT);
+		//SetScene(SCENE_GRESULT);
+		Result(GetEnemyScore(), GetPlayerScore());
 	}
 
 	if ((int)tm.frame %60)
@@ -65,15 +67,15 @@ void DrawTimeManager(void)
 
 }
 
-bool Result(float enemyscore,float playerscore)
+void Result(float enemyscore,float playerscore)
 {
 	//とりあえず引き分けは考えてない
-	if (enemyscore> playerscore)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+		if (enemyscore >= playerscore)
+		{
+			return SetScene(SCENE_GRESULT);
+		}
+		else
+		{
+			return SetScene(SCENE_CRESULT);
+		}
 }
