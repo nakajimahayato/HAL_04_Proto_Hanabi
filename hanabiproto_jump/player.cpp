@@ -572,11 +572,11 @@ void UpdatePlayer(void)
 
 		if (GetKeyboardTrigger(DIK_1))
 		{
-			HP_Minus(1);
+			HP_Minus(1.0f);
 		}
 		if (GetKeyboardTrigger(DIK_2))
 		{
-			HP_Minus(5);
+			HP_Minus(5.0f);
 		}
 
 		if (g_Player.hp <= PLAYER_MAXHP)
@@ -588,9 +588,9 @@ void UpdatePlayer(void)
 
 			g_Player.hpframe++;
 
-			if (g_Player.hpframe >= 60)
+			if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
 			{
-				HP_Plus(6);
+				HP_Plus(PLAYER_HP_HEAL);
 
 				if (g_Player.hp >= PLAYER_MAXHP)
 				{
@@ -738,13 +738,13 @@ void plus_hissatuwaza(int index)
 	}
 }
 
-void HP_Minus(int damage)
+void HP_Minus(float damage)
 {
 	g_Player.hp -= damage;
 	g_hpflg = true;
 }
 
-void HP_Plus(int healing)
+void HP_Plus(float healing)
 {
 	g_Player.hp += healing;
 }
