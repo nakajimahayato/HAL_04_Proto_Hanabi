@@ -46,3 +46,5 @@ bool GetStageInfoRain(Float2 akaripos);
 
 int GetStageInfoEnemySITA(Float2 enemypos, Float2 enemysize);
 
+void SetRespawnPos(float x, float y);
+Float2 Respawn();

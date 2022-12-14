@@ -31,6 +31,7 @@ static int g_TextureNo3;//雨
 static int g_TextureNo4;//ゴール
 static Stage g_Stage;
 static Float2 g_Block;
+Float2 ReSpawnPos;
 
 static int StageBase[STAGE_Y][STAGE_X] =/*０：空気　１：ブロック　２：川　３：雨　４：ゴール(?)*/
 {
@@ -409,3 +410,15 @@ int GetStageInfoEnemySITA(Float2 enemypos, Float2 enemysize)
 	return ReturnPos;
 }
 
+void SetRespawnPos(float x, float y)
+{
+	x *= CHIPSIZE_X;
+	y *= CHIPSIZE_Y;
+	ReSpawnPos.x = x;
+	ReSpawnPos.y = y;
+}
+
+Float2 Respawn()
+{
+	return ReSpawnPos;
+}
