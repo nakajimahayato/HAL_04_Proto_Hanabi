@@ -28,6 +28,8 @@
 #define PLAYER_HP_PRINT 30	
 #define PLAYER_HP_HEALFRAME  1//回復する速度
 #define PLAYER_HP_HEAL 0.033333
+#define PLAYER_RESPAWN_X 60	// プレイヤーのリスポーン地点X
+#define PLAYER_RESPAWN_Y 19 // プレイヤーのリスポーン地点Y
 
 
 struct PLAYER
@@ -42,6 +44,7 @@ struct PLAYER
 	float			hp;
 	int			hpframe;
 	int			maxframe;
+	int			respawnframe;
 };
 
 struct CURSOR
