@@ -124,6 +124,8 @@ HRESULT InitPlayer(void)
 	g_Player.hp = PLAYER_MAXHP;
 	g_Player.hpframe = 0;
 
+	g_Player.respawnframe = 0;
+
 	g_jflg = false;
 
 	g_hpflg = true;
@@ -174,6 +176,7 @@ void UpdatePlayer(void)
 	Float2 BasePos(basePos.x, basePos.y);
 
 	g_Player.frame++;
+	g_Player.respawnframe++;
 
 	g_Player.oldpos = g_Player.pos;
 
@@ -468,12 +471,15 @@ void UpdatePlayer(void)
 			//もし川に当たったら
 			if (GetStageInfoMIGI(g_Player.pos) == -1) {
 				//リスポーン
-				g_Player.pos = Respawn();
-				g_Player.spjp.x = 0.0f;
+				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
+					g_Player.pos = Respawn();
+					g_Player.spjp.x = 0.0f;
+					g_Player.respawnframe = 0;
+				}
 			}
 			else if (GetStageInfoMIGI(g_Player.pos)==-2)//もし旗に当たったら
 			{
-				SetRespawnPos(60, 19);
+				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 			}
 			else//右にマップチップがあればX座標を戻す
 			{
@@ -487,12 +493,15 @@ void UpdatePlayer(void)
 			//もし川に当たったら
 			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
 				//リスポーン
-				g_Player.pos = Respawn();
-				g_Player.spjp.x = 0.0f;
+				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
+					g_Player.pos = Respawn();
+					g_Player.spjp.x = 0.0f;
+					g_Player.respawnframe = 0;
+				}
 			}
 			else if (GetStageInfoHIDARI(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetRespawnPos(60, 19);
+				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 			}
 			else//左にマップチップがあればX座標を戻す
 			{
@@ -507,12 +516,15 @@ void UpdatePlayer(void)
 			//もし川に当たったら
 			if (GetStageInfoUE(g_Player.pos) == -1) {
 				//リスポーン
-				g_Player.pos = Respawn();
-				g_Player.spjp.x = 0.0f;
+				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
+					g_Player.pos = Respawn();
+					g_Player.spjp.x = 0.0f;
+					g_Player.respawnframe = 0;
+				}
 			}
 			else if (GetStageInfoUE(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetRespawnPos(60, 19);
+				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 			}
 			else//上にマップチップがあれば緩やかに反発
 			{
@@ -528,12 +540,15 @@ void UpdatePlayer(void)
 				//もし川に当たったら
 				if (GetStageInfoSITA(g_Player.pos) == -1) {
 					//リスポーン
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
+					if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
+						g_Player.pos = Respawn();
+						g_Player.spjp.x = 0.0f;
+						g_Player.respawnframe = 0;
+					}
 				}
 				else if (GetStageInfoSITA(g_Player.pos) == -2)//もし旗に当たったら
 				{
-					SetRespawnPos(60, 19);
+					SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 				}
 				else//下にブロックがあれば座標をそのブロックの上に調整する
 				{
