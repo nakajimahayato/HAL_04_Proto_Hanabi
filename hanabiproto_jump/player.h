@@ -29,8 +29,8 @@
 #define PLAYER_HP_HEALFRAME 1		//回復する速度フレーム
 #define PLAYER_HP_MAXFRAME 180		//体力が最大になってからの時間フレーム
 #define PLAYER_HP_HEAL 0.033333		//自動回復数値
-#define PLAYER_RESPAWN_X 60	// プレイヤーのリスポーン地点X
-#define PLAYER_RESPAWN_Y 19 // プレイヤーのリスポーン地点Y
+#define PLAYER_RESPAWN_X 60			//プレイヤーのリスポーン地点X
+#define PLAYER_RESPAWN_Y 19			//プレイヤーのリスポーン地点Y
 
 struct PLAYER
 {
@@ -44,7 +44,8 @@ struct PLAYER
 	float		hp;			//プレイヤーの体力
 	int			hpframe;	//プレイヤーの体力
 	int			maxframe;	//プレイヤーの体力
-  int			respawnframe;
+	int			respawnframe;
+	bool		isplayerdead;
 };
 
 struct CURSOR
