@@ -126,6 +126,9 @@ HRESULT InitPlayer(void)
 
 	g_Player.respawnframe = 0;
 
+	//プレイヤーが死んでいるか
+	g_Player.isplayerdead = false;
+
 	g_jflg = false;
 
 	g_hpflg = true;
@@ -176,7 +179,7 @@ void UpdatePlayer(void)
 	Float2 BasePos(basePos.x, basePos.y);
 
 	g_Player.frame++;
-	g_Player.respawnframe++;
+
 
 	g_Player.oldpos = g_Player.pos;
 
@@ -470,12 +473,8 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoMIGI(g_Player.pos) == -1) {
-				//リスポーン
-				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
-					g_Player.respawnframe = 0;
-				}
+				//プレイヤー死亡
+				g_Player.isplayerdead = true;
 			}
 			else if (GetStageInfoMIGI(g_Player.pos)==-2)//もし旗に当たったら
 			{
@@ -492,12 +491,8 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
-				//リスポーン
-				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
-					g_Player.respawnframe = 0;
-				}
+				//プレイヤー死亡
+				g_Player.isplayerdead = true;
 			}
 			else if (GetStageInfoHIDARI(g_Player.pos) == -2)//もし旗に当たったら
 			{
@@ -515,12 +510,8 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoUE(g_Player.pos) == -1) {
-				//リスポーン
-				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
-					g_Player.respawnframe = 0;
-				}
+				//プレイヤー死亡
+				g_Player.isplayerdead = true;
 			}
 			else if (GetStageInfoUE(g_Player.pos) == -2)//もし旗に当たったら
 			{
@@ -539,12 +530,8 @@ void UpdatePlayer(void)
 			{
 				//もし川に当たったら
 				if (GetStageInfoSITA(g_Player.pos) == -1) {
-					//リスポーン
-					if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-						g_Player.pos = Respawn();
-						g_Player.spjp.x = 0.0f;
-						g_Player.respawnframe = 0;
-					}
+					//プレイヤー死亡
+					g_Player.isplayerdead = true;
 				}
 				else if (GetStageInfoSITA(g_Player.pos) == -2)//もし旗に当たったら
 				{
@@ -603,10 +590,10 @@ void UpdatePlayer(void)
 		//体力が最大体力より低いとき
 		if (g_Player.hp <= PLAYER_MAXHP)
 		{
-			//体力が0になったらゲームオーバー
+			//体力が0になったら
 			if (g_Player.hp <= 0)
 			{
-				SetScene(SCENE_GRESULT);
+				g_Player.isplayerdead = true;
 			}
 
 			//フレームを１足す
@@ -641,6 +628,22 @@ void UpdatePlayer(void)
 				g_hpflg = false;
 				//フレームリセット
 				g_Player.maxframe = 0;
+			}
+		}
+
+		//リスポーン(プレイヤーが死んでから4秒後)
+		if (g_Player.isplayerdead)
+		{
+			g_Player.respawnframe++;
+			//if (g_Player.respawnframe > 1)
+			//{
+			//	g_Player.
+			//}
+			if (g_Player.respawnframe > 256) {
+				g_Player.pos = Respawn();
+				g_Player.spjp.x = 0.0f;
+				g_Player.respawnframe = 0;
+				g_Player.isplayerdead = false;
 			}
 		}
 
