@@ -37,6 +37,8 @@ void pad_reset(void);
 static int g_TextureNo;
 static int g_TextureNo2;
 static int g_TextureNo3;
+static int g_TextureNo4;
+static int g_TextureNo5;
 
 //static PLAYER g_Player;
 
@@ -61,7 +63,7 @@ int g_Hissattu;
 //ジャンプ
 bool g_jflg;//ジャンプしてるか
 
-bool g_hpflg;
+bool g_hpflg;//体力バーを表示するか
 //DWORD        dwUserIndex;
 //XINPUT_STATE State;
 
@@ -105,6 +107,8 @@ HRESULT InitPlayer(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/testplayer.png");
 	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 	g_TextureNo3 = LoadTexture((char*)"data/TEXTURE/HP.png");
+	g_TextureNo4 = LoadTexture((char*)"data/TEXTURE/HPFire.png");
+	g_TextureNo5 = LoadTexture((char*)"data/TEXTURE/HPBar.png");
 
 	//初期化
 	g_Player.pos.x = PLAYER_DISP_X;
@@ -123,6 +127,11 @@ HRESULT InitPlayer(void)
 
 	g_Player.hp = PLAYER_MAXHP;
 	g_Player.hpframe = 0;
+
+	g_Player.respawnframe = 0;
+
+	//プレイヤーが死んでいるか
+	g_Player.isplayerdead = false;
 
 	g_jflg = false;
 
@@ -174,6 +183,7 @@ void UpdatePlayer(void)
 	Float2 BasePos(basePos.x, basePos.y);
 
 	g_Player.frame++;
+
 
 	g_Player.oldpos = g_Player.pos;
 
@@ -467,13 +477,12 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoMIGI(g_Player.pos) == -1) {
-				//リスポーン
-				g_Player.pos = Respawn();
-				g_Player.spjp.x = 0.0f;
+				//プレイヤー死亡
+				g_Player.isplayerdead = true;
 			}
 			else if (GetStageInfoMIGI(g_Player.pos)==-2)//もし旗に当たったら
 			{
-				SetRespawnPos(60, 19);
+				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 			}
 			else//右にマップチップがあればX座標を戻す
 			{
@@ -486,13 +495,12 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
-				//リスポーン
-				g_Player.pos = Respawn();
-				g_Player.spjp.x = 0.0f;
+				//プレイヤー死亡
+				g_Player.isplayerdead = true;
 			}
 			else if (GetStageInfoHIDARI(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetRespawnPos(60, 19);
+				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 			}
 			else//左にマップチップがあればX座標を戻す
 			{
@@ -506,13 +514,12 @@ void UpdatePlayer(void)
 		{
 			//もし川に当たったら
 			if (GetStageInfoUE(g_Player.pos) == -1) {
-				//リスポーン
-				g_Player.pos = Respawn();
-				g_Player.spjp.x = 0.0f;
+				//プレイヤー死亡
+				g_Player.isplayerdead = true;
 			}
 			else if (GetStageInfoUE(g_Player.pos) == -2)//もし旗に当たったら
 			{
-				SetRespawnPos(60, 19);
+				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 			}
 			else//上にマップチップがあれば緩やかに反発
 			{
@@ -527,13 +534,12 @@ void UpdatePlayer(void)
 			{
 				//もし川に当たったら
 				if (GetStageInfoSITA(g_Player.pos) == -1) {
-					//リスポーン
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
+					//プレイヤー死亡
+					g_Player.isplayerdead = true;
 				}
 				else if (GetStageInfoSITA(g_Player.pos) == -2)//もし旗に当たったら
 				{
-					SetRespawnPos(60, 19);
+					SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 				}
 				else//下にブロックがあれば座標をそのブロックの上に調整する
 				{
@@ -572,44 +578,76 @@ void UpdatePlayer(void)
 		}
 
 
-
+		//テスト用
+		//1キーで体力を1減らす
 		if (GetKeyboardTrigger(DIK_1))
 		{
 			HP_Minus(1.0f);
 		}
+		//テスト用
+		//2キーで体力を5減らす
 		if (GetKeyboardTrigger(DIK_2))
 		{
 			HP_Minus(5.0f);
 		}
 
+		//体力が最大体力より低いとき
 		if (g_Player.hp <= PLAYER_MAXHP)
 		{
+			//体力が0になったら
 			if (g_Player.hp <= 0)
 			{
-				SetScene(SCENE_GRESULT);
+				g_Player.isplayerdead = true;
 			}
 
+			//フレームを１足す
 			g_Player.hpframe++;
 
+			//フレームがPLAYER_HP_HEALFRAMEに達したとき
 			if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
 			{
+				//体力をPLAYER_HP_HEAL分回復する
 				HP_Plus(PLAYER_HP_HEAL);
 
+				//プレイヤーの体力が最大以上になった時
 				if (g_Player.hp >= PLAYER_MAXHP)
 				{
+					//最大体力を固定する(最大以上にならないように)
 					g_Player.hp = PLAYER_MAXHP;
 				}
+				//フレームリセット
 				g_Player.hpframe = 0;
 			}
 		}
 
+		//プレイヤーの体力が最大になった時
 		if (g_Player.hp == PLAYER_MAXHP)
 		{
+			//フレームを1足す
 			g_Player.maxframe++;
-			if (g_Player.maxframe >= 180)
+			//フレームがPLAYER_HP_MAXFRAMEに達したら
+			if (g_Player.maxframe >= PLAYER_HP_MAXFRAME)
 			{
+				//体力バーの表示をオフにする
 				g_hpflg = false;
+				//フレームリセット
 				g_Player.maxframe = 0;
+			}
+		}
+
+		//リスポーン(プレイヤーが死んでから4秒後)
+		if (g_Player.isplayerdead)
+		{
+			g_Player.respawnframe++;
+			//if (g_Player.respawnframe > 1)
+			//{
+			//	g_Player.
+			//}
+			if (g_Player.respawnframe > 256) {
+				g_Player.pos = Respawn();
+				g_Player.spjp.x = 0.0f;
+				g_Player.respawnframe = 0;
+				g_Player.isplayerdead = false;
 			}
 		}
 
@@ -682,13 +720,40 @@ void DrawPlayer(void)
 		}
 	}
 
-	int Hp_length = PLAYER_HP_PRINT * g_Player.hp;
+	//体力描画処理
+	int Hp_length = PLAYER_HP_PRINT * g_Player.hp; //体力が減ればバーが縮む
+	int Hp_barx = SCREEN_WIDTH / 2;
+	float Fire_rightpluspos = g_Player.hp * 14.666666666f;
+	float Fire_leftpluspos = -g_Player.hp * 14.666666666f;
+	float Fire_rightpos = Hp_barx + Fire_rightpluspos;
+	float Fire_leftpos = Hp_barx + Fire_leftpluspos;
+	//バーの右端の座標1400
 
 	if (g_Player.hp > 0 && g_hpflg == true) {
-		DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
-			Hp_length, 60.0f,
+		//DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
+		//	Hp_length, 60.0f,
+		//	1.0f, 1.0f,
+		//	1.0f, 1.0f);
+
+		//バー
+		DrawSprite(g_TextureNo5, Hp_barx, 750.0f,
+			Hp_length, 10.0f,
 			1.0f, 1.0f,
 			1.0f, 1.0f);
+
+
+		//炎右
+		DrawSprite(g_TextureNo4, Fire_rightpos, 730.0f,
+			40.0f, 50.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+
+		//炎左
+		DrawSprite(g_TextureNo4, Fire_leftpos, 730.0f,
+			40.0f, 50.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+
 	}
 }
 
@@ -741,12 +806,14 @@ void plus_hissatuwaza(int index)
 	}
 }
 
+//プレイヤーの体力を減らす
 void HP_Minus(float damage)
 {
 	g_Player.hp -= damage;
-	g_hpflg = true;
+	g_hpflg = true;	//体力が減ったので体力バーを表示する
 }
 
+//プレイヤーの体力を増やす
 void HP_Plus(float healing)
 {
 	g_Player.hp += healing;
