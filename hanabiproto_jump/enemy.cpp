@@ -363,7 +363,7 @@ void EnemyDeadProcess(int i)//ＨＰが0になった場合、1.3秒ほどかけ�
 		else
 		{
 			g_shrinkAmount[i] -= 0.01f;
-			g_shrinkSize[i] += 0.001f;
+			g_shrinkSize[i] += 0.00075f;
 		}
 		
 	}
