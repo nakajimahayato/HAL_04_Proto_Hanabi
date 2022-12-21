@@ -48,11 +48,11 @@ public:
 class EnemyObject :public GameObject
 {
 protected:
-	float			Health;
 	float			Attack;
 	float			Gravity;
 
 public:
+	float			Health;
 	bool            fall;
 	int             directionX;
 	virtual void Action() {}

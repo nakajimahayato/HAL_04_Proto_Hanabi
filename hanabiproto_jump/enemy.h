@@ -25,6 +25,8 @@
 #define NUM_ENEMY 100
 #define NUM_CUPENEMY 100 
 
+#define ENEMY_HEALTH 10.0f
+
 #define ENEMY1_SIZEX (80.0f) //必要に応じて変えてください
 #define ENEMY1_SIZEY (80.0f)
 
@@ -46,6 +48,8 @@ void SetEnemy(Float2 pos, int saidai, int enemytype, int muki);
 EnemyObject* GetEnemy();
 
 EnemyObject** GetCupEnemy();
+
+void EnemyDeadProcess(int i);
 
 
 

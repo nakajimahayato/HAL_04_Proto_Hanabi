@@ -37,6 +37,8 @@ void pad_reset(void);
 static int g_TextureNo;
 static int g_TextureNo2;
 static int g_TextureNo3;
+static int g_TextureNo4;
+static int g_TextureNo5;
 
 //static PLAYER g_Player;
 
@@ -105,6 +107,8 @@ HRESULT InitPlayer(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/testplayer.png");
 	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 	g_TextureNo3 = LoadTexture((char*)"data/TEXTURE/HP.png");
+	g_TextureNo4 = LoadTexture((char*)"data/TEXTURE/HPFire.png");
+	g_TextureNo5 = LoadTexture((char*)"data/TEXTURE/HPBar.png");
 
 	//初期化
 	g_Player.pos.x = PLAYER_DISP_X;
@@ -718,12 +722,38 @@ void DrawPlayer(void)
 
 	//体力描画処理
 	int Hp_length = PLAYER_HP_PRINT * g_Player.hp; //体力が減ればバーが縮む
+	int Hp_barx = SCREEN_WIDTH / 2;
+	float Fire_rightpluspos = g_Player.hp * 14.666666666f;
+	float Fire_leftpluspos = -g_Player.hp * 14.666666666f;
+	float Fire_rightpos = Hp_barx + Fire_rightpluspos;
+	float Fire_leftpos = Hp_barx + Fire_leftpluspos;
+	//バーの右端の座標1400
 
 	if (g_Player.hp > 0 && g_hpflg == true) {
-		DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
-			Hp_length, 60.0f,
+		//DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
+		//	Hp_length, 60.0f,
+		//	1.0f, 1.0f,
+		//	1.0f, 1.0f);
+
+		//バー
+		DrawSprite(g_TextureNo5, Hp_barx, 750.0f,
+			Hp_length, 10.0f,
 			1.0f, 1.0f,
 			1.0f, 1.0f);
+
+
+		//炎右
+		DrawSprite(g_TextureNo4, Fire_rightpos, 730.0f,
+			40.0f, 50.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+
+		//炎左
+		DrawSprite(g_TextureNo4, Fire_leftpos, 730.0f,
+			40.0f, 50.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+
 	}
 }
 
