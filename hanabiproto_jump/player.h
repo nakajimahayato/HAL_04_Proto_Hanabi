@@ -34,18 +34,18 @@
 
 struct PLAYER
 {
-	int			frame;		//プレイヤーのフレーム
-	Float2		pos;		//プレイヤーの現在位置
-	Float2      oldpos;		//プレイヤーの過去の位置
-	Float2		vec;		//プレイヤーのベクトル
-	Float2		spjp;		//プレイヤーの移動とジャンプ速度
-	//Float2      acceleration;//プレイヤーの加速度
-	Float2		jp;			//プレイヤーのジャンプ処理
-	float		hp;			//プレイヤーの体力
-	int			hpframe;	//プレイヤーの体力
-	int			maxframe;	//プレイヤーの体力
-	int			respawnframe;
-	bool		isplayerdead;
+	int			frame;			//プレイヤーのフレーム
+	Float2		pos;			//プレイヤーの現在位置
+	Float2      oldpos;			//プレイヤーの過去の位置
+	Float2		vec;			//プレイヤーのベクトル
+	Float2		spjp;			//プレイヤーの移動とジャンプ速度
+  //Float2      acceleration;	//プレイヤーの加速度
+	Float2		jp;				//プレイヤーのジャンプ処理
+	float		hp;				//プレイヤーの体力
+	int			hpframe;		//プレイヤーの体力
+	int			maxframe;		//プレイヤーの体力
+	int			respawnframe;	//プレイヤーの復活管理フレーム
+	bool		isplayerdead;	//プレイヤーの死亡フラグ
 };
 
 struct CURSOR
@@ -73,6 +73,6 @@ PLAYER* GetPlayer(void);
 void plus_hissatuwaza(int index);
 void HP_Minus(float damage);
 void HP_Plus(float healing);
-
+void PlayerDeadProcess();
 
 //PLAYER* GetPlayer(void);
