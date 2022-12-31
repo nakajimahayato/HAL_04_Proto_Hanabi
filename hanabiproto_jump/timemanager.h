@@ -36,5 +36,4 @@ void UninitTimeManager(void);
 void UpdateTimeManager(void);
 void DrawTimeManager(void);
 
-bool Result(float enemyscore, float playerscore);
-
+void Result(float enemyscore, float playerscore);
