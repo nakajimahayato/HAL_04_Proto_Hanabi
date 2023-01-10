@@ -37,6 +37,8 @@ void pad_reset(void);
 static int g_TextureNo;
 static int g_TextureNo2;
 static int g_TextureNo3;
+static int g_TextureNo4;
+static int g_TextureNo5;
 
 //static PLAYER g_Player;
 
@@ -57,6 +59,10 @@ bool g_cursol_prev;
 
 int g_playerflame;
 int g_Hissattu;
+
+static float g_shrinkAmount;
+
+static float g_shrinkSize;
 
 //ジャンプ
 bool g_jflg;//ジャンプしてるか
@@ -105,6 +111,8 @@ HRESULT InitPlayer(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/testplayer.png");
 	g_TextureNo2 = LoadTexture((char*)"data/TEXTURE/proto_effect_akari.png");
 	g_TextureNo3 = LoadTexture((char*)"data/TEXTURE/HP.png");
+	g_TextureNo4 = LoadTexture((char*)"data/TEXTURE/HPFire.png");
+	g_TextureNo5 = LoadTexture((char*)"data/TEXTURE/HPBar.png");
 
 	//初期化
 	g_Player.pos.x = PLAYER_DISP_X;
@@ -125,6 +133,12 @@ HRESULT InitPlayer(void)
 	g_Player.hpframe = 0;
 
 	g_Player.respawnframe = 0;
+
+	g_shrinkAmount = 1.0f;
+	g_shrinkSize = 1.0f;
+
+	//プレイヤーが死んでいるか
+	g_Player.isplayerdead = false;
 
 	g_jflg = false;
 
@@ -176,484 +190,506 @@ void UpdatePlayer(void)
 	Float2 BasePos(basePos.x, basePos.y);
 
 	g_Player.frame++;
-	g_Player.respawnframe++;
+
 
 	g_Player.oldpos = g_Player.pos;
 
+
+
+
 	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-	if (g_Hissattu <= 0)
+
+	//プレイヤーが死んでいない時
+	if (g_Player.isplayerdead == false)
 	{
-		//cursor処理＝＝＝＝＝＝＝＝＝
-		if (GetKeyState(VK_LBUTTON) & 0x80)
+		if (g_Hissattu <= 0)
 		{
-			bool flag = false;
-			if (g_nownum != -1)
+			//cursor処理＝＝＝＝＝＝＝＝＝
+			if (GetKeyState(VK_LBUTTON) & 0x80)
 			{
-				flag = true;
-			}
-			if (g_cursol_prev == false)
-			{
-				g_cursor[g_nownum].use = false;
-			}
-			g_cursol_prev = true;
-			g_playerflame += 1;
-
-
-			g_curmax++;
-			g_nownum++;
-			if (g_nownum >= PLAYER_CURSOR_NUM)
-			{
-				g_nownum = 0;
-			}
-			if (g_curmax >= PLAYER_CURSOR_NUM)
-			{
-				g_curmax = PLAYER_CURSOR_NUM;
-			}
-
-			GetCursorPos(&cursorPos);
-			ScreenToClient(GethWnd(), &cursorPos);
-			cursorposf.x = (float)cursorPos.x;
-			cursorposf.y = (float)cursorPos.y;
-			g_cursor[g_nownum].pos.x = (cursorposf.x);
-			g_cursor[g_nownum].pos.y = (cursorposf.y);
-			g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
-			g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
-			if (flag)
-			{
-				g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
-			}
-			g_cursor[g_nownum].use = true;
-			//色づけ
-			{
-				float RGB[3];
-				int saidai = 0;
-				for (int j = 0; j < 3; j++)
+				bool flag = false;
+				if (g_nownum != -1)
 				{
-					RGB[j] = frand();
-					if (RGB[saidai] <= RGB[j])
-						saidai = j;
+					flag = true;
 				}
-				RGB[saidai] = 1.0f;
-				g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
-			}
-			g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
-
-			Float2 maxvec = { 0,0 };
-			float maxvecf;
-			for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-			{
-				if (g_cursor[i].use == true)
+				if (g_cursol_prev == false)
 				{
-					maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
-					maxvecf = maxvec.x + maxvec.y;
+					g_cursor[g_nownum].use = false;
 				}
-			}
+				g_cursol_prev = true;
+				g_playerflame += 1;
 
-			for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
-			{
-				int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
-				if (g_cursor[j].use == true)
+
+				g_curmax++;
+				g_nownum++;
+				if (g_nownum >= PLAYER_CURSOR_NUM)
 				{
-					if (maxvecf > 700)
+					g_nownum = 0;
+				}
+				if (g_curmax >= PLAYER_CURSOR_NUM)
+				{
+					g_curmax = PLAYER_CURSOR_NUM;
+				}
+
+				GetCursorPos(&cursorPos);
+				ScreenToClient(GethWnd(), &cursorPos);
+				cursorposf.x = (float)cursorPos.x;
+				cursorposf.y = (float)cursorPos.y;
+				g_cursor[g_nownum].pos.x = (cursorposf.x);
+				g_cursor[g_nownum].pos.y = (cursorposf.y);
+				g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
+				g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
+				if (flag)
+				{
+					g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
+				}
+				g_cursor[g_nownum].use = true;
+				//色づけ
+				{
+					float RGB[3];
+					int saidai = 0;
+					for (int j = 0; j < 3; j++)
 					{
-						if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
-							, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
+						RGB[j] = frand();
+						if (RGB[saidai] <= RGB[j])
+							saidai = j;
+					}
+					RGB[saidai] = 1.0f;
+					g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
+				}
+				g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
+
+				Float2 maxvec = { 0,0 };
+				float maxvecf;
+				for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+				{
+					if (g_cursor[i].use == true)
+					{
+						maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
+						maxvecf = maxvec.x + maxvec.y;
+					}
+				}
+
+				for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
+				{
+					int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
+					if (g_cursor[j].use == true)
+					{
+						if (maxvecf > 700)
 						{
-							//ここにcross時の処理
-							CompositionAkari(j, g_nownum);
-							for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+							if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
+								, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
 							{
-								g_cursor[i].use = false;
+								//ここにcross時の処理
+								CompositionAkari(j, g_nownum);
+								for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+								{
+									g_cursor[i].use = false;
+								}
+								g_nownum = -1;
+								pad_reset();
 							}
-							g_nownum = -1;
-							pad_reset();
 						}
+						else
+						{
+
+						}
+					}
+				}
+			}
+			else if (0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y) || 0 < fabsf(GetThumbRightX(0)) + fabsf(GetThumbRightY(0)))
+			{
+				g_cursol_prev = false;
+
+				bool flag = false;
+				if (g_nownum != -1)
+				{
+					flag = true;
+				}
+				g_curmax++;
+				g_nownum++;
+				g_playerflame += 1;
+
+
+				if (g_nownum >= PLAYER_CURSOR_NUM)
+				{
+					g_nownum = 0;
+				}
+				if (g_curmax >= PLAYER_CURSOR_NUM)
+				{
+					g_curmax = PLAYER_CURSOR_NUM;
+				}
+
+				g_pad_curpos.x += (GetThumbRightX(0) * 2) * (fabsf(GetThumbRightX(0)) * 7) * 2.5;
+				g_pad_curpos.y += (-GetThumbRightY(0) * 2) * (fabsf(GetThumbRightY(0)) * 7) * 2.5;
+
+				if (g_pad_curpos.x < 0)
+				{
+					g_pad_curpos.x = 0;
+				}
+				if (g_pad_curpos.x > SCREEN_WIDTH)
+				{
+					g_pad_curpos.x = SCREEN_WIDTH;
+				}
+				if (g_pad_curpos.y < 0)
+				{
+					g_pad_curpos.y = 0;
+				}
+				if (g_pad_curpos.y > SCREEN_HEIGHT)
+				{
+					g_pad_curpos.y = SCREEN_HEIGHT;
+				}
+
+				//重要！cursor位置＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ー
+				cursorposf.x = g_pad_curpos.x;
+				cursorposf.y = g_pad_curpos.y;
+				//cursorposf.x = (GetThumbRightX(0) * 0.6 + 1) * (SCREEN_WIDTH / 2);
+				//cursorposf.y = SCREEN_HEIGHT - ((GetThumbRightY(0) * 0.6 + 1) * (SCREEN_HEIGHT / 2));
+				//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+				g_cursor[g_nownum].pos.x = (cursorposf.x);
+				g_cursor[g_nownum].pos.y = (cursorposf.y);
+				g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
+				g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
+				if (flag)
+				{
+					g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
+				}
+				g_cursor[g_nownum].use = true;
+				//色づけ
+				{
+					float RGB[3];
+					int saidai = 0;
+					for (int j = 0; j < 3; j++)
+					{
+						RGB[j] = frand();
+						if (RGB[saidai] <= RGB[j])
+							saidai = j;
+					}
+					RGB[saidai] = 1.0f;
+					g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
+				}
+				g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
+
+				Float2 maxvec = { 0,0 };
+				float maxvecf;
+				for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+				{
+					if (g_cursor[i].use == true)
+					{
+						maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
+						maxvecf = maxvec.x + maxvec.y;
+					}
+				}
+
+				for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
+				{
+					int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
+					if (g_cursor[j].use == true)
+					{
+						if (maxvecf > 500 && 0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y))
+						{
+							if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
+								, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
+							{
+								//ここにcross時の処理
+								CompositionAkari(j, g_nownum);
+								for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+								{
+									g_cursor[i].use = false;
+								}
+								g_nownum = -1;
+								pad_reset();
+							}
+						}
+						else
+						{
+
+						}
+					}
+				}
+
+				g_pad_inputprev.x = GetThumbRightX(0);
+				g_pad_inputprev.y = GetThumbRightY(0);
+
+			}
+			else if (g_nownum != -1)
+			{
+				for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
+				{
+					if (g_nownum == i)
+					{
 					}
 					else
 					{
-
+						g_cursor[i].use = false;
 					}
 				}
-			}
-		}
-		else if (0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y) || 0 < fabsf(GetThumbRightX(0)) + fabsf(GetThumbRightY(0)))
-		{
-			g_cursol_prev = false;
-
-			bool flag = false;
-			if (g_nownum != -1)
-			{
-				flag = true;
-			}
-			g_curmax++;
-			g_nownum++;
-			g_playerflame += 1;
-
-
-			if (g_nownum >= PLAYER_CURSOR_NUM)
-			{
-				g_nownum = 0;
-			}
-			if (g_curmax >= PLAYER_CURSOR_NUM)
-			{
-				g_curmax = PLAYER_CURSOR_NUM;
-			}
-
-			g_pad_curpos.x += (GetThumbRightX(0) * 2) * (fabsf(GetThumbRightX(0)) * 7) * 2.5;
-			g_pad_curpos.y += (-GetThumbRightY(0) * 2) * (fabsf(GetThumbRightY(0)) * 7) * 2.5;
-
-			if (g_pad_curpos.x < 0)
-			{
-				g_pad_curpos.x = 0;
-			}
-			if (g_pad_curpos.x > SCREEN_WIDTH)
-			{
-				g_pad_curpos.x = SCREEN_WIDTH;
-			}
-			if (g_pad_curpos.y < 0)
-			{
-				g_pad_curpos.y = 0;
-			}
-			if (g_pad_curpos.y > SCREEN_HEIGHT)
-			{
-				g_pad_curpos.y = SCREEN_HEIGHT;
-			}
-
-			//重要！cursor位置＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ー
-			cursorposf.x = g_pad_curpos.x;
-			cursorposf.y = g_pad_curpos.y;
-			//cursorposf.x = (GetThumbRightX(0) * 0.6 + 1) * (SCREEN_WIDTH / 2);
-			//cursorposf.y = SCREEN_HEIGHT - ((GetThumbRightY(0) * 0.6 + 1) * (SCREEN_HEIGHT / 2));
-			//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-			g_cursor[g_nownum].pos.x = (cursorposf.x);
-			g_cursor[g_nownum].pos.y = (cursorposf.y);
-			g_cursor[g_nownum].prev_pos.x = g_cursor[g_nownum].pos.x - 1;
-			g_cursor[g_nownum].prev_pos.y = g_cursor[g_nownum].pos.y - 1;
-			if (flag)
-			{
-				g_cursor[g_nownum].prev_pos = g_cursor[(g_nownum + PLAYER_CURSOR_NUM - 1) % PLAYER_CURSOR_NUM].pos;
-			}
-			g_cursor[g_nownum].use = true;
-			//色づけ
-			{
-				float RGB[3];
-				int saidai = 0;
-				for (int j = 0; j < 3; j++)
+				if (g_cursol_prev == true)
 				{
-					RGB[j] = frand();
-					if (RGB[saidai] <= RGB[j])
-						saidai = j;
-				}
-				RGB[saidai] = 1.0f;
-				g_cursor[g_nownum].color = { RGB[0],RGB[1],RGB[2],1.0f };
-			}
-			g_cursor[(g_nownum + PLAYER_CURSOR_NUM + 1) % PLAYER_CURSOR_NUM].use = false;
-
-			Float2 maxvec = { 0,0 };
-			float maxvecf;
-			for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-			{
-				if (g_cursor[i].use == true)
-				{
-					maxvec = maxvec + Float2(fabsf(g_cursor[i].pos.x - g_cursor[i].prev_pos.x), fabsf(g_cursor[i].pos.y - g_cursor[i].prev_pos.y));
-					maxvecf = maxvec.x + maxvec.y;
-				}
-			}
-
-			for (int i = 1; i < PLAYER_CURSOR_NUM; i++)
-			{
-				int j = (i + g_nownum) % PLAYER_CURSOR_NUM;
-				if (g_cursor[j].use == true)
-				{
-					if (maxvecf > 500 && 0 < fabsf(GetThumbRightX(0) - g_pad_inputprev.x) + fabsf(GetThumbRightY(0) - g_pad_inputprev.y))
-					{
-						if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
-							, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
-						{
-							//ここにcross時の処理
-							CompositionAkari(j, g_nownum);
-							for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-							{
-								g_cursor[i].use = false;
-							}
-							g_nownum = -1;
-							pad_reset();
-						}
-					}
-					else
-					{
-
-					}
-				}
-			}
-
-			g_pad_inputprev.x = GetThumbRightX(0);
-			g_pad_inputprev.y = GetThumbRightY(0);
-
-		}
-		else if (g_nownum != -1)
-		{
-			for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
-			{
-				if (g_nownum == i)
-				{
+					pad_reset();
+					g_cursol_prev = false;
+					g_cursor[g_nownum].use = false;
+					g_playerflame = 0;
+					g_targetnum = -1;
 				}
 				else
 				{
-					g_cursor[i].use = false;
+					g_targetnum = g_nownum;
 				}
+				g_nownum = -1;
+
+
 			}
-			if (g_cursol_prev == true)
-			{
-				pad_reset();
-				g_cursol_prev = false;
-				g_cursor[g_nownum].use = false;
-				g_playerflame = 0;
-				g_targetnum = -1;
-			}
-			else
-			{
+
+			//==========================================
+
+			//==========================================
+			if (g_nownum != -1)
 				g_targetnum = g_nownum;
+			if (g_targetnum != -1)
+				g_playerflame += 1;
+			if (g_playerflame >= 50)
+			{
+				Normalizer(g_Player.pos, g_cursor[g_targetnum].pos - BasePos);
+				g_playerflame = 0;
 			}
-			g_nownum = -1;
+			//==========================================
 
+			//キーボードのAキーが押されたら左に移動する
+			if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
+			{
+				if (g_Player.spjp.x > 0)
+					g_Player.spjp.x *= PLAYER_BRAKE;
 
-		}
+				g_Player.spjp.x -= PLAYER_ACCELERATION_X;
+				g_Player.vec.x = -2.0;
+			}
+			//キーボードのDキーが押されたら右に移動する
+			if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
+			{
+				if (g_Player.spjp.x < 0)
+					g_Player.spjp.x *= PLAYER_BRAKE;
 
-		//==========================================
-
-		//==========================================
-		if (g_nownum != -1)
-			g_targetnum = g_nownum;
-		if (g_targetnum != -1)
-			g_playerflame += 1;
-		if (g_playerflame >= 50)
-		{
-			Normalizer(g_Player.pos, g_cursor[g_targetnum].pos - BasePos);
-			g_playerflame = 0;
-		}
-		//==========================================
-
-		//キーボードのAキーが押されたら左に移動する
-		if (GetKeyboardPress(DIK_A) || GetThumbLeftX(0) < 0)
-		{
-			if (g_Player.spjp.x > 0)
+				g_Player.spjp.x += PLAYER_ACCELERATION_X;
+				g_Player.vec.x = 2.0;
+			}
+			//何も押されていないときのみ減速する
+			if (!GetKeyboardPress(DIK_A) && !GetKeyboardPress(DIK_D) && (g_jflg == false))
+			{
 				g_Player.spjp.x *= PLAYER_BRAKE;
-
-			g_Player.spjp.x -= PLAYER_ACCELERATION_X;
-			g_Player.vec.x = -2.0;
-		}
-		//キーボードのDキーが押されたら右に移動する
-		if (GetKeyboardPress(DIK_D) || GetThumbLeftX(0) > 0)
-		{
-			if (g_Player.spjp.x < 0)
-				g_Player.spjp.x *= PLAYER_BRAKE;
-
-			g_Player.spjp.x += PLAYER_ACCELERATION_X;
-			g_Player.vec.x = 2.0;
-		}
-		//何も押されていないときのみ減速する
-		if (!GetKeyboardPress(DIK_A) && !GetKeyboardPress(DIK_D) && (g_jflg == false))
-		{
-			g_Player.spjp.x *= PLAYER_BRAKE;
-		}
-
-		g_Player.spjp.x = fminf(g_Player.spjp.x, PLAYER_SPEEDMAX_X);
-		g_Player.spjp.x = fmaxf(g_Player.spjp.x, -(PLAYER_SPEEDMAX_X));
-
-		g_Player.pos.x += g_Player.spjp.x;
-
-		//ジャンプ処理
-		//マップチップとの衝突処理
-
-		if (GetStageInfoMIGI(g_Player.pos))
-		{
-			//もし川に当たったら
-			if (GetStageInfoMIGI(g_Player.pos) == -1) {
-				//リスポーン
-				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
-					g_Player.respawnframe = 0;
-				}
 			}
-			else if (GetStageInfoMIGI(g_Player.pos)==-2)//もし旗に当たったら
-			{
-				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
-			}
-			else//右にマップチップがあればX座標を戻す
-			{
-				g_Player.pos.x = g_Player.oldpos.x;
-				g_Player.spjp.x = 0.0f;
-			}
-		}
 
-		if (GetStageInfoHIDARI(g_Player.pos))
-		{
-			//もし川に当たったら
-			if (GetStageInfoHIDARI(g_Player.pos) == -1) {
-				//リスポーン
-				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
-					g_Player.respawnframe = 0;
-				}
-			}
-			else if (GetStageInfoHIDARI(g_Player.pos) == -2)//もし旗に当たったら
-			{
-				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
-			}
-			else//左にマップチップがあればX座標を戻す
-			{
-				g_Player.pos.x = g_Player.oldpos.x;
-				g_Player.spjp.x = 0.0f;
-			}
-			
-		}
+			g_Player.spjp.x = fminf(g_Player.spjp.x, PLAYER_SPEEDMAX_X);
+			g_Player.spjp.x = fmaxf(g_Player.spjp.x, -(PLAYER_SPEEDMAX_X));
 
-		if (GetStageInfoUE(g_Player.pos))
-		{
-			//もし川に当たったら
-			if (GetStageInfoUE(g_Player.pos) == -1) {
-				//リスポーン
-				if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-					g_Player.pos = Respawn();
-					g_Player.spjp.x = 0.0f;
-					g_Player.respawnframe = 0;
-				}
-			}
-			else if (GetStageInfoUE(g_Player.pos) == -2)//もし旗に当たったら
-			{
-				SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
-			}
-			else//上にマップチップがあれば緩やかに反発
-			{
-				g_Player.jp.y *= -0.5f;
-			}
-		}
+			g_Player.pos.x += g_Player.spjp.x;
 
-		//平地もしくは落下時のみ判定
-		if (g_Player.jp.y >= 0)
-		{
-			if (GetStageInfoSITA(g_Player.pos))
+			//ジャンプ処理
+			//マップチップとの衝突処理
+
+			if (GetStageInfoMIGI(g_Player.pos))
 			{
 				//もし川に当たったら
-				if (GetStageInfoSITA(g_Player.pos) == -1) {
-					//リスポーン
-					if (/*プレイヤーが死んだ&&*/ g_Player.respawnframe >= 240) {
-						g_Player.pos = Respawn();
-						g_Player.spjp.x = 0.0f;
-						g_Player.respawnframe = 0;
-					}
+				if (GetStageInfoMIGI(g_Player.pos) == -1) {
+					//プレイヤー死亡
+					g_Player.isplayerdead = true;
 				}
-				else if (GetStageInfoSITA(g_Player.pos) == -2)//もし旗に当たったら
+				else if (GetStageInfoMIGI(g_Player.pos) == -2)//もし旗に当たったら
 				{
 					SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
 				}
-				else//下にブロックがあれば座標をそのブロックの上に調整する
+				else//右にマップチップがあればX座標を戻す
 				{
-					g_jflg = false;
-					g_Player.jp.y = 0.0f;
-					g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+					g_Player.pos.x = g_Player.oldpos.x;
+					g_Player.spjp.x = 0.0f;
 				}
 			}
-			else
+
+			if (GetStageInfoHIDARI(g_Player.pos))
 			{
-				//ブロックがない＝空中
+				//もし川に当たったら
+				if (GetStageInfoHIDARI(g_Player.pos) == -1) {
+					//プレイヤー死亡
+					g_Player.isplayerdead = true;
+				}
+				else if (GetStageInfoHIDARI(g_Player.pos) == -2)//もし旗に当たったら
+				{
+					SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
+				}
+				else//左にマップチップがあればX座標を戻す
+				{
+					g_Player.pos.x = g_Player.oldpos.x;
+					g_Player.spjp.x = 0.0f;
+				}
+
+			}
+
+			if (GetStageInfoUE(g_Player.pos))
+			{
+				//もし川に当たったら
+				if (GetStageInfoUE(g_Player.pos) == -1) {
+					//プレイヤー死亡
+					g_Player.isplayerdead = true;
+				}
+				else if (GetStageInfoUE(g_Player.pos) == -2)//もし旗に当たったら
+				{
+					SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
+				}
+				else//上にマップチップがあれば緩やかに反発
+				{
+					g_Player.jp.y *= -0.5f;
+				}
+			}
+
+			//平地もしくは落下時のみ判定
+			if (g_Player.jp.y >= 0)
+			{
+				if (GetStageInfoSITA(g_Player.pos))
+				{
+					//もし川に当たったら
+					if (GetStageInfoSITA(g_Player.pos) == -1) {
+						//プレイヤー死亡
+						g_Player.isplayerdead = true;
+					}
+					else if (GetStageInfoSITA(g_Player.pos) == -2)//もし旗に当たったら
+					{
+						SetRespawnPos(PLAYER_RESPAWN_X, PLAYER_RESPAWN_Y);
+					}
+					else//下にブロックがあれば座標をそのブロックの上に調整する
+					{
+						g_jflg = false;
+						g_Player.jp.y = 0.0f;
+						g_Player.pos.y = GetStageInfoSITA(g_Player.pos) - (PLAYER_SIZEY / 2 + CHIPSIZE_Y / 2);
+					}
+				}
+				else
+				{
+					//ブロックがない＝空中
+					g_jflg = true;
+				}
+			}
+
+			//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
+			if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
+			{
+
 				g_jflg = true;
-			}
-		}
-
-		//スペースが押されてる&ジャンプフラグがオフだったらジャンプする
-		if (GetKeyboardTrigger(DIK_SPACE) && g_jflg == false)
-		{
-
-			g_jflg = true;
-			g_Player.jp.y = -20.0f;
-		}
-
-
-		//フラグがオンになった時ジャンプ処理を開始する
-		if (g_jflg == true)
-		{
-			//Y方向の速度に加速度を加える
-			g_Player.jp.y += g_Player.spjp.y;
-			if (g_Player.jp.y > PLAYER_FALL_SPEED_MAX)
-			{
-				g_Player.jp.y = PLAYER_FALL_SPEED_MAX;
-			}
-			//Y座標の更新
-			g_Player.pos.y += g_Player.jp.y;
-		}
-
-
-		//テスト用
-		//1キーで体力を1減らす
-		if (GetKeyboardTrigger(DIK_1))
-		{
-			HP_Minus(1.0f);
-		}
-		//テスト用
-		//2キーで体力を5減らす
-		if (GetKeyboardTrigger(DIK_2))
-		{
-			HP_Minus(5.0f);
-		}
-
-		//体力が最大体力より低いとき
-		if (g_Player.hp <= PLAYER_MAXHP)
-		{
-			//体力が0になったらゲームオーバー
-			if (g_Player.hp <= 0)
-			{
-				SetScene(SCENE_GRESULT);
+				g_Player.jp.y = -20.0f;
 			}
 
-			//フレームを１足す
-			g_Player.hpframe++;
 
-			//フレームがPLAYER_HP_HEALFRAMEに達したとき
-			if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
+			//フラグがオンになった時ジャンプ処理を開始する
+			if (g_jflg == true)
 			{
-				//体力をPLAYER_HP_HEAL分回復する
-				HP_Plus(PLAYER_HP_HEAL);
-
-				//プレイヤーの体力が最大以上になった時
-				if (g_Player.hp >= PLAYER_MAXHP)
+				//Y方向の速度に加速度を加える
+				g_Player.jp.y += g_Player.spjp.y;
+				if (g_Player.jp.y > PLAYER_FALL_SPEED_MAX)
 				{
-					//最大体力を固定する(最大以上にならないように)
-					g_Player.hp = PLAYER_MAXHP;
+					g_Player.jp.y = PLAYER_FALL_SPEED_MAX;
 				}
-				//フレームリセット
-				g_Player.hpframe = 0;
+				//Y座標の更新
+				g_Player.pos.y += g_Player.jp.y;
 			}
-		}
 
-		//プレイヤーの体力が最大になった時
-		if (g_Player.hp == PLAYER_MAXHP)
+
+
+
+		}
+		else if (g_Hissattu > 0)
 		{
-			//フレームを1足す
-			g_Player.maxframe++;
-			//フレームがPLAYER_HP_MAXFRAMEに達したら
-			if (g_Player.maxframe >= PLAYER_HP_MAXFRAME)
+			if (g_Hissattu > HISSATU_COOLTIME)
 			{
-				//体力バーの表示をオフにする
-				g_hpflg = false;
-				//フレームリセット
-				g_Player.maxframe = 0;
+				Float2 hissatuwaza(frand() * SCREEN_WIDTH, frand() * SCREEN_HEIGHT);
+				Normalizer(g_Player.pos, hissatuwaza - BasePos);
 			}
+			g_Hissattu--;
 		}
 
 	}
-	else if (g_Hissattu > 0)
+
+	//テスト用
+	//1キーで体力を1減らす
+	if (GetKeyboardTrigger(DIK_1))
 	{
-		if (g_Hissattu > HISSATU_COOLTIME)
-		{
-			Float2 hissatuwaza(frand() * SCREEN_WIDTH, frand() * SCREEN_HEIGHT);
-			Normalizer(g_Player.pos, hissatuwaza - BasePos);
-		}
-		g_Hissattu--;
+		HP_Minus(1.0f);
 	}
+	//テスト用
+	//2キーで体力を5減らす
+	if (GetKeyboardTrigger(DIK_2))
+	{
+		HP_Minus(5.0f);
+	}
+
+	//体力が最大体力より低いとき
+	if (g_Player.hp <= PLAYER_MAXHP)
+	{
+		//体力が0になったら
+		if (g_Player.hp <= 0)
+		{
+			g_Player.isplayerdead = true;
+		}
+
+		//フレームを１足す
+		g_Player.hpframe++;
+
+		//フレームがPLAYER_HP_HEALFRAMEに達したとき
+		if (g_Player.hpframe >= PLAYER_HP_HEALFRAME)
+		{
+			//体力をPLAYER_HP_HEAL分回復する
+			HP_Plus(PLAYER_HP_HEAL);
+
+			//プレイヤーの体力が最大以上になった時
+			if (g_Player.hp >= PLAYER_MAXHP)
+			{
+				//最大体力を固定する(最大以上にならないように)
+				g_Player.hp = PLAYER_MAXHP;
+			}
+			//フレームリセット
+			g_Player.hpframe = 0;
+		}
+	}
+
+	//プレイヤーの体力が最大になった時
+	if (g_Player.hp == PLAYER_MAXHP)
+	{
+		//フレームを1足す
+		g_Player.maxframe++;
+		//フレームがPLAYER_HP_MAXFRAMEに達したら
+		if (g_Player.maxframe >= PLAYER_HP_MAXFRAME)
+		{
+			//体力バーの表示をオフにする
+			g_hpflg = false;
+			//フレームリセット
+			g_Player.maxframe = 0;
+		}
+	}
+
+	//プレイヤーが死んだときの流れ
+	if (g_Player.isplayerdead)
+	{
+		g_Player.respawnframe++;
+
+		//死ぬと直ぐに収縮開始
+		PlayerDeadProcess();
+
+		//死んでから3秒後にあかりをまき散らす
+		//要調整
+		if (g_Player.respawnframe > 180) {
+			SetAkari(g_Player.pos, 0);
+		}
+
+		//死んでから4秒後に復活
+		if (g_Player.respawnframe > 240) {
+			g_Player.pos = Respawn();
+			g_Player.spjp.x = 0.0f;
+			g_Player.respawnframe = 0;
+			g_shrinkAmount = 1.0f;
+			g_Player.isplayerdead = false;
+		}
+	}
+
+
+
 	//入力処理≒＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 	//カメラ座標の更新
@@ -690,11 +726,23 @@ void DrawPlayer(void)
 		0.0f, 0.0f, 
 		1.0f, 1.0f);*/
 
-	//こっちが調整前
-	DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y,
-		PLAYER_SIZEX, PLAYER_SIZEY,
-		0.0f, 0.0f,
-		1.0f, 1.0f);
+
+
+	if (g_Player.isplayerdead)//プレイヤーが死んだとき
+	{
+		DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y *g_shrinkSize,
+			PLAYER_SIZEX*g_shrinkAmount, PLAYER_SIZEY*g_shrinkAmount,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+	}
+	else
+	{
+		//こっちが調整前
+		DrawSprite(g_TextureNo, basePos.x + g_Player.pos.x, basePos.y + g_Player.pos.y,
+			PLAYER_SIZEX, PLAYER_SIZEY,
+			0.0f, 0.0f,
+			1.0f, 1.0f);
+	}
 
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
@@ -715,12 +763,38 @@ void DrawPlayer(void)
 
 	//体力描画処理
 	int Hp_length = PLAYER_HP_PRINT * g_Player.hp; //体力が減ればバーが縮む
+	int Hp_barx = SCREEN_WIDTH / 2;
+	float Fire_rightpluspos = g_Player.hp * 14.666666666f;
+	float Fire_leftpluspos = -g_Player.hp * 14.666666666f;
+	float Fire_rightpos = Hp_barx + Fire_rightpluspos;
+	float Fire_leftpos = Hp_barx + Fire_leftpluspos;
+	//バーの右端の座標1400
 
 	if (g_Player.hp > 0 && g_hpflg == true) {
-		DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
-			Hp_length, 60.0f,
+		//DrawSprite(g_TextureNo3, SCREEN_WIDTH / 2, 750.0f,
+		//	Hp_length, 60.0f,
+		//	1.0f, 1.0f,
+		//	1.0f, 1.0f);
+
+		//バー
+		DrawSprite(g_TextureNo5, Hp_barx, 750.0f,
+			Hp_length, 10.0f,
 			1.0f, 1.0f,
 			1.0f, 1.0f);
+
+
+		//炎右
+		DrawSprite(g_TextureNo4, Fire_rightpos, 730.0f,
+			40.0f, 50.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+
+		//炎左
+		DrawSprite(g_TextureNo4, Fire_leftpos, 730.0f,
+			40.0f, 50.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f);
+
 	}
 }
 
@@ -784,6 +858,23 @@ void HP_Minus(float damage)
 void HP_Plus(float healing)
 {
 	g_Player.hp += healing;
+}
+
+void PlayerDeadProcess()//プレイヤーが死んだ時に収縮
+{
+		if (g_shrinkAmount < 0.75f)//収縮は横、高さともに0.75倍になる
+		{
+			if (g_Player.respawnframe > 1000)
+			{
+				g_shrinkAmount = 1.0f;
+				g_shrinkSize = 1.0f;
+			}
+		}
+		else
+		{
+			g_shrinkAmount -= 0.005f;
+			//g_shrinkSize += 0.00075f;
+		}
 }
 
 
