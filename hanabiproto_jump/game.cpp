@@ -19,6 +19,7 @@
 #include "enemy.h"
 #include "timemanager.h"
 #include "score.h"
+#include "akari_ex.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -44,6 +45,7 @@ HRESULT InitGame(void)
 	InitPlayer();
 	InitEnemy();
 	InitAtHanabi();
+	InitExAkariObject();
 	InitScore();
 
 	// ”wŒi‚Ì‰Šú‰»
@@ -73,6 +75,7 @@ void UninitGame(void)
 	UninitAkariObject();
 
 	UninitAtHanabi();
+	UninitExAkariObject();
 	UninitScore();
 }
 
@@ -88,6 +91,7 @@ void UpdateGame(void)
 	UpdatePlayer();
 	UpdateEnemy();
 	UpdateAtHanabi();
+	UpdateExAkariObject();
 	UpdateScore();
 	
 	//”wŒi‚ÌXVˆ—
@@ -109,6 +113,7 @@ void DrawGame(void)
 	DrawPlayer();
 	DrawEnemy();
 	DrawAtHanabi();
+	DrawExAkariObject();
 	DrawScore();
 	
 	DrawCamera();
