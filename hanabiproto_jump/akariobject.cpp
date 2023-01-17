@@ -377,6 +377,82 @@ void SetAkari(Float2 pos, int saidai)
 	}
 }
 
+void SetHouseAkari(Float2 pos , int color)
+{
+	int create_akari = 32;
+	Float2 akarivec[32] =
+	{
+		{1.0f,0.0f},	//1
+		{0.2f,0.7f},	//2
+		{0.3f,0.8f},	//3
+		{0.7f,0.2f},	//4
+		{0.5f,0.5f},	//5
+		{0.1f,0.6f},	//6
+		{0.8f,0.3f},	//7
+		{0.4f,0.9f},	//8
+		{-1.0f,0.0f},	//9
+		{-0.2f,0.7f},	//10
+		{-0.3f,0.8f},	//11
+		{-0.7f,0.2f},	//12
+		{-0.5f,0.5f},	//13
+		{-0.4f,0.9f},	//14
+		{-0.8f,0.3f},	//15
+		{-0.9f,0.4f},	//16
+		{0.0f,1.0f},	//17
+		{-0.2f,-0.7f},	//18
+		{-0.3f,-0.8f},	//19
+		{-0.7f,-0.2f},	//20
+		{-0.5f,-0.5f},	//21
+		{-0.4f,-0.9f},	//22
+		{-0.8f,-0.3f},	//23
+		{-0.4f,-0.9f},	//24
+		{0.0f,-1.0f},	//25
+		{0.2f,-0.7f},	//26
+		{0.3f,-0.8f},	//27
+		{0.7f,-0.2f},	//28
+		{0.5f,-0.5f},	//29
+		{0.4f,-0.9f},	//30
+		{0.8f,-0.3f},	//31
+		{0.9f,-0.4f}	//32
+	};
+
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec.y = 0.0f;
+			g_AkariObject[i].hitground = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				switch (color)
+				{
+				case 0: //青
+					g_AkariObject[i].color = { 0.5f,0.5f,1.0f,1.0f };
+					break;
+				case 1: //赤
+					g_AkariObject[i].color = { 2.0f,0.5f,0.5f,1.0f };
+					break;
+				case 2: //緑
+					g_AkariObject[i].color = { 0.5f,1.0f,0.5f,1.0f };
+					break;
+
+				}
+			}
+
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
+
 //ダメージタイプが0ならプレイヤーにダメージ
 //1ならエネミーにダメージ
 //2なら両方
