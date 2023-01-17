@@ -35,14 +35,26 @@ public:
 	bool			hitground;
 };
 
+enum COLOR_AKARI
+{
+	RED_AKARI,
+	GREEN_AKARI,
+	BLUE_AKARI,
+
+	COLOR_NUM
+};
+
 class HanabiAkariObject:public GameObject
 {
 public:
 	bool			gather;//集まるあかり
+	Float2          gatherpos;
 	bool			setvec;
 	bool			damageenemyflug;  //エネミーにダメージを与える
 	bool			damageplayerflug; //プレイヤーにダメージを与える
 	bool			wet;//濡れた状態
+	COLOR_AKARI     colortype;
+	int             gathernum; //合成される際の整理番号
 };
 
 class EnemyObject :public GameObject
@@ -65,6 +77,17 @@ public:
 	void Action() override;
 };
 
+class SpawnPointEnemy :public EnemyObject
+{
+public:
+	float			scoreframe;
+	bool			isSPEnemydead;
+	bool			isColorBlue;
+	bool			isColorRed;
+	bool			isColorGreen;
+	void Action()override;
+};
+
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -72,13 +95,14 @@ HRESULT InitAkariObject(void);
 void UninitAkariObject(void);
 void UpdateAkariObject(void);
 void DrawAkariObject(void);
-void Akarigather(int index);
+void Akarigather(int index, Float2 gatherpos, int gather_num);
 HanabiAkariObject GetAkariObject(int index);
 void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
 void SetAkari(Float2 pos, int saidai, int damagetype);
 void SetAkari(Float2 pos, Float2 vec, float speed);
 void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle, int akarinum, float speed);
+void SetHouseAkari(Float2 pos, int color);
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
 
