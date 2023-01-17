@@ -69,10 +69,10 @@ class SpawnPointEnemy :public EnemyObject
 {
 public:
 	float			scoreframe;
-	bool			isSPEnemydead;
-	bool			isColorBlue;
-	bool			isColorRed;
-	bool			isColorGreen;
+	bool			isSPEnemydead;	//わきどころエネミーの死亡フラグ
+	bool			isColorBlue;	//わきどころエネミーの青色フラグ
+	bool			isColorRed;		//わきどころエネミーの赤色フラグ
+	bool			isColorGreen;	//わきどころエネミーの緑色フラグ
 	void Action()override;
 };
 

@@ -377,6 +377,7 @@ void SetAkari(Float2 pos, int saidai)
 	}
 }
 
+//わきどころエネミーのあかり生成
 void SetHouseAkari(Float2 pos , int color)
 {
 	int create_akari = 32;

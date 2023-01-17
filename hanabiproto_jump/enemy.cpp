@@ -81,6 +81,7 @@ HRESULT InitEnemy(void)
 	}
 
 	//2023/1/17
+	//わきどころエネミーの初期化処理
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		g_SPEnemy[i].frame = 0.0f;
@@ -120,10 +121,10 @@ HRESULT InitEnemy(void)
 			//g_SPEnemy[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
 		}
 	}
-	g_SPEnemy[0].use = true;
-
 
 	//テスト
+	g_SPEnemy[0].use = true;
+	g_SPEnemy[0].pos = { 1900,830 };
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
 	return S_OK;
@@ -159,9 +160,6 @@ void UpdateEnemy(void)
 		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 1, -1);
 
 	//2023/1/17
-	//テスト
-
-	g_SPEnemy[0].pos = {1900,830};
 	if (GetKeyboardTrigger(DIK_Y))
 	{
 		g_SPEnemy[0].Health -= 100.0f;
