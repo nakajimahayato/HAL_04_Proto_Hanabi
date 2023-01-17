@@ -537,22 +537,9 @@ void DrawEnemy(void)
 			}
 		}
 	}
-
-
-	for (int i = 0; i < g_nowEnemyMax; i++)
-	{
-		if (g_pEnemy[i]->use)
-		{
-			DrawSprite(g_TexCupE, basePos.x + g_pEnemy[i]->pos.x, basePos.y + g_pEnemy[i]->pos.y,
-				ENEMY2_SIZEX, ENEMY2_SIZEY,
-				1.0f, 1.0f,
-				1.0f, 1.0f);
-		}
-	}
 }
 
 EnemyObject* GetEnemy()
-
 {
 	return g_Enemy;
 }
