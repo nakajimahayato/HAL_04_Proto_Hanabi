@@ -75,6 +75,16 @@ public:
 	void Action() override;
 };
 
+class SpawnPointEnemy :public EnemyObject
+{
+public:
+	float			scoreframe;
+	bool			isSPEnemydead;	//わきどころエネミーの死亡フラグ
+	bool			isColorBlue;	//わきどころエネミーの青色フラグ
+	bool			isColorRed;		//わきどころエネミーの赤色フラグ
+	bool			isColorGreen;	//わきどころエネミーの緑色フラグ
+	void Action()override;
+};
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -90,6 +100,7 @@ void SetAkari(Float2 pos, int saidai, int damagetype);
 void SetAkari(Float2 pos, Float2 vec, float speed);
 void SoulAkari(Float2 pos, Float2 vec);
 void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle, int akarinum, float speed);
+void SetHouseAkari(Float2 pos, int color);
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
 
