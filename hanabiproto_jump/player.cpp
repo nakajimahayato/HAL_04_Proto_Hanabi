@@ -103,6 +103,8 @@ static float g_AnimeTable[4] =
 //	0.25f,	//左向き
 //};
 
+int g_GatherCount;
+
 //=============================================================================
 // 初期化処理
 //=============================================================================
@@ -161,6 +163,7 @@ HRESULT InitPlayer(void)
 	g_StartTime = timeGetTime();
 	g_nownum = -1;
 	g_Hissattu = 0;
+	g_GatherCount = 0;
 
 	//カーソル初期化
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
@@ -202,8 +205,8 @@ void UpdatePlayer(void)
 	//プレイヤーが死んでいない時
 	if (g_Player.isplayerdead == false)
 	{
-		if (g_Hissattu <= 0)
-		{
+		//if (g_Hissattu <= 0)
+		//{
 			//cursor処理＝＝＝＝＝＝＝＝＝
 			if (GetKeyState(VK_LBUTTON) & 0x80)
 			{
@@ -280,6 +283,7 @@ void UpdatePlayer(void)
 							if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
 								, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
 							{
+								g_GatherCount++;
 								//ここにcross時の処理
 								CompositionAkari(j, g_nownum);
 								for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
@@ -391,6 +395,7 @@ void UpdatePlayer(void)
 							if (HitCheckCross2nd(g_cursor[j].prev_pos, g_cursor[j].pos
 								, g_cursor[g_nownum].prev_pos, g_cursor[g_nownum].pos) == true)
 							{
+								g_GatherCount++;
 								//ここにcross時の処理
 								CompositionAkari(j, g_nownum);
 								for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
@@ -594,16 +599,16 @@ void UpdatePlayer(void)
 
 
 
-		}
-		else if (g_Hissattu > 0)
-		{
-			if (g_Hissattu > HISSATU_COOLTIME)
-			{
-				Float2 hissatuwaza(frand() * SCREEN_WIDTH, frand() * SCREEN_HEIGHT);
-				Normalizer(g_Player.pos, hissatuwaza - BasePos);
-			}
-			g_Hissattu--;
-		}
+	//	}
+	//	else if (g_Hissattu > 0)
+	//	{
+	//		if (g_Hissattu > HISSATU_COOLTIME)
+	//		{
+	//			Float2 hissatuwaza(frand() * SCREEN_WIDTH, frand() * SCREEN_HEIGHT);
+	//			Normalizer(g_Player.pos, hissatuwaza - BasePos);
+	//		}
+	//		g_Hissattu--;
+	//	}
 
 	}
 
@@ -744,6 +749,7 @@ void DrawPlayer(void)
 			1.0f, 1.0f);
 	}
 
+	//カーゾル表示
 	for (int i = 0; i < PLAYER_CURSOR_NUM; i++)
 	{
 		if (g_cursor[i].use == true)
@@ -798,11 +804,22 @@ void DrawPlayer(void)
 	}
 }
 
+
+//カーソルがクロスして出来たわっかの内側の明かりを集める処理
 bool CompositionAkari(int clossStart,int clossGoal)
 {
 	bool useflag = false;
 	int length = Float2_length_gather(clossStart, clossGoal);
 
+	Float2 center = { 0.0f,0.0f };
+	for (int c = 0; c < length; c++)
+	{
+		int cursornum = (clossStart + c) % PLAYER_CURSOR_NUM;
+		center.x += g_cursor[cursornum].pos.x;
+		center.y += g_cursor[cursornum].pos.y;
+	}
+	center.x = center.x / length;
+	center.y = center.y / length;
 
 	for (int h = 0; h < AKARI_NUM; h++)
 	{
@@ -813,7 +830,7 @@ bool CompositionAkari(int clossStart,int clossGoal)
 
 		if(HitCheckConcavePolygon(g_cursor, apos, clossStart, length) == true)
 		{
-			Akarigather(h);
+			Akarigather(h, center, g_GatherCount);
 		}
 	}
 	
