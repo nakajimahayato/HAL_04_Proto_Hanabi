@@ -55,11 +55,21 @@ public:
 	float			Health;
 	bool            fall;
 	int             directionX;
+	bool			enemydead;		//エネミー死亡フラグ
+	int				deadframe;		//死亡後のフレーム数
+	int				akaricount;		//明かりを交互に打つカウント
+	float			shrinkAmount;	//死亡時の収縮値
 	virtual void Action() {}
 
 };
 
 class CupEnemy :public EnemyObject
+{
+public:
+	void Action() override;
+};
+
+class SoulEnemy :public EnemyObject
 {
 public:
 	void Action() override;
@@ -78,6 +88,7 @@ void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
 void SetAkari(Float2 pos, int saidai, int damagetype);
 void SetAkari(Float2 pos, Float2 vec, float speed);
+void SoulAkari(Float2 pos, Float2 vec);
 void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle, int akarinum, float speed);
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
