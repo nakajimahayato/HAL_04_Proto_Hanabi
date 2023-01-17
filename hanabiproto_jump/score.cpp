@@ -75,7 +75,7 @@ void DrawScore()
 
 //PlayerScoreŠÖ˜A
 void UpdatePlayerScore() {
-	g_PlayerScore.score++;
+	g_PlayerScore.score+= 11;
 	if (g_PlayerScore.score > g_PlayerScore.max_score) {
 		g_PlayerScore.score = g_PlayerScore.max_score;
 	}
@@ -109,7 +109,7 @@ int GetPlayerScore() {
 //EnemyScoreŠÖ˜A
 void UpdateEnemyScore()
 {
-	g_EnemyScore.score++;
+	g_EnemyScore.score += 11;
 	if (g_EnemyScore.score > g_EnemyScore.max_score) {
 		g_EnemyScore.score = g_EnemyScore.max_score;
 	}
@@ -126,9 +126,9 @@ void DrawEnemyScore() {
 }
 
 void PlusEnemyScore(int score) {
-	g_EnemyScore.score += score;
-	if (g_EnemyScore.score < 0) {
-		g_EnemyScore.score = 0;
+	g_EnemyScore.max_score += score;
+	if (g_EnemyScore.max_score < 0) {
+		g_EnemyScore.max_score = 0;
 	}
 }
 

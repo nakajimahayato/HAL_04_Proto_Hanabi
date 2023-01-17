@@ -27,11 +27,14 @@
 //*****************************************************************************			
 static int g_TextureNo;
 static int g_TexCupE;
+static int g_TexSPE;
+static int g_TexSPED;
 
 static EnemyObject g_Enemy[NUM_ENEMY];
 
 static EnemyObject* g_pEnemy[NUM_ENEMY];//仮置き
 static CupEnemy cupE[NUM_CUPENEMY]; //一旦仮置き
+static SpawnPointEnemy g_SPEnemy[NUM_ENEMY];
 static int g_nowEnemyMax;
 
 static float g_shrinkAmount[NUM_ENEMY];
@@ -52,7 +55,8 @@ HRESULT InitEnemy(void)
 
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/enemy00.png");
 	g_TexCupE = LoadTexture((char*)"data/TEXTURE/ue.png");
-
+	g_TexSPE  = LoadTexture((char*)"data/TEXTURE/HouseProto.png");
+	g_TexSPED = LoadTexture((char*)"data/TEXTURE/HouseBrokedProto.png");
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		g_Enemy[i].frame = 0.0f;
@@ -76,6 +80,49 @@ HRESULT InitEnemy(void)
 		cupE[i].speed = 8.0f;
 	}
 
+	//2023/1/17
+	for (int i = 0; i < NUM_ENEMY; i++)
+	{
+		g_SPEnemy[i].frame = 0.0f;
+		g_SPEnemy[i].scoreframe = 0.0f;
+		g_SPEnemy[i].use = false;
+		g_SPEnemy[i].color = { 1.0f,1.0f,1.0f,1.0f };
+		g_SPEnemy[i].pos = { SCREEN_WIDTH / 2 ,SCREEN_HEIGHT / 2 };
+		g_SPEnemy[i].siz = { 32.0f * 8,32.0f * 9 };
+		g_SPEnemy[i].Health = 500.0f;
+		g_SPEnemy[i].isSPEnemydead = false;
+		//色づけ
+		{
+			if (rand() % 2 == 0)
+			{
+				g_SPEnemy[i].color = { 0.5f,0.5f,1.0f,1.0f };
+				g_SPEnemy[i].isColorBlue = true;
+			}
+			else if(rand() % 2 == 1)
+			{
+				g_SPEnemy[i].color = { 2.0f,0.5f,0.5f,1.0f };
+				g_SPEnemy[i].isColorRed = true;
+			}
+			else
+			{
+				g_SPEnemy[i].color = { 0.5f,1.0f,0.5f,1.0f };
+				g_SPEnemy[i].isColorGreen = true;
+			}
+			//float RGB[3];
+			//int saidai = 0;
+			//for (int j = 0; j < 3; j++)
+			//{
+			//	RGB[j] = frand();
+			//	if (RGB[saidai] <= RGB[j])
+			//		saidai = j;
+			//}
+			//RGB[saidai] = 1.0f;
+			//g_SPEnemy[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+		}
+	}
+	g_SPEnemy[0].use = true;
+
+
 	//テスト
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
@@ -95,7 +142,6 @@ void UninitEnemy(void)
 //=============================================================================			
 void UpdateEnemy(void)
 {
-
 	if (GetKeyboardTrigger(DIK_F))
 	{
 		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 0, 1);
@@ -112,7 +158,69 @@ void UpdateEnemy(void)
 	if ((EnemyMakeframe % 70) == 0)
 		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 1, -1);
 
-	
+	//2023/1/17
+	//テスト
+
+	g_SPEnemy[0].pos = {1900,830};
+	if (GetKeyboardTrigger(DIK_Y))
+	{
+		g_SPEnemy[0].Health -= 100.0f;
+	}
+	if (GetKeyboardTrigger(DIK_B))
+	{
+		PlusEnemyScore(100);
+	}
+	if (GetKeyboardTrigger(DIK_N))
+	{
+		PlusPlayerScore(100);
+	}
+
+	for (int i = 0; i < NUM_ENEMY; i++)
+	{
+		if (g_SPEnemy[i].use) {
+			g_SPEnemy[i].frame++;
+			g_SPEnemy[i].scoreframe++;
+			if (g_SPEnemy[i].frame >= 300)
+			{
+				g_SPEnemy[i].Action();
+				g_SPEnemy[i].frame = 0.0f;
+			}
+			if (g_SPEnemy[i].scoreframe >= 600)
+			{
+				PlusEnemyScore(2000);
+				g_SPEnemy[i].scoreframe = 0.0f;
+			}
+
+			if (g_SPEnemy[i].Health <= 0.0f)
+			{
+				g_SPEnemy[i].use = false;
+				g_SPEnemy[i].isSPEnemydead = true;
+			}
+
+			if (g_SPEnemy[i].isSPEnemydead)
+			{
+				for (int i = 0; i < 1; i++)
+				{
+					if (g_SPEnemy[i].isColorBlue == true)
+					{
+						SetHouseAkari(g_SPEnemy[i].pos, 0);
+					}
+					if (g_SPEnemy[i].isColorRed == true)
+					{
+						SetHouseAkari(g_SPEnemy[i].pos, 1);
+					}
+					if (g_SPEnemy[i].isColorGreen == true)
+					{
+						SetHouseAkari(g_SPEnemy[i].pos, 2);
+					}
+					/*SetHouseAkari(g_SPEnemy[i].pos, 0);*/
+					PlusPlayerScore(3000);
+					//g_SPEnemy[i].isSPEnemydead = false;
+				}
+			}
+		}
+	}
+
 
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
@@ -252,6 +360,34 @@ void DrawEnemy(void)
 	//ベース座標を取得する
 	D3DXVECTOR2 basePos = GetBase();
 
+	//2023//1/17
+	for (int i = 0; i < NUM_ENEMY; i++)
+	{
+		if (g_SPEnemy[i].use) {
+			DrawSpriteColor(g_TexSPE, basePos.x + g_SPEnemy[i].pos.x, basePos.y + g_SPEnemy[i].pos.y,
+				32.0f * 8, 32.0f * 9,
+				1.0f, 1.0f,
+				1.0f, 1.0f, g_SPEnemy[i].color);
+		}
+
+		if (g_SPEnemy[i].isSPEnemydead)
+		{
+			DrawSpriteColor(g_TexSPED, basePos.x + g_SPEnemy[i].pos.x, basePos.y + g_SPEnemy[i].pos.y,
+				32.0f * 8, 32.0f * 9,
+				1.0f, 1.0f,
+				1.0f, 1.0f, g_SPEnemy[i].color);
+		}
+
+			//DrawSprite(g_TexSPE, basePos.x + g_SPEnemy[i].pos.x, basePos.y + g_SPEnemy[i].pos.y,
+			//	32.0f * 8, 32.0f * 9,
+			//	1.0f, 1.0f,
+			//	1.0f, 1.0f);
+
+
+		
+	
+	}
+
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		if (g_Enemy[i].use)
@@ -356,6 +492,8 @@ void EnemyDeadProcess(int i)//ＨＰが0になった場合、1.3秒ほどかけ�
 			if ((int)g_Enemy[i].frame % 240 == 0)
 			{
 				//セットあかり
+				SetAkari(g_Enemy[i].pos, 0);
+
 				g_Enemy[i].use = false;
 				g_shrinkAmount[i] = 1.0f;
 			}
@@ -366,5 +504,20 @@ void EnemyDeadProcess(int i)//ＨＰが0になった場合、1.3秒ほどかけ�
 			g_shrinkSize[i] += 0.00075f;
 		}
 		
+	}
+}
+
+//2023/1/17
+void SpawnPointEnemy::Action()
+{
+	for (int i = 0; i < NUM_ENEMY; i++) 
+	{
+		if (g_SPEnemy[i].use)
+		{
+			if (!g_SPEnemy[i].isSPEnemydead)
+			{
+				SetEnemy({ g_SPEnemy[i].pos.x,g_SPEnemy[i].pos.y + 100 }, 0, 1, 0);
+			}
+		}
 	}
 }

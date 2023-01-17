@@ -77,6 +77,17 @@ public:
 	void Action() override;
 };
 
+class SpawnPointEnemy :public EnemyObject
+{
+public:
+	float			scoreframe;
+	bool			isSPEnemydead;
+	bool			isColorBlue;
+	bool			isColorRed;
+	bool			isColorGreen;
+	void Action()override;
+};
+
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -91,6 +102,7 @@ void SetAkari(Float2 pos, int saidai);
 void SetAkari(Float2 pos, int saidai, int damagetype);
 void SetAkari(Float2 pos, Float2 vec, float speed);
 void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle, int akarinum, float speed);
+void SetHouseAkari(Float2 pos, int color);
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
 
