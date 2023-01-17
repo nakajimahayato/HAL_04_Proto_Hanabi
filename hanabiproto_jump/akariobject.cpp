@@ -1273,11 +1273,7 @@ void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int end
 
 void SetAkari(Float2 pos, Float2 vec, float speed)
 {
-	int create_akari = 1;
-	Float2 akarivec[1] =
-	{
-		{vec.x,vec.y},
-	};
+	Float2 akarivec = { vec.x,vec.y };
 
 
 	for (int i = 0; i < AKARI_NUM; i++)
@@ -1289,8 +1285,9 @@ void SetAkari(Float2 pos, Float2 vec, float speed)
 			g_AkariObject[i].setvec = false;
 			g_AkariObject[i].gather = false;
 			g_AkariObject[i].speed = speed;
-			
-			MovePos[i] = akarivec[create_akari - 1];
+			g_AkariObject[i].vec = { 0.0f,0.0f };
+
+			MovePos[i] = akarivec;
 			//F‚Ã‚¯
 			{
 				float RGB[3];
@@ -1317,17 +1314,51 @@ void SetAkari(Float2 pos, Float2 vec, float speed)
 					break;
 				}
 			}
-
-			create_akari -= 1;
-			if (create_akari <= 0)
-			{
-				break;
-			}
+			break;
 		}
 	}
 }
 
+void SoulAkari(Float2 pos, Float2 vec)
+{
+	Float2 akarivec = { vec.x,vec.y };
 
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec = { 0.0f,0.0f };
+
+			MovePos[i] = akarivec;
+			//F‚Ã‚¯
+			{
+				////ƒ‰ƒ“ƒ_ƒ€‚ÅÔ‚©Â‚É‚È‚é
+				//if (rand() % 2 == 0)
+				//{
+				//	g_AkariObject[i].color = { 0.5f,0.5f,1.0f,1.0f };
+				//}
+				//else
+				//{
+				//	g_AkariObject[i].color = { 2.0f,0.5f,0.5f,1.0f };
+				//}
+
+				if (rand() % 2 == 0)
+				{
+					g_AkariObject[i].color = { 0.5f,0.5f,1.0f,1.0f };
+				}
+				else
+				{
+					g_AkariObject[i].color = { 2.0f,0.5f,0.5f,1.0f };
+				}
+			}
+			break;
+		}
+	}
+}
 
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right)
 {
