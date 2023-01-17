@@ -72,6 +72,7 @@ HRESULT InitEnemy(void)
 		cupE[i].speed = 8.0f;
 	}
 
+
 	for (int i = 0; i < NUM_SOULENEMY; i++)
 	{
 		soulE[i].frame = 0.0f;
@@ -82,6 +83,8 @@ HRESULT InitEnemy(void)
 	}
 
 	//テスト
+	g_SPEnemy[0].use = true;
+	g_SPEnemy[0].pos = { 1900,830 };
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
 	return S_OK;
@@ -111,6 +114,7 @@ void UpdateEnemy(void)
 	{
 		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 1, 1);
 	}
+
 
 	//ソウルエネミー生成
 	if (GetKeyboardTrigger(DIK_L))
