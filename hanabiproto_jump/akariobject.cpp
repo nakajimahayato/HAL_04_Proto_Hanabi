@@ -15,6 +15,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "stage.h"
+#include "akari_ex.h"
 
 //*****************************************************************************							
 // マクロ定義							
@@ -37,6 +38,18 @@ Float2 MovePos[AKARI_NUM];
 Float2 Ppos;
 
 bool g_composition;
+
+class CallExAkari
+{
+public:
+	D3DXCOLOR gathercolor;
+	Float2    callpos;
+	bool      use;
+	int       num;
+};
+
+CallExAkari g_callexakari[AKARI_NUM];
+
 //=============================================================================							
 // 初期化処理							
 //=============================================================================							
@@ -64,7 +77,13 @@ HRESULT InitAkariObject(void)
 		g_AkariObject[i].vec.x = 0.0f;
 		g_AkariObject[i].vec.y = 0.0f;
 		g_AkariObject[i].speed = 1.0f;
+		g_AkariObject[i].gatherpos = { 0.0f,0.0f };
+		g_AkariObject[i].gathernum = -1;
 
+		g_callexakari[i].gathercolor = { 0.0f,0.0f,0.0f,1.0f };
+		g_callexakari[i].callpos = { 0.0f,0.0f };
+		g_callexakari[i].use = false;
+		g_callexakari[i].num = 0;
 	}
 
 	////お試し
@@ -130,11 +149,7 @@ void UpdateAkariObject(void)
 		SetCupAkari(GetPlayer()->pos, 1, 1, 30, 60, 10, 5.0f);
 	}
 
-
-
 	//テスト終わり
-
-
 
 	//囲った範囲内の「AKARI」が集まるように
 	for (int i = 0; i < AKARI_NUM; i++)
@@ -143,39 +158,68 @@ void UpdateAkariObject(void)
 		{
 			//地点Aから地点Bの移動距離
 			//MovePos=地点B - 地点A;
-			MovePos[i] = Centergather(GetPlayer()->pos, GetPlayer()->pos, GetPlayer()->pos, GetPlayer()->pos) - g_AkariObject[i].pos;
+			MovePos[i] = Centergather(g_AkariObject[i].gatherpos, g_AkariObject[i].gatherpos, g_AkariObject[i].gatherpos, g_AkariObject[i].gatherpos) - g_AkariObject[i].pos;
 			//MovePos[i].y = GetPlayer()->pos.y - g_AkariObject[i].pos.y;
 			//何フレームかけて集まるか
 			MovePos[i].x /= (60 / (g_AkariObject[i].frame + 1 * 5));
 			MovePos[i].y /= (60 / (g_AkariObject[i].frame + 1 * 5));
-
 			//g_AkariObject[i].setvec = true;
 		}
-
 
 		if (g_AkariObject[i].gather && g_AkariObject[i].use)
 		{
 			g_AkariObject[i].pos.x += MovePos[i].x;
 			g_AkariObject[i].pos.y += MovePos[i].y;
 
-			if (g_AkariObject[i].pos.x < /*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x + 19 && g_AkariObject[i].pos.x >/*(SCREEN_WIDTH / 2)*/GetPlayer()->pos.x - 19
-				&& g_AkariObject[i].pos.y </*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y + 19 && g_AkariObject[i].pos.y > /*(SCREEN_HEIGHT / 2)*/GetPlayer()->pos.y - 19)
+			if (g_AkariObject[i].pos.x < g_AkariObject[i].gatherpos.x + 19 && g_AkariObject[i].pos.x > g_AkariObject[i].gatherpos.x - 19
+				&& g_AkariObject[i].pos.y < g_AkariObject[i].gatherpos.y + 19 && g_AkariObject[i].pos.y > g_AkariObject[i].gatherpos.y - 19)
 			{
 				MovePos[i].x = 0.0f;
 				MovePos[i].y = 0.0f;
 				g_AkariObject[i].frame += 1;
 
-
 				//合成後消滅ーーー
 				if (g_AkariObject[i].frame > 40)
 				{
-					for (int j = 0; j < AKARI_NUM; j++)
+					for (int g = 0; g < AKARI_NUM; g++) 
 					{
-						if (g_AkariObject[j].gather == true && g_AkariObject[j].use == true)
+						//必殺あかりとして既に色をカウントしてたらそこに加算
+						if ((g_callexakari[g].use == true) && (g_callexakari[g].num == g_AkariObject[i].gathernum))
 						{
-							g_AkariObject[j].use = false;
-							g_AkariObject[j].frame = 0;
-							plus_hissatuwaza(5);
+							g_callexakari[g].gathercolor.r += g_AkariObject[i].color.r;
+							g_callexakari[g].gathercolor.g += g_AkariObject[i].color.g;
+							g_callexakari[g].gathercolor.b += g_AkariObject[i].color.b;
+
+							g_AkariObject[i].use = false;
+							g_AkariObject[i].frame = 0;
+							g_AkariObject[i].gathernum = -1;
+
+							break;
+						}
+					}
+					//まだカウントしてなかったら新しく作る
+					if (g_AkariObject[i].use == true)
+					{
+						for (int g = 0; g < AKARI_NUM; g++)
+						{
+							if (g_callexakari[g].use == false)
+							{
+								g_callexakari[g].callpos = g_AkariObject[i].gatherpos;
+
+								g_callexakari[g].gathercolor.r += g_AkariObject[i].color.r;
+								g_callexakari[g].gathercolor.g += g_AkariObject[i].color.g;
+								g_callexakari[g].gathercolor.b += g_AkariObject[i].color.b;
+
+								g_callexakari[g].num = g_AkariObject[i].gathernum;
+
+								g_callexakari[g].use = true;
+
+								g_AkariObject[i].use = false;
+								g_AkariObject[i].frame = 0;
+								g_AkariObject[i].gathernum = -1;
+
+								break;
+							}
 						}
 					}
 				}
@@ -222,11 +266,49 @@ void UpdateAkariObject(void)
 			}
 */
 			//合成できず消滅ーーー
-			if (/*g_AkariObject[i].hitground == true &&*/ g_AkariObject[i].frame >= 400)
+			if ( g_AkariObject[i].frame >= 400 || g_AkariObject[i].pos.y > 1500)
 			{
 				g_AkariObject[i].use = false;
 				g_AkariObject[i].frame = 0;
-				g_AkariObject[i].hitground = false;
+				g_AkariObject[i].gathernum = -1;
+			}
+		}
+	}
+
+	//必殺明かり呼び出し処理
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_callexakari[i].use == true)
+		{
+			for (int j = 0; j < AKARI_NUM; j++)
+			{
+				if ((g_callexakari[i].num == g_AkariObject[j].gathernum) && (g_AkariObject[j].use == true)) 
+				{
+					break;
+				}
+
+				if ((j + 1) >= AKARI_NUM) 
+				{
+					//赤必殺作成
+					if ((g_callexakari[i].gathercolor.r >= g_callexakari[i].gathercolor.g) && (g_callexakari[i].gathercolor.r >= g_callexakari[i].gathercolor.b))
+					{
+						SetExAkari(g_callexakari[i].callpos, EX_COLOR_RED);
+					}
+					//緑必殺作成
+					else if ((g_callexakari[i].gathercolor.g >= g_callexakari[i].gathercolor.r) && (g_callexakari[i].gathercolor.g >= g_callexakari[i].gathercolor.b))
+					{
+						SetExAkari(g_callexakari[i].callpos, EX_COLOR_GREEN);
+					}
+					//青必殺作成
+					else
+					{
+						SetExAkari(g_callexakari[i].callpos, EX_COLOR_BLUE);
+					}
+
+					g_callexakari[i].num = 0;
+					g_callexakari[i].gathercolor = { 0.0f,0.0f,0.0f,1.0f };
+					g_callexakari[i].use = false;
+				}
 			}
 		}
 	}
@@ -241,25 +323,30 @@ void DrawAkariObject(void)
 	D3DXVECTOR2 basePos = GetBase();
 	for (int i = 0; i < AKARI_NUM; i++)
 	{
-		if (g_AkariObject[i].use == true)
+	if (g_AkariObject[i].use == true)
 		{
-			DrawSpriteColor(g_TextureNo, basePos.x + g_AkariObject[i].pos.x, basePos.y + g_AkariObject[i].pos.y, 60.0f, 60.0f,
+			DrawSpriteColor(g_TextureNo, basePos.x + g_AkariObject[i].pos.x, basePos.y + g_AkariObject[i].pos.y, 50.0f, 50.0f,
 				1.0f, 1.0f, 1.0f, 1.0f, g_AkariObject[i].color);
 		}
 	}
 
 }
 
+//=============================================================================							
+// 他関数						
+//=============================================================================	
 
 HanabiAkariObject GetAkariObject(int index)
 {
 	return g_AkariObject[index];
 }
 
-void Akarigather(int index)
+void Akarigather(int index, Float2 gatherpos, int gather_num)
 {
 	g_AkariObject[index].gather = true;
 	g_AkariObject[index].frame = 0;
+	g_AkariObject[index].gatherpos = gatherpos - Float2{GetBase().x, GetBase().y};
+	g_AkariObject[index].gathernum = gather_num;
 }
 
 //明かりの位置をセット
@@ -295,6 +382,19 @@ void SetAkari(Float2 pos)
 				}
 				RGB[saidai] = 1.0f;
 				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+
+				switch (saidai)
+				{
+				case 0:
+					g_AkariObject[i].colortype = RED_AKARI;
+					break;
+				case 1:
+					g_AkariObject[i].colortype = GREEN_AKARI;
+					break;
+				case 2:
+					g_AkariObject[i].colortype = BLUE_AKARI;
+					break;
+				}
 			}
 
 			create_akari -= 1;
@@ -366,6 +466,95 @@ void SetAkari(Float2 pos, int saidai)
 				}
 				RGB[saidai] = 1.0f;
 				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+
+				switch (saidai)
+				{
+				case 0:
+					g_AkariObject[i].colortype = RED_AKARI;
+					break;
+				case 1:
+					g_AkariObject[i].colortype = GREEN_AKARI;
+					break;
+				case 2:
+					g_AkariObject[i].colortype = BLUE_AKARI;
+					break;
+				}
+			}
+
+			create_akari -= 1;
+			if (create_akari <= 0)
+			{
+				break;
+			}
+		}
+	}
+}
+
+void SetHouseAkari(Float2 pos , int color)
+{
+	int create_akari = 32;
+	Float2 akarivec[32] =
+	{
+		{1.0f,0.0f},	//1
+		{0.2f,0.7f},	//2
+		{0.3f,0.8f},	//3
+		{0.7f,0.2f},	//4
+		{0.5f,0.5f},	//5
+		{0.1f,0.6f},	//6
+		{0.8f,0.3f},	//7
+		{0.4f,0.9f},	//8
+		{-1.0f,0.0f},	//9
+		{-0.2f,0.7f},	//10
+		{-0.3f,0.8f},	//11
+		{-0.7f,0.2f},	//12
+		{-0.5f,0.5f},	//13
+		{-0.4f,0.9f},	//14
+		{-0.8f,0.3f},	//15
+		{-0.9f,0.4f},	//16
+		{0.0f,1.0f},	//17
+		{-0.2f,-0.7f},	//18
+		{-0.3f,-0.8f},	//19
+		{-0.7f,-0.2f},	//20
+		{-0.5f,-0.5f},	//21
+		{-0.4f,-0.9f},	//22
+		{-0.8f,-0.3f},	//23
+		{-0.4f,-0.9f},	//24
+		{0.0f,-1.0f},	//25
+		{0.2f,-0.7f},	//26
+		{0.3f,-0.8f},	//27
+		{0.7f,-0.2f},	//28
+		{0.5f,-0.5f},	//29
+		{0.4f,-0.9f},	//30
+		{0.8f,-0.3f},	//31
+		{0.9f,-0.4f}	//32
+	};
+
+	for (int i = 0; i < AKARI_NUM; i++)
+	{
+		if (g_AkariObject[i].use == false)
+		{
+			g_AkariObject[i].use = true;
+			g_AkariObject[i].pos = pos;
+			g_AkariObject[i].setvec = false;
+			g_AkariObject[i].gather = false;
+			g_AkariObject[i].vec.y = 0.0f;
+			g_AkariObject[i].hitground = false;
+			MovePos[i] = akarivec[create_akari - 1];
+			//色づけ
+			{
+				switch (color)
+				{
+				case 0: //青
+					g_AkariObject[i].color = { 0.5f,0.5f,1.0f,1.0f };
+					break;
+				case 1: //赤
+					g_AkariObject[i].color = { 2.0f,0.5f,0.5f,1.0f };
+					break;
+				case 2: //緑
+					g_AkariObject[i].color = { 0.5f,1.0f,0.5f,1.0f };
+					break;
+
+				}
 			}
 
 			create_akari -= 1;
@@ -456,6 +645,19 @@ void SetAkari(Float2 pos, int saidai, int damagetype)
 				}
 				RGB[saidai] = 1.0f;
 				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+
+				switch (saidai)
+				{
+				case 0:
+					g_AkariObject[i].colortype = RED_AKARI;
+					break;
+				case 1:
+					g_AkariObject[i].colortype = GREEN_AKARI;
+					break;
+				case 2:
+					g_AkariObject[i].colortype = BLUE_AKARI;
+					break;
+				}
 			}
 
 			create_akari -= 1;
@@ -1045,6 +1247,19 @@ void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int end
 				}
 				RGB[saidai] = 1.0f;
 				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+
+				switch (saidai)
+				{
+				case 0:
+					g_AkariObject[i].colortype = RED_AKARI;
+					break;
+				case 1:
+					g_AkariObject[i].colortype = GREEN_AKARI;
+					break;
+				case 2:
+					g_AkariObject[i].colortype = BLUE_AKARI;
+					break;
+				}
 			}
 
 			create_akari -= 1;
@@ -1085,6 +1300,19 @@ void SetAkari(Float2 pos, Float2 vec, float speed)
 				}
 				RGB[saidai] = 1.0f;
 				g_AkariObject[i].color = { RGB[0],RGB[1],RGB[2],1.0f };
+
+				switch (saidai)
+				{
+				case 0:
+					g_AkariObject[i].colortype = RED_AKARI;
+					break;
+				case 1:
+					g_AkariObject[i].colortype = GREEN_AKARI;
+					break;
+				case 2:
+					g_AkariObject[i].colortype = BLUE_AKARI;
+					break;
+				}
 			}
 			break;
 		}
