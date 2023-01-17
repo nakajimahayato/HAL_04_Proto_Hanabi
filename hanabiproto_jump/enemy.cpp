@@ -37,8 +37,10 @@ static EnemyObject* g_pEnemy[NUM_ENEMY];//仮置き
 static CupEnemy cupE[NUM_CUPENEMY]; //一旦仮置き
 static SoulEnemy soulE[NUM_SOULENEMY]; //一旦仮置き
 static SpawnPointEnemy g_SPEnemy[NUM_ENEMY];
-
 static int g_nowEnemyMax;
+
+static float g_shrinkAmount[NUM_ENEMY];
+static float g_shrinkSize[NUM_ENEMY];
 
 static float random[10];
 
@@ -55,6 +57,7 @@ HRESULT InitEnemy(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/enemy00.png");
 	g_TexCupE = LoadTexture((char*)"data/TEXTURE/cup.png");
 	g_TexSoulE = LoadTexture((char*)"data/TEXTURE/soul01.png");
+	g_TexCupE = LoadTexture((char*)"data/TEXTURE/ue.png");
 	g_TexSPE = LoadTexture((char*)"data/TEXTURE/HouseProto.png");
 	g_TexSPED = LoadTexture((char*)"data/TEXTURE/HouseBrokedProto.png");
 
@@ -67,6 +70,10 @@ HRESULT InitEnemy(void)
 		g_Enemy[i].siz = { 32.0f,32.0f };
 		g_Enemy[i].fall = false;
 		g_Enemy[i].sdrop.y = ENEMY_FALL_SPEED;
+		g_Enemy[i].Health = ENEMY_HEALTH;	//仮置き
+
+		g_shrinkAmount[i] = 1.0f;
+		g_shrinkSize[i] = 1.0f;
 	}
 	//↓このfor必要？上のforと統合？
 	for (int i = 0; i < NUM_CUPENEMY; i++)
@@ -370,10 +377,12 @@ void UpdateEnemy(void)
 		}
 	}
 
-	//2023/1/17
-//テスト
+	EnemyMakeframe++;
 
-	g_SPEnemy[0].pos = { 1900,830 };
+	if ((EnemyMakeframe % 70) == 0)
+		SetEnemy({ SCREEN_WIDTH / 2, 250 }, 0, 1, -1);
+
+	//2023/1/17
 	if (GetKeyboardTrigger(DIK_Y))
 	{
 		g_SPEnemy[0].Health -= 100.0f;
@@ -507,6 +516,39 @@ void DrawEnemy(void)
 				1.0f, 1.0f, g_SPEnemy[i].color);
 		}
 	}
+
+	for (int i = 0; i < NUM_ENEMY; i++)
+	{
+		if (g_Enemy[i].use)
+		{
+			if (g_Enemy[i].Health <= 0)//えねみーのHPが０の時
+			{
+				DrawSprite(g_TextureNo, basePos.x + g_Enemy[i].pos.x, basePos.y + g_Enemy[i].pos.y *g_shrinkSize[i],
+					ENEMY1_SIZEX*g_shrinkAmount[i], ENEMY1_SIZEY*g_shrinkAmount[i],
+					1.0f, 1.0f,
+					1.0f, 1.0f);
+			}
+			else
+			{
+				DrawSprite(g_TextureNo, basePos.x + g_Enemy[i].pos.x, basePos.y + g_Enemy[i].pos.y,
+					ENEMY1_SIZEX, ENEMY1_SIZEY,
+					1.0f, 1.0f,
+					1.0f, 1.0f);
+			}
+		}
+	}
+
+
+	for (int i = 0; i < g_nowEnemyMax; i++)
+	{
+		if (g_pEnemy[i]->use)
+		{
+			DrawSprite(g_TexCupE, basePos.x + g_pEnemy[i]->pos.x, basePos.y + g_pEnemy[i]->pos.y,
+				ENEMY2_SIZEX, ENEMY2_SIZEY,
+				1.0f, 1.0f,
+				1.0f, 1.0f);
+		}
+	}
 }
 
 EnemyObject* GetEnemy()
@@ -617,6 +659,31 @@ void SetSoulEnemy(Float2 pos, int saidai, int enemytype, int muki)
 		break;
 	}
 }
+
+void EnemyDeadProcess(int i)//ＨＰが0になった場合、1.3秒ほどかけて収縮爆散し、周囲にあかりをまき散らす※収縮は横、高さともに0.75倍になる
+{
+	if (g_Enemy[i].Health <= 0.0f && (int)g_Enemy[i].frame % 3 == 0 && g_Enemy[i].use)//ＨＰが0になった場合かつフレームが３進むたび
+	{
+		if (g_shrinkAmount[i] < 0.75f)//収縮は横、高さともに0.75倍になる
+		{
+			if ((int)g_Enemy[i].frame % 240 == 0)
+			{
+				//セットあかり
+				SetAkari(g_Enemy[i].pos, 0);
+
+				g_Enemy[i].use = false;
+				g_shrinkAmount[i] = 1.0f;
+			}
+		}
+		else
+		{
+			g_shrinkAmount[i] -= 0.01f;
+			g_shrinkSize[i] += 0.00075f;
+		}
+
+	}
+}
+
 
 //2023/1/17
 void SpawnPointEnemy::Action()
