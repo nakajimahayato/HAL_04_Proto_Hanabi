@@ -554,6 +554,11 @@ SoulEnemy* GetSoulEnemy()
 	return soulE;
 }
 
+SpawnPointEnemy* GetSPEnemy()
+{
+	return g_SPEnemy;
+}
+
 void CupEnemy::Action()
 {
 	SetAkari(pos);

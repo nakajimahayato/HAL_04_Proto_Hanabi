@@ -33,6 +33,7 @@ static EnemyObject g_Kappa[NUM_ENEMY];
 
 static float g_shrinkAmount[NUM_ENEMY];
 static float g_shrinkSize[NUM_ENEMY];
+bool KappaFollow;
 
 
 
@@ -57,6 +58,7 @@ HRESULT InitKappaEnemy(void)
 
 		g_shrinkAmount[i] = 1.0f;
 		g_shrinkSize[i] = 1.0f;
+		KappaFollow = false;
 	}
 
 	//テスト
@@ -97,11 +99,25 @@ void UpdateKappaEnemy(void)
 
 			/*見て！！*/	//通常攻撃
 
-
 			//プレイヤーに近づく
 			//④：もし③中にプレイヤーを発見した場合は①に行く
-			//②：プレイヤーが索敵範囲から離れたとき、移動を停止する。
-			if (GetPlayer()->pos.x + (CHIPSIZE_X * 30) > g_Kappa[i].pos.x && GetPlayer()->pos.x - (CHIPSIZE_X * 30) < g_Kappa[i].pos.x)
+			if (KappaFollow==false)
+			{
+				//②：プレイヤーが索敵範囲から離れたとき、移動を停止する。
+				if (HitCheckCircleSq(GetPlayer()->pos, 1, g_Kappa[i].pos, CHIPSIZE_X * 10))
+				{
+					KappaFollow = true;
+				}
+			}
+			else
+			{
+				if (!HitCheckCircleSq(GetPlayer()->pos, 1, g_Kappa[i].pos, CHIPSIZE_X * 15))
+				{
+					KappaFollow = false;
+				}
+			}
+
+			if (KappaFollow)
 			{
 				//①：プレイヤーが索敵範囲に入った時から、常にプレイヤーの半径6マス以内を目掛けて移動する。
 				if (GetPlayer()->pos.x + (CHIPSIZE_X * 6) < g_Kappa[i].pos.x)
@@ -112,23 +128,23 @@ void UpdateKappaEnemy(void)
 				{
 					g_Kappa[i].pos.x += g_Kappa[i].speed;
 				}
+			}
+			else
+			{
 				//③：もし"②"中に沸きエネミーが倒されているのを感知した場合、沸きエネミーがいたX座標に行き、沸きエネミーを生成する
-				/*見て！！*/else if (0/*沸きエネミーが倒されている*/)
+				if (/*沸きエネミーが倒されている*/GetSPEnemy()->isSPEnemydead)
 				{
-				/*見て！！*/	if (0/*「沸きエネミー」.pos.x*/ < g_Kappa[i].pos.x)
+					if (GetSPEnemy()->pos.x < g_Kappa[i].pos.x)
 					{
 						g_Kappa[i].pos.x -= g_Kappa[i].speed;
 					}
-				/*見て！！*/	else if (0/*「沸きエネミー」.pos.x*/ > g_Kappa[i].pos.x)
+					else if (GetSPEnemy()->pos.x > g_Kappa[i].pos.x)
 					{
 						g_Kappa[i].pos.x += g_Kappa[i].speed;
 					}
 				}
-				
 			}
-			
-			
-			
+
 			//落下処理
 			if (g_Kappa[i].fall == true) {
 				g_Kappa[i].drop.y += g_Kappa[i].sdrop.y;
@@ -146,14 +162,29 @@ void UpdateKappaEnemy(void)
 				if (GetStageInfoEnemySITA(g_Kappa[i].pos, Float2(KAPPA_SIZE_X, KAPPA_SIZE_Y)) == -1)
 				{
 					g_Kappa[i].fall = false;
-					if (GetPlayer()->pos.x< g_Kappa[i].pos.x)
+					if (KappaFollow)
 					{
-						g_Kappa[i].pos.x -= g_Kappa[i].speed*2;
+						if (GetPlayer()->pos.x < g_Kappa[i].pos.x)
+						{
+							g_Kappa[i].pos.x -= g_Kappa[i].speed * 2;
+						}
+						else if (GetPlayer()->pos.x > g_Kappa[i].pos.x)
+						{
+							g_Kappa[i].pos.x += g_Kappa[i].speed * 2;
+						}
 					}
-					else if (GetPlayer()->pos.x> g_Kappa[i].pos.x)
+					else
 					{
-						g_Kappa[i].pos.x += g_Kappa[i].speed*2;
+						if (GetSPEnemy()->pos.x < g_Kappa[i].pos.x)
+						{
+							g_Kappa[i].pos.x -= g_Kappa[i].speed * 2;
+						}
+						else if (GetSPEnemy()->pos.x > g_Kappa[i].pos.x)
+						{
+							g_Kappa[i].pos.x += g_Kappa[i].speed * 2;
+						}
 					}
+					
 
 					if (GetStageInfoEnemySITA({ g_Kappa[i].pos.x,g_Kappa[i].pos.y-CHIPSIZE_Y }, Float2(KAPPA_SIZE_X, KAPPA_SIZE_Y)))
 					{
@@ -175,13 +206,6 @@ void UpdateKappaEnemy(void)
 				g_Kappa[i].fall = true;
 			}
 		}
-
-		/*if (HitCheckBox(GetPlayer()->pos, { PLAYER_SIZEX,PLAYER_SIZEY }, g_Kappa[0].pos, { KAPPA_SIZE_X,KAPPA_SIZE_Y}))
-		{
-			HP_Minus(0.001);
-		}*/
-		
-			
 	}
 }
 
