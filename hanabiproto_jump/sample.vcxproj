@@ -140,6 +140,7 @@
     <ClCompile Include="gameover_result.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputx.cpp" />
+    <ClCompile Include="kappa_Enemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="gameover_result.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="inputx.h" />
+    <ClInclude Include="kappa_Enemy.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="player.h" />
