@@ -155,6 +155,9 @@ int GetStageInfoUE(Float2 playerpos)
 	StageXL = (int)(playerhead.x / CHIPSIZE_X);
 	StageXR = (int)((playerhead.x + PLAYER_SIZEX) / CHIPSIZE_X);
 
+	if ((StageY > STAGE_Y) || (StageXL > STAGE_X) || (StageXR > STAGE_X))
+		return NULL;
+
 	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X); i++)
 	{
 		switch (StageBase[StageY][StageXL + i])
@@ -203,6 +206,9 @@ int GetStageInfoSITA(Float2 playerpos)
 	StageY = (int)((playerfoot.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
 	StageXL = (int)(playerfoot.x /CHIPSIZE_X);
 	StageXR = (int)((playerfoot.x + PLAYER_SIZEX) / CHIPSIZE_X);
+
+	if ((StageY > STAGE_Y) || (StageXL > STAGE_X) || (StageXR > STAGE_X))
+		return NULL;
 	
 	for (int i = 0; i < (int)(PLAYER_SIZEX / CHIPSIZE_X); i++)
 	{
@@ -254,6 +260,9 @@ int GetStageInfoMIGI(Float2 playerpos)
 	StageYT = (int)(playerfront.y / CHIPSIZE_Y);
 	StageYB = (int)((playerfront.y + PLAYER_SIZEY) / CHIPSIZE_Y);
 
+	if ((StageYT > STAGE_Y) || (StageYB > STAGE_Y) || (StageX > STAGE_X))
+		return NULL;
+
 	for (int i = 0; i < (int)(PLAYER_SIZEY / CHIPSIZE_Y); i++)
 	{
 		switch (StageBase[StageYT + i][StageX])
@@ -302,6 +311,9 @@ int GetStageInfoHIDARI(Float2 playerpos)
 	StageYT = (int)(playerback.y / CHIPSIZE_Y);
 	StageX = (int)(playerback.x / CHIPSIZE_X);
 	StageYB = (int)((playerback.y + PLAYER_SIZEY) / CHIPSIZE_Y);
+
+	if ((StageYT > STAGE_Y) || (StageYB > STAGE_Y) || (StageX > STAGE_X))
+		return NULL;
 	
 
 	for (int i = 0; i < (int)(PLAYER_SIZEY / CHIPSIZE_Y); i++)
@@ -346,6 +358,9 @@ bool GetStageInfoRain(Float2 akaripos)
 	StageX = (int)(akaripos.x / CHIPSIZE_X);
 	StageY = (int)(akaripos.y / CHIPSIZE_Y);
 
+	if ((StageY > STAGE_Y) || (StageX > STAGE_X))
+		return NULL;
+
 	switch (StageBase[StageY][StageX])
 	{
 	case 0:
@@ -373,6 +388,9 @@ int GetStageInfoEnemySITA(Float2 enemypos, Float2 enemysize)
 	StageY = (int)((enemyfoot.y + CHIPSIZE_Y / 2) / CHIPSIZE_Y);
 	StageXL = (int)(enemyfoot.x / CHIPSIZE_X);
 	StageXR = (int)((enemyfoot.x + enemysize.x) / CHIPSIZE_X);
+
+	if ((StageY > STAGE_Y) || (StageXL > STAGE_X) || (StageXR > STAGE_X))
+		return NULL;
 
 	for (int i = 0; i < (int)(enemysize.x / CHIPSIZE_X); i++)
 	{

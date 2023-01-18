@@ -2,7 +2,7 @@
 
 				   スコア処理 [score.cpp]
 				Author : 中島
-				Date   : 2022/12/12(最終編集日)
+				Date   : 2023/01/17(最終編集日)
 ------------------------------------------------------------------------------------------------------------------------------------------
 
 ==============================================================================*/
@@ -75,7 +75,7 @@ void DrawScore()
 
 //PlayerScore関連
 void UpdatePlayerScore() {
-	g_PlayerScore.score++;
+	g_PlayerScore.score+= 11;
 	if (g_PlayerScore.score > g_PlayerScore.max_score) {
 		g_PlayerScore.score = g_PlayerScore.max_score;
 	}
@@ -109,7 +109,7 @@ int GetPlayerScore() {
 //EnemyScore関連
 void UpdateEnemyScore()
 {
-	g_EnemyScore.score++;
+	g_EnemyScore.score += 11;
 	if (g_EnemyScore.score > g_EnemyScore.max_score) {
 		g_EnemyScore.score = g_EnemyScore.max_score;
 	}
@@ -126,9 +126,9 @@ void DrawEnemyScore() {
 }
 
 void PlusEnemyScore(int score) {
-	g_EnemyScore.score += score;
-	if (g_EnemyScore.score < 0) {
-		g_EnemyScore.score = 0;
+	g_EnemyScore.max_score += score;
+	if (g_EnemyScore.max_score < 0) {
+		g_EnemyScore.max_score = 0;
 	}
 }
 

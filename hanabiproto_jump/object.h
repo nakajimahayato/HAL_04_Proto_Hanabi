@@ -1,6 +1,6 @@
 /*==============================================================================
 
-   ƒvƒŒƒCƒ„[ŠÇ—[object.h]
+   ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç®¡ç†[object.h]
 														 Author :
 														 Date   :
 --------------------------------------------------------------------------------
@@ -14,7 +14,7 @@
 #include "BENRIclass.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 //*****************************************************************************
 #define AKARI_NUM	30000
 
@@ -22,27 +22,39 @@
 class GameObject
 {
 public:
-	Float2			pos;//À•W
-	Float2			vec;//ˆÚ“®
+	Float2			pos;//åº§æ¨™
+	Float2			vec;//ç§»å‹•
 	float			speed;
-	Float2			siz;//‘å‚«‚³
-	Float2			dir;//ˆÚ“®•ûŒü
+	Float2			siz;//å¤§ãã•
+	Float2			dir;//ç§»å‹•æ–¹å‘
 	D3DXCOLOR		color;
-	bool			use;//useƒtƒ‰ƒO
+	bool			use;//useãƒ•ãƒ©ã‚°
 	float			frame;
-	Float2			drop; //—‚¿‚é
-	Float2			sdrop;//—‚¿‚é‰Á‘¬“x
+	Float2			drop; //è½ã¡ã‚‹
+	Float2			sdrop;//è½ã¡ã‚‹åŠ é€Ÿåº¦
 	bool			hitground;
 };
 
-class HanabiAkariObject:public GameObject
+enum COLOR_AKARI
+{
+	RED_AKARI,
+	GREEN_AKARI,
+	BLUE_AKARI,
+
+	COLOR_NUM
+};
+
+class HanabiAkariObject :public GameObject
 {
 public:
-	bool			gather;//W‚Ü‚é‚ ‚©‚è
+	bool			gather;//é›†ã¾ã‚‹ã‚ã‹ã‚Š
+	Float2          gatherpos;
 	bool			setvec;
-	bool			damageenemyflug;  //ƒGƒlƒ~[‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
-	bool			damageplayerflug; //ƒvƒŒƒCƒ„[‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
-	bool			wet;//”G‚ê‚½ó‘Ô
+	bool			damageenemyflug;  //ã‚¨ãƒãƒŸãƒ¼ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
+	bool			damageplayerflug; //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
+	bool			wet;//æ¿¡ã‚ŒãŸçŠ¶æ…‹
+	COLOR_AKARI     colortype;
+	int             gathernum; //åˆæˆã•ã‚Œã‚‹éš›ã®æ•´ç†ç•ªå·
 };
 
 class EnemyObject :public GameObject
@@ -53,6 +65,10 @@ public:
 	int             directionX;
 	float			Attack;
 	float			Gravity;
+	bool			enemydead;		//ã‚¨ãƒãƒŸãƒ¼æ­»äº¡ãƒ•ãƒ©ã‚°
+	int				deadframe;		//æ­»äº¡å¾Œã®ãƒ•ãƒ¬ãƒ¼ãƒ æ•°
+	int				akaricount;		//æ˜ã‹ã‚Šã‚’äº¤äº’ã«æ‰“ã¤ã‚«ã‚¦ãƒ³ãƒˆ
+	float			shrinkAmount;	//æ­»äº¡æ™‚ã®åç¸®å€¤
 	virtual void Action() {}
 
 };
@@ -63,19 +79,38 @@ public:
 	void Action() override;
 };
 
+class SoulEnemy :public EnemyObject
+{
+public:
+	void Action() override;
+};
+
+class SpawnPointEnemy :public EnemyObject
+{
+public:
+	float			scoreframe;
+	bool			isSPEnemydead;	//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®æ­»äº¡ãƒ•ãƒ©ã‚°
+	bool			isColorBlue;	//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®é’è‰²ãƒ•ãƒ©ã‚°
+	bool			isColorRed;		//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®èµ¤è‰²ãƒ•ãƒ©ã‚°
+	bool			isColorGreen;	//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®ç·‘è‰²ãƒ•ãƒ©ã‚°
+	void Action()override;
+};
+
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
 //*****************************************************************************
 HRESULT InitAkariObject(void);
 void UninitAkariObject(void);
 void UpdateAkariObject(void);
 void DrawAkariObject(void);
-void Akarigather(int index);
+void Akarigather(int index, Float2 gatherpos, int gather_num);
 HanabiAkariObject GetAkariObject(int index);
 void SetAkari(Float2 pos);
 void SetAkari(Float2 pos, int saidai);
 void SetAkari(Float2 pos, int saidai, int damagetype);
 void SetAkari(Float2 pos, Float2 vec, float speed);
+void SoulAkari(Float2 pos, Float2 vec);
+void SetHouseAkari(Float2 pos, int color);
 void SetCupAkari(Float2 pos, int saidai, int damagetype, int firstangle, int endangle, int akarinum, float speed);
 Float2 Centergather(Float2 up, Float2 down, Float2 left, Float2 right);
 
