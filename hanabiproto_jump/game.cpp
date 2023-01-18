@@ -19,6 +19,7 @@
 #include "enemy.h"
 #include "timemanager.h"
 #include "score.h"
+#include "kappa_Enemy.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -45,6 +46,7 @@ HRESULT InitGame(void)
 	InitEnemy();
 	InitAtHanabi();
 	InitScore();
+	InitKappaEnemy();
 
 	// 背景の初期化
 	InitBG();
@@ -69,6 +71,7 @@ void UninitGame(void)
 	// 頂点管理の終了処理
 	UninitPlayer();
 	UninitEnemy();
+	UninitKappaEnemy();
 
 	UninitAkariObject();
 
@@ -87,6 +90,7 @@ void UpdateGame(void)
 	UpdateAkariObject();
 	UpdatePlayer();
 	UpdateEnemy();
+	UpdateKappaEnemy();
 	UpdateAtHanabi();
 	UpdateScore();
 	
@@ -106,6 +110,7 @@ void DrawGame(void)
 	DrawStage();
 	// 頂点管理の描画処理
 	DrawAkariObject();
+	DrawKappaEnemy();
 	DrawPlayer();
 	DrawEnemy();
 	DrawAtHanabi();
