@@ -29,7 +29,7 @@ public:
 	Float2			dir;//移動方向
 	D3DXCOLOR		color;
 	bool			use;//useフラグ
-	float			frame;
+	int				frame;
 	Float2			drop; //落ちる
 	Float2			sdrop;//落ちる加速度
 	bool			hitground;

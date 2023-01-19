@@ -46,7 +46,7 @@ HRESULT InitKappaEnemy(void)
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		//河童の初期化
-		g_Kappa[i].frame = 0.0f;
+		g_Kappa[i].frame = 0;
 		g_Kappa[i].use = false;
 		/*見て！！*/g_Kappa[i].pos = {2000,SCREEN_HEIGHT/2 };//どこにする？
 		g_Kappa[i].speed = ENEMY_WALK_SPEED;
@@ -83,8 +83,6 @@ void UpdateKappaEnemy(void)
 {
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
-		g_Kappa[i].frame++;
-		
 		if (g_Kappa[i].use)
 		{
 			//爆散処理テスト
@@ -101,17 +99,17 @@ void UpdateKappaEnemy(void)
 
 			//プレイヤーに近づく
 			//④：もし③中にプレイヤーを発見した場合は①に行く
-			if (KappaFollow==false)
+			if (KappaFollow == false)
 			{
 				//②：プレイヤーが索敵範囲から離れたとき、移動を停止する。
-				if (HitCheckCircleSq(GetPlayer()->pos, 1, g_Kappa[i].pos, CHIPSIZE_X * 10))
+				if (HitCheckCircleSq(GetPlayer()->pos, 0, g_Kappa[i].pos, CHIPSIZE_X * 10))
 				{
 					KappaFollow = true;
 				}
 			}
 			else
 			{
-				if (!HitCheckCircleSq(GetPlayer()->pos, 1, g_Kappa[i].pos, CHIPSIZE_X * 15))
+				if (!HitCheckCircleSq(GetPlayer()->pos, 0, g_Kappa[i].pos, CHIPSIZE_X * 15))
 				{
 					KappaFollow = false;
 				}
@@ -141,6 +139,23 @@ void UpdateKappaEnemy(void)
 					else if (GetSPEnemy()->pos.x > g_Kappa[i].pos.x)
 					{
 						g_Kappa[i].pos.x += g_Kappa[i].speed;
+					}
+
+					if (HitCheckCircleSq(GetSPEnemy()->pos, CHIPSIZE_X, g_Kappa[i].pos,0))
+					{
+						g_Kappa[i].frame++;
+
+						if (g_Kappa[i].frame % 600 == 0)
+						{
+							GetSPEnemy()->use = true;
+							GetSPEnemy()->isSPEnemydead = false;
+							GetSPEnemy()->Health = 500.0f;
+							
+						}
+					}
+					else
+					{
+						g_Kappa[i].frame = 0;
 					}
 				}
 			}
