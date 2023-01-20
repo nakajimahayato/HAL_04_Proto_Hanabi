@@ -34,6 +34,7 @@ static EnemyObject g_Kappa[NUM_ENEMY];
 static float g_shrinkAmount[NUM_ENEMY];
 static float g_shrinkSize[NUM_ENEMY];
 bool KappaFollow;
+int AttackFrame = 0;
 
 
 
@@ -93,9 +94,7 @@ void UpdateKappaEnemy(void)
 			if (g_Kappa[i].Health <= 0)
 			{
 				KappaEnemyDeadProcess(i);
-			}
-
-			/*Œ©‚ÄII*/	//’ÊíUŒ‚
+			}			
 
 			//ƒvƒŒƒCƒ„[‚É‹ß‚Ã‚­
 			//‡CF‚à‚µ‡B’†‚ÉƒvƒŒƒCƒ„[‚ð”­Œ©‚µ‚½ê‡‚Í‡@‚És‚­
@@ -125,6 +124,21 @@ void UpdateKappaEnemy(void)
 				else if (GetPlayer()->pos.x - (CHIPSIZE_X * 6) > g_Kappa[i].pos.x)
 				{
 					g_Kappa[i].pos.x += g_Kappa[i].speed;
+				}
+
+				//’ÊíUŒ‚
+				AttackFrame++;
+				if (AttackFrame % 420 == 0)
+				{
+					if (g_Kappa[i].pos.x > GetPlayer()->pos.x)
+					{
+						SetCupAkari(g_Kappa[i].pos, 1, 0, 100, 170, 17, 2.0f);
+					}
+					else
+					{
+						SetCupAkari(g_Kappa[i].pos, 1, 0, 0, 80, 17, 2.0f);
+					}
+					AttackFrame = 0;
 				}
 			}
 			else
@@ -239,14 +253,14 @@ void DrawKappaEnemy(void)
 			if (g_Kappa[i].Health <= 0)//‚¦‚Ë‚Ý[‚ÌHP‚ª‚O‚ÌŽž
 			{
 				DrawSprite(g_TexKappa, basePos.x + g_Kappa[i].pos.x, basePos.y + g_Kappa[i].pos.y *g_shrinkSize[i],
-					KAPPA_SIZE_X*g_shrinkAmount[i], KAPPA_SIZE_Y*g_shrinkAmount[i],
+					g_Kappa[i].siz.x *g_shrinkAmount[i], g_Kappa[i].siz.y*g_shrinkAmount[i],
 					1.0f, 1.0f,
 					1.0f, 1.0f);
 			}
 			else
 			{
 				DrawSprite(g_TexKappa, basePos.x + g_Kappa[i].pos.x, basePos.y + g_Kappa[i].pos.y,
-					KAPPA_SIZE_X, KAPPA_SIZE_Y,
+					g_Kappa[i].siz.x, g_Kappa[i].siz.y,
 					1.0f, 1.0f,
 					1.0f, 1.0f);
 			}
