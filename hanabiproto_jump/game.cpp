@@ -114,12 +114,12 @@ void DrawGame(void)
 	DrawStage();
 	// 頂点管理の描画処理
 	DrawAkariObject();
-	DrawKappaEnemy();
-	DrawPlayer();
 	DrawEnemy();
+	DrawKappaEnemy();
 	DrawAtHanabi();
 	DrawExAkariObject();
 	DrawScore();
+	DrawPlayer();
 	
 	DrawCamera();
 }
