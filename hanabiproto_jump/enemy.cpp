@@ -101,7 +101,7 @@ HRESULT InitEnemy(void)
 		g_SPEnemy[i].use = false;
 		g_SPEnemy[i].color = { 1.0f,1.0f,1.0f,1.0f };
 		g_SPEnemy[i].pos = { SCREEN_WIDTH / 2 ,SCREEN_HEIGHT / 2 };
-		g_SPEnemy[i].siz = { 32.0f * 8,32.0f * 9 };
+		g_SPEnemy[i].siz = { CHIPSIZE_X * 6,CHIPSIZE_Y * 7 };
 		g_SPEnemy[i].Health = 500.0f;
 		g_SPEnemy[i].isSPEnemydead = false;
 		//色づけ
@@ -126,7 +126,7 @@ HRESULT InitEnemy(void)
 
 	//テスト
 	g_SPEnemy[0].use = true;
-	g_SPEnemy[0].pos = { 2237,800 };
+	g_SPEnemy[0].pos = { 2237,830 };
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
 	return S_OK;
@@ -500,16 +500,17 @@ void DrawEnemy(void)
 	//2023//1/18
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
-		if (g_SPEnemy[i].use && g_SPEnemy[i].isSPEnemydead == 0) {
+		if (g_SPEnemy[i].use) {
 			DrawSpriteColor(g_TexSPE, basePos.x + g_SPEnemy[i].pos.x, basePos.y + g_SPEnemy[i].pos.y,
-				32.0f * 8, 32.0f * 9,
+				g_SPEnemy[i].siz.x, g_SPEnemy[i].siz.y,
 				1.0f, 1.0f,
 				1.0f, 1.0f, g_SPEnemy[i].color);
 		}
-		else if (g_SPEnemy[i].use && g_SPEnemy[i].isSPEnemydead)
+		
+		if (g_SPEnemy[i].isSPEnemydead)
 		{
 			DrawSpriteColor(g_TexSPED, basePos.x + g_SPEnemy[i].pos.x, basePos.y + g_SPEnemy[i].pos.y,
-				32.0f * 8, 32.0f * 9,
+				g_SPEnemy[i].siz.x, g_SPEnemy[i].siz.y,
 				1.0f, 1.0f,
 				1.0f, 1.0f, g_SPEnemy[i].color);
 		}
