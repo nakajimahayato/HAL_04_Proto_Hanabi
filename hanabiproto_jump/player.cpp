@@ -16,6 +16,7 @@
 #include "inputx.h"
 #include "input.h"
 #include "stage.h"
+#include "sound.h"
 //#include <Xinput.h>
 
 //#pragma comment(lib."Xinput.lib")
@@ -40,10 +41,16 @@ static int g_TextureNo3;
 static int g_TextureNo4;
 static int g_TextureNo5;
 
+static int	g_SENo = 0;			// SE識別子
+static int	g_SENo2 = 0;		// SE識別子
+static int	g_SENo3 = 0;		// SE識別子
+static int	g_SENo4 = 0;		// SE識別子
+static int	g_SENo5 = 0;		// SE識別子
+static int	g_SENo6 = 0;		// SE識別子
+
 //static PLAYER g_Player;
 
 static float g_U, g_V;
-
 
 
 CURSOR		g_cursor[PLAYER_CURSOR_NUM];	//カーソルの軌跡点
@@ -115,6 +122,13 @@ HRESULT InitPlayer(void)
 	g_TextureNo3 = LoadTexture((char*)"data/TEXTURE/HP.png");
 	g_TextureNo4 = LoadTexture((char*)"data/TEXTURE/HPFire.png");
 	g_TextureNo5 = LoadTexture((char*)"data/TEXTURE/HPBar.png");
+
+	g_SENo = LoadSound((char*)"data/SE/PLAYER/リスポーン.mp3");
+	g_SENo2 = LoadSound((char*)"data/SE/PLAYER/移動.mp3");
+	g_SENo3 = LoadSound((char*)"data/SE/PLAYER/合成音.mp3");
+	g_SENo4 = LoadSound((char*)"data/SE/PLAYER/合成音2.mp3");
+	g_SENo5 = LoadSound((char*)"data/SE/PLAYER/被弾.wav");
+	g_SENo6 = LoadSound((char*)"data/SE/PLAYER/必殺技.mp3");
 
 	//初期化
 	g_Player.pos.x = PLAYER_DISP_X;
@@ -685,6 +699,7 @@ void UpdatePlayer(void)
 
 		//死んでから4秒後に復活
 		if (g_Player.respawnframe > 240) {
+			PlaySound(g_SENo, 0);
 			g_Player.pos = Respawn();
 			g_Player.spjp.x = 0.0f;
 			g_Player.respawnframe = 0;
