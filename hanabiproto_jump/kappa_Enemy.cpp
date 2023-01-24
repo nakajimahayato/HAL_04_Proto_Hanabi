@@ -43,7 +43,7 @@ int AttackFrame = 0;
 //=============================================================================			
 HRESULT InitKappaEnemy(void)
 {
-	g_TexKappa = LoadTexture((char*)"data/TEXTURE/youkai_kappa.png");
+	g_TexKappa = LoadTexture((char*)"data/TEXTURE/kappa.png");
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		//‰Í“¶‚Ì‰Šú‰»

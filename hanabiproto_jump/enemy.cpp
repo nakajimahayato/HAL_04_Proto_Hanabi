@@ -55,7 +55,7 @@ HRESULT InitEnemy(void)
 {
 
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/enemy00.png");
-	g_TexCupE = LoadTexture((char*)"data/TEXTURE/cup.png");
+	g_TexCupE = LoadTexture((char*)"data/TEXTURE/tyawan.png");
 	g_TexSoulE = LoadTexture((char*)"data/TEXTURE/soul01.png");
 	g_TexSPE = LoadTexture((char*)"data/TEXTURE/HouseProto.png");
 	g_TexSPED = LoadTexture((char*)"data/TEXTURE/HouseBrokedProto.png");

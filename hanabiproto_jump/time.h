@@ -11,9 +11,9 @@
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
-#define TIME_LIMIT_MAX	100
+#define TIME_LIMIT_MAX	180
 #define TIME_SIZE_X		40.0f
-#define TIME_SIZE_Y		45.0f
+#define TIME_SIZE_Y		50.0f
 #define TIME_WIDTH		40.0f
 
 struct TIME {
