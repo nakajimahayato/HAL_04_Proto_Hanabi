@@ -1,62 +1,8 @@
-﻿  akariobject.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  attackhanabi.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  BENRIclass.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\benriclass.cpp(40): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  camera.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  collision.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\collision.cpp(20): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  enemy.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp(65): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp(80): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp(89): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp(99): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp(406): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp(589): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.cpp(626): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-  game.cpp
+﻿  game.cpp
 c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\game.cpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
 c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
 c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
 c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  kappa_Enemy.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\kappa_enemy.cpp(227): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
-  player.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(341): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(342): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(481): warning C4305: '*=': 'double' から 'float' へ切り詰めます。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(490): warning C4305: '*=': 'double' から 'float' へ切り詰めます。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(498): warning C4305: '*=': 'double' から 'float' へ切り詰めます。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(581): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(658): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(786): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(802): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.cpp(801): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-  akari_ex.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  stage.cpp
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\stage.cpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\player.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\enemy.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-c:\users\acyb1\documents\github\hal_04_proto_hanabi\hanabiproto_jump\object.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  time.cpp
   コードを生成中...
-  LINK : 前回のインクリメンタル リンクで C:\Users\acyb1\Documents\GitHub\HAL_04_Proto_Hanabi\hanabiproto_jump\x64\Debug\sample.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
   sample.vcxproj -> C:\Users\acyb1\Documents\GitHub\HAL_04_Proto_Hanabi\hanabiproto_jump\x64\Debug\sample.exe

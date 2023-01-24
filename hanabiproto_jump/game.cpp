@@ -21,6 +21,7 @@
 #include "score.h"
 #include "kappa_Enemy.h"
 #include "akari_ex.h"
+#include "time.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -49,6 +50,7 @@ HRESULT InitGame(void)
 	InitExAkariObject();
 	InitScore();
 	InitKappaEnemy();
+	InitTime();
 
 	// 背景の初期化
 	InitBG();
@@ -80,6 +82,7 @@ void UninitGame(void)
 	UninitAtHanabi();
 	UninitExAkariObject();
 	UninitScore();
+	UninitTime();
 }
 
 //=============================================================================
@@ -97,6 +100,7 @@ void UpdateGame(void)
 	UpdateAtHanabi();
 	UpdateExAkariObject();
 	UpdateScore();
+	UpdateTime();
 	
 	//背景の更新処理
 	UpdateBG();
@@ -119,6 +123,7 @@ void DrawGame(void)
 	DrawAtHanabi();
 	DrawExAkariObject();
 	DrawScore();
+	DrawTime();
 	DrawPlayer();
 	
 	DrawCamera();

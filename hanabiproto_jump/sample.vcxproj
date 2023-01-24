@@ -152,6 +152,7 @@
     <ClCompile Include="texture.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="time.cpp" />
     <ClCompile Include="timemanager.cpp" />
     <ClCompile Include="title.cpp" />
   </ItemGroup>
@@ -178,6 +179,7 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="time.h" />
     <ClInclude Include="timemanager.h" />
     <ClInclude Include="title.h" />
   </ItemGroup>
