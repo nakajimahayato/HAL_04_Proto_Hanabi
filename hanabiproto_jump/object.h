@@ -1,6 +1,6 @@
 /*==============================================================================
 
-   ƒvƒŒƒCƒ„[ŠÇ—[object.h]
+   ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç®¡ç†[object.h]
 														 Author :
 														 Date   :
 --------------------------------------------------------------------------------
@@ -14,7 +14,7 @@
 #include "BENRIclass.h"
 
 //*****************************************************************************
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 //*****************************************************************************
 #define AKARI_NUM	30000
 
@@ -22,16 +22,16 @@
 class GameObject
 {
 public:
-	Float2			pos;//À•W
-	Float2			vec;//ˆÚ“®
+	Float2			pos;//åº§æ¨™
+	Float2			vec;//ç§»å‹•
 	float			speed;
-	Float2			siz;//‘å‚«‚³
-	Float2			dir;//ˆÚ“®•ûŒü
+	Float2			siz;//å¤§ãã•
+	Float2			dir;//ç§»å‹•æ–¹å‘
 	D3DXCOLOR		color;
-	bool			use;//useƒtƒ‰ƒO
-	float			frame;
-	Float2			drop; //—‚¿‚é
-	Float2			sdrop;//—‚¿‚é‰Á‘¬“x
+	bool			use;//useãƒ•ãƒ©ã‚°
+	int				frame;
+	Float2			drop; //è½ã¡ã‚‹
+	Float2			sdrop;//è½ã¡ã‚‹åŠ é€Ÿåº¦
 	bool			hitground;
 };
 
@@ -47,30 +47,28 @@ enum COLOR_AKARI
 class HanabiAkariObject :public GameObject
 {
 public:
-	bool			gather;//W‚Ü‚é‚ ‚©‚è
+	bool			gather;//é›†ã¾ã‚‹ã‚ã‹ã‚Š
 	Float2          gatherpos;
 	bool			setvec;
-	bool			damageenemyflug;  //ƒGƒlƒ~[‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
-	bool			damageplayerflug; //ƒvƒŒƒCƒ„[‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
-	bool			wet;//”G‚ê‚½ó‘Ô
+	bool			damageenemyflug;  //ã‚¨ãƒãƒŸãƒ¼ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
+	bool			damageplayerflug; //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
+	bool			wet;//æ¿¡ã‚ŒãŸçŠ¶æ…‹
 	COLOR_AKARI     colortype;
-	int             gathernum; //‡¬‚³‚ê‚éÛ‚Ì®—”Ô†
+	int             gathernum; //åˆæˆã•ã‚Œã‚‹éš›ã®æ•´ç†ç•ªå·
 };
 
 class EnemyObject :public GameObject
 {
-protected:
-	float			Attack;
-	float			Gravity;
-
 public:
 	float			Health;
 	bool            fall;
 	int             directionX;
-	bool			enemydead;		//ƒGƒlƒ~[€–Sƒtƒ‰ƒO
-	int				deadframe;		//€–SŒã‚ÌƒtƒŒ[ƒ€”
-	int				akaricount;		//–¾‚©‚è‚ğŒğŒİ‚É‘Å‚ÂƒJƒEƒ“ƒg
-	float			shrinkAmount;	//€–S‚Ìûk’l
+	float			Attack;
+	float			Gravity;
+	bool			enemydead;		//ã‚¨ãƒãƒŸãƒ¼æ­»äº¡ãƒ•ãƒ©ã‚°
+	int				deadframe;		//æ­»äº¡å¾Œã®ãƒ•ãƒ¬ãƒ¼ãƒ æ•°
+	int				akaricount;		//æ˜ã‹ã‚Šã‚’äº¤äº’ã«æ‰“ã¤ã‚«ã‚¦ãƒ³ãƒˆ
+	float			shrinkAmount;	//æ­»äº¡æ™‚ã®åç¸®å€¤
 	virtual void Action() {}
 
 };
@@ -91,15 +89,15 @@ class SpawnPointEnemy :public EnemyObject
 {
 public:
 	float			scoreframe;
-	bool			isSPEnemydead;	//‚í‚«‚Ç‚±‚ëƒGƒlƒ~[‚Ì€–Sƒtƒ‰ƒO
-	bool			isColorBlue;	//‚í‚«‚Ç‚±‚ëƒGƒlƒ~[‚ÌÂFƒtƒ‰ƒO
-	bool			isColorRed;		//‚í‚«‚Ç‚±‚ëƒGƒlƒ~[‚ÌÔFƒtƒ‰ƒO
-	bool			isColorGreen;	//‚í‚«‚Ç‚±‚ëƒGƒlƒ~[‚Ì—ÎFƒtƒ‰ƒO
+	bool			isSPEnemydead;	//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®æ­»äº¡ãƒ•ãƒ©ã‚°
+	bool			isColorBlue;	//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®é’è‰²ãƒ•ãƒ©ã‚°
+	bool			isColorRed;		//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®èµ¤è‰²ãƒ•ãƒ©ã‚°
+	bool			isColorGreen;	//ã‚ãã©ã“ã‚ã‚¨ãƒãƒŸãƒ¼ã®ç·‘è‰²ãƒ•ãƒ©ã‚°
 	void Action()override;
 };
 
 //*****************************************************************************
-// ƒvƒƒgƒ^ƒCƒvéŒ¾
+// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
 //*****************************************************************************
 HRESULT InitAkariObject(void);
 void UninitAkariObject(void);
