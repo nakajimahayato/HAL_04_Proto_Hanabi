@@ -49,9 +49,10 @@ void UpdateEnemy(void);
 void DrawEnemy(void);
 void SetEnemy(Float2 pos, int saidai, int enemytype, int muki);
 void SetSoulEnemy(Float2 pos, int saidai, int enemytype, int muki);
-EnemyObject* GetEnemy();
 
+EnemyObject* GetEnemy();
 EnemyObject** GetCupEnemy();
 SoulEnemy* GetSoulEnemy();
+SpawnPointEnemy* GetSPEnemy();
 
 void EnemyDeadProcess(int i);

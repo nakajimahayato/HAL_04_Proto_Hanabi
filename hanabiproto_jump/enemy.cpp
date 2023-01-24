@@ -57,7 +57,6 @@ HRESULT InitEnemy(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/enemy00.png");
 	g_TexCupE = LoadTexture((char*)"data/TEXTURE/cup.png");
 	g_TexSoulE = LoadTexture((char*)"data/TEXTURE/soul01.png");
-	g_TexCupE = LoadTexture((char*)"data/TEXTURE/ue.png");
 	g_TexSPE = LoadTexture((char*)"data/TEXTURE/HouseProto.png");
 	g_TexSPED = LoadTexture((char*)"data/TEXTURE/HouseBrokedProto.png");
 
@@ -102,7 +101,7 @@ HRESULT InitEnemy(void)
 		g_SPEnemy[i].use = false;
 		g_SPEnemy[i].color = { 1.0f,1.0f,1.0f,1.0f };
 		g_SPEnemy[i].pos = { SCREEN_WIDTH / 2 ,SCREEN_HEIGHT / 2 };
-		g_SPEnemy[i].siz = { 32.0f * 8,32.0f * 9 };
+		g_SPEnemy[i].siz = { CHIPSIZE_X * 6,CHIPSIZE_Y * 7 };
 		g_SPEnemy[i].Health = 500.0f;
 		g_SPEnemy[i].isSPEnemydead = false;
 		//色づけ
@@ -127,7 +126,7 @@ HRESULT InitEnemy(void)
 
 	//テスト
 	g_SPEnemy[0].use = true;
-	g_SPEnemy[0].pos = { 1900,830 };
+	g_SPEnemy[0].pos = { 2237,830 };
 	g_Enemy[0].use = true;
 	cupE[0].use = true;
 	return S_OK;
@@ -498,20 +497,20 @@ void DrawEnemy(void)
 		}
 	}
 
-	//2023//1/17
+	//2023//1/18
 	for (int i = 0; i < NUM_ENEMY; i++)
 	{
 		if (g_SPEnemy[i].use) {
 			DrawSpriteColor(g_TexSPE, basePos.x + g_SPEnemy[i].pos.x, basePos.y + g_SPEnemy[i].pos.y,
-				32.0f * 8, 32.0f * 9,
+				g_SPEnemy[i].siz.x, g_SPEnemy[i].siz.y,
 				1.0f, 1.0f,
 				1.0f, 1.0f, g_SPEnemy[i].color);
 		}
-
+		
 		if (g_SPEnemy[i].isSPEnemydead)
 		{
 			DrawSpriteColor(g_TexSPED, basePos.x + g_SPEnemy[i].pos.x, basePos.y + g_SPEnemy[i].pos.y,
-				32.0f * 8, 32.0f * 9,
+				g_SPEnemy[i].siz.x, g_SPEnemy[i].siz.y,
 				1.0f, 1.0f,
 				1.0f, 1.0f, g_SPEnemy[i].color);
 		}
@@ -552,6 +551,11 @@ EnemyObject** GetCupEnemy()
 SoulEnemy* GetSoulEnemy()
 {
 	return soulE;
+}
+
+SpawnPointEnemy* GetSPEnemy()
+{
+	return g_SPEnemy;
 }
 
 void CupEnemy::Action()
@@ -672,7 +676,7 @@ void EnemyDeadProcess(int i)//ＨＰが0になった場合、1.3秒ほどかけ�
 }
 
 
-//2023/1/17
+//2023/1/18
 void SpawnPointEnemy::Action()
 {
 	for (int i = 0; i < NUM_ENEMY; i++)
@@ -681,7 +685,26 @@ void SpawnPointEnemy::Action()
 		{
 			if (!g_SPEnemy[i].isSPEnemydead)
 			{
-				SetEnemy({ g_SPEnemy[i].pos.x,g_SPEnemy[i].pos.y + 100 }, 0, 1, 0);
+				if (rand() % 2 == 0)
+				{
+					SetEnemy({ g_SPEnemy[i].pos.x,g_SPEnemy[i].pos.y + 100 }, 0, 0, 0);
+				}
+				else
+				{
+					if (rand() % 2 == 0)
+					{
+						SetSoulEnemy({ g_SPEnemy[i].pos.x,g_SPEnemy[i].pos.y }, 0, 1, 1);
+					}
+					else if (rand() % 2 == 1)
+					{
+						SetSoulEnemy({ g_SPEnemy[i].pos.x,g_SPEnemy[i].pos.y - 20 }, 0, 1, 1);
+					}
+					else
+					{
+						SetSoulEnemy({ g_SPEnemy[i].pos.x,g_SPEnemy[i].pos.y - 40 }, 0, 1, 1);
+					}
+					
+				}
 			}
 		}
 	}
